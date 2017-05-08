@@ -1,0 +1,185 @@
+#' Export Metabolic Rate
+#'
+#' The function is used to export final dataset with
+#' information about background respiration, absolute
+#' and mass-specific metabolic rates into a .txt or .csv
+#' file. If two traits (MR.data.1, MR.data.2) are used,
+#' the datasets might be merged. Additionaly, absolute,
+#' mass-specific and factorial metabolic scope might be
+#' calculated, where MR.data.1 is standard or resting
+#' metabolic rate and MR.data.2 is active or maximum
+#' metabolic rate.
+#'
+#' @usage
+#' export.MR(MR.data.1, MR.data.2, file = "",
+#'           simplify = TRUE, MS = TRUE,
+#'           plot.MS.abs = TRUE,
+#'           plot.MS.mass = TRUE,
+#'           plot.MS.fact = TRUE)
+#'
+#' @param MR.data.1  a data frame obtained by using the function
+#' \code{\link{extract.slope}}
+#' @param MR.data.2  a data frame obtained by using the function
+#' \code{\link{extract.slope}}
+#' @param file  the name of an exported file with results of the analysis
+#' @param simplify  logical: if TRUE, the number of columns in the
+#' extracted data frame is reduced
+#' @param MS  logical: if TRUE, metabolic scope is calculated and
+#' attached to the exported dataset
+#' @param plot.MS.abs  logical: if TRUE, the graph of absolute
+#' metabolic scope is plotted
+#' @param plot.MS.mass  logical: if TRUE, the graph of mass-specific
+#' metabolic scope is plotted
+#' @param plot.MS.fact  logical: if TRUE, the graph of factorial
+#' metabolic scope is plotted
+#'
+#' @return If only one traits exists, the function exports
+#' a data frame with full or simplified structure. If both
+#' traits are used, the function returns and exports 'MR.data.1'
+#' and 'MR.data.2' with metabolic scope parameters (optionally).
+#'
+#' @importFrom lattice bwplot
+#' @importFrom utils write.table write.csv
+#'
+#' @examples
+#' # if the data have been already loaded to R,
+#' # skip the first three lines of the code:
+#' setwd(path.package("FishResp", quiet = FALSE))
+#' load("data/SMR.RData")
+#' load("data/AMR.RData")
+#'
+#' results <- export.MR(SMR, AMR,
+#'                      file = "results.txt",
+#'                      simplify = TRUE,
+#'                      MS = TRUE,
+#'                      plot.MS.abs = TRUE,
+#'                      plot.MS.mass = TRUE,
+#'                      plot.MS.fact = TRUE)
+#'
+#' @export
+
+export.MR <- function(MR.data.1, MR.data.2, file = "",
+                      simplify = TRUE, MS = TRUE,
+                      plot.MS.abs = TRUE,
+                      plot.MS.mass = TRUE,
+                      plot.MS.fact = TRUE){
+
+  if(missing(MR.data.2)){
+
+    if(simplify == TRUE){
+      MR.data.1 <- MR.data.1[,c(1,2,3,4,7,11,13,14,15)]
+    }
+    else{}
+
+    if(grepl("\\.txt", file) == TRUE){
+      write.table(MR.data.1, file, sep = "\t",  row.names = FALSE)
+    }
+    else if(grepl("\\.csv", file) == TRUE){
+      write.csv(MR.data.1, file,  row.names = FALSE)
+    }
+    else{
+      print("Please, check: the file should be in .txt or .csv format")
+    }
+
+    return(MR.data.1)
+  }
+
+  else{
+    name.1 <- deparse(substitute(MR.data.1))
+    colnames(MR.data.1)[5] <- paste(name.1, "Date.Time", sep = "_")
+    colnames(MR.data.1)[6] <- paste(name.1, "Phase", sep = "_")
+    colnames(MR.data.1)[7] <- paste(name.1, "Temp", sep = "_")
+    colnames(MR.data.1)[8] <- paste(name.1, "Slope.with.BR", sep = "_")
+    colnames(MR.data.1)[9] <- paste(name.1, "Slope", sep = "_")
+    colnames(MR.data.1)[10] <- paste(name.1, "SE", sep = "_")
+    colnames(MR.data.1)[11] <- paste(name.1, "R2", sep = "_")
+    colnames(MR.data.1)[12] <- paste(name.1, "MR.mass.with.BR", sep = "_")
+    colnames(MR.data.1)[13] <- paste(name.1, "BR", sep = "_")
+    colnames(MR.data.1)[14] <- paste(name.1, "MR.abs", sep = "_")
+    colnames(MR.data.1)[15] <- paste(name.1, "MR.mass", sep = "_")
+
+    name.2 <- deparse(substitute(MR.data.2))
+    colnames(MR.data.2)[5] <- paste(name.2, "Date.Time", sep = "_")
+    colnames(MR.data.2)[6] <- paste(name.2, "Phase", sep = "_")
+    colnames(MR.data.2)[7] <- paste(name.2, "Temp", sep = "_")
+    colnames(MR.data.2)[8] <- paste(name.2, "Slope.with.BR", sep = "_")
+    colnames(MR.data.2)[9] <- paste(name.2, "Slope", sep = "_")
+    colnames(MR.data.2)[10] <- paste(name.2, "SE", sep = "_")
+    colnames(MR.data.2)[11] <- paste(name.2, "R2", sep = "_")
+    colnames(MR.data.2)[12] <- paste(name.2, "MR.mass.with.BR", sep = "_")
+    colnames(MR.data.2)[13] <- paste(name.2, "BR", sep = "_")
+    colnames(MR.data.2)[14] <- paste(name.2, "MR.abs", sep = "_")
+    colnames(MR.data.2)[15] <- paste(name.2, "MR.mass", sep = "_")
+
+    final.data <- merge(MR.data.1, MR.data.2)
+
+    if(MS == FALSE){
+      if(simplify == TRUE){
+        final.data <- final.data[,c(1,2,3,4,7,11,13,14,15,18,22,24,25,26)]
+      }
+      else{}
+
+      if(grepl("\\.txt", file) == TRUE){
+        write.table(final.data, file, sep = "\t",  row.names = FALSE)
+      }
+      else if(grepl("\\.csv", file) == TRUE){
+        write.csv(final.data, file,  row.names = FALSE)
+      }
+      else{
+        print("Please, check: the file should be in .txt or .csv format")
+      }
+
+      return(final.data)
+    }
+
+    if(MS == TRUE){
+
+      final.data$MS.abs <- final.data[,25] - final.data[,14]
+      final.data$MS.mass <- final.data[,26] - final.data[,15]
+      final.data$MS.fact <- final.data[,25] / final.data[,14]
+
+      a <- bwplot(MS.abs~final.data[,17]|Ind, data=final.data, as.table = T,
+                  ylab = "Absolute MS (mgO2/h)",
+                  main = "Absolute metabolic scope")
+      b <- bwplot(MS.mass~final.data[,17]|Ind, data=final.data, as.table = T,
+                  ylab = "Mass-specific MS (mgO2/kg/h)",
+                  main = "Mass-specific metabolic scope")
+      d <- bwplot(MS.fact~final.data[,17]|Ind, data=final.data, as.table = T,
+                  ylab = "Factorial MS (coefficient)",
+                  main = "Factorial metabolic scope")
+
+      if (plot.MS.abs == TRUE){
+        par(mfrow = c(2, 1), ask = T)
+        print(a)
+      }
+
+      if (plot.MS.mass == TRUE){
+        par(mfrow = c(2, 1), ask = T)
+        print(b)
+      }
+
+      if (plot.MS.fact == TRUE){
+        par(mfrow = c(2, 1), ask = T)
+        print(d)
+      }
+
+      if(simplify == TRUE){
+        final.data <- final.data[,c(1,2,3,4,7,11,13,14,15,18,
+                                    22,24,25,26,27,28,29)]
+      }
+      else{}
+
+      if(grepl("\\.txt", file) == TRUE){
+        write.table(final.data, file, sep = "\t",  row.names = FALSE)
+      }
+      else if(grepl("\\.csv", file) == TRUE){
+        write.csv(final.data, file,  row.names = FALSE)
+      }
+      else{
+        print("Please, check: the file should be in .txt or .csv format")
+      }
+
+      return(final.data)
+    }
+  }
+}
