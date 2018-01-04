@@ -11,27 +11,26 @@ calculate.MR(slope.data, density = 1000,
 }
 \arguments{
 \item{slope.data}{a data frame obtained by using the function \code{\link{extract.slope}}}
+
 \item{density}{numeric: the density of an animal body (kg/m^3)}
+
 \item{plot.BR}{logical: if TRUE, the graph of background respiration rate is plotted}
+
 \item{plot.MR.abs}{logical: if TRUE, the graph of absolute metabolic rate is plotted}
+
 \item{plot.MR.mass}{logical: if TRUE, the graph of mass-specific metabolic rate is plotted}
 }
 \value{
-The function returns a data frame with calculated
-background respiration, absolute and mass-specific metabolic
-rates. The data frame might is used in the function
-\code{\link{export.MR}}.
+The function returns a data frame with calculated background respiration, absolute and mass-specific metabolic rates. The data frame might is used in the function \code{\link{export.MR}}.
 }
 \description{
-The function is used to calculate and plot background
-respiration, absolute and mass-specific metabolic rates.
+The function is used to calculate and plot background respiration, absolute and mass-specific\cr metabolic rates.
 }
 \examples{
 # if the data have been already loaded to R,
-# skip the first three lines of the code:
-setwd(path.package("FishResp", quiet = FALSE))
-load("data/SMR.slope.RData")
-load("data/AMR.slope.RData")
+# skip the first two lines of the code:
+data(SMR.slope)
+data(AMR.slope)
 
 SMR <- calculate.MR(SMR.slope,
                     density = 1000,

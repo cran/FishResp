@@ -12,37 +12,32 @@ export.MR(MR.data.1, MR.data.2, file = "",
 }
 \arguments{
 \item{MR.data.1}{a data frame obtained by using the function \code{\link{extract.slope}}}
+
 \item{MR.data.2}{a data frame obtained by using the function \code{\link{extract.slope}}}
+
 \item{file}{the name of an exported file with results of the analysis}
+
 \item{simplify}{logical: if TRUE, the number of columns in the extracted data frame is reduced}
+
 \item{MS}{logical: if TRUE, metabolic scope is calculated and attached to the exported dataset}
+
 \item{plot.MS.abs}{logical: if TRUE, the graph of absolute metabolic scope is plotted}
+
 \item{plot.MS.mass}{logical: if TRUE, the graph of mass-specific metabolic scope is plotted}
+
 \item{plot.MS.fact}{logical: if TRUE, the graph of factorial metabolic scope is plotted}
 }
 \value{
-If only one traits exists, the function exports
-a data frame with full or simplified structure. If both
-traits are used, the function returns and exports 'MR.data.1'
-and 'MR.data.2' with metabolic scope parameters (optionally).
+If only one traits exists, the function exports a data frame with full or simplified structure. If both traits are used, the function returns and exports 'MR.data.1' and 'MR.data.2' with metabolic scope parameters (optionally).
 }
 \description{
-The function is used to export final dataset with
-information about background respiration, absolute
-and mass-specific metabolic rates into a .txt or .csv
-file. If two traits (MR.data.1, MR.data.2) are used,
-the datasets might be merged. Additionaly, absolute,
-mass-specific and factorial metabolic scope might be
-calculated, where MR.data.1 is standard or resting
-metabolic rate and MR.data.2 is active or maximum
-metabolic rate.
+The function is used to export final dataset with information about background respiration, absolute and mass-specific metabolic rates into a .txt or .csv file. If two traits (MR.data.1, MR.data.2) are used, the datasets might be merged. Additionally, absolute, mass-specific and factorial metabolic scope might be calculated, where MR.data.1 is standard or resting metabolic rate and MR.data.2 is active or maximum metabolic rate.
 }
 \examples{
 # if the data have been already loaded to R,
-# skip the first three lines of the code:
-setwd(path.package("FishResp", quiet = FALSE))
-load("data/SMR.RData")
-load("data/AMR.RData")
+# skip the first two lines of the code:
+data(SMR)
+data(AMR)
 
 results <- export.MR(SMR, AMR,
                      file = "results.txt",

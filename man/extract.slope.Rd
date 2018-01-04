@@ -4,45 +4,66 @@
 \alias{extract.slope}
 \title{Extraction of Slope(s)}
 \usage{
-extract.slope(clean.data, method = c("min", "max"),
-              n.slope=1000, r2=0.9, length = 9999,
-              plot.data = TRUE)
+extract.slope(clean.data,
+              method = c("all", "min", "max",
+                         "upper.tail", "lower.tail",
+                         "calcSMR.mlnd", "calcSMR.quant",
+                         "calcSMR.low10", "calcSMR.low10pc"),
+              r2=0.9, length = 9999, n.slope = 1000,
+              percent = 10, q = 0.1, G = 1:4)
 }
 \arguments{
 \item{clean.data}{a data frame obtained by using the function \code{\link{correct.meas}}}
-\item{method}{string: the method of extracting slopes: minimal or maximal values}
-\item{n.slope}{integer: the number of extracted slopes (only one slope is calculated for each measurement period)}
-\item{r2}{numeric: minimal coeficient of determination (r2) for extracted slopes. Coeficient of determination is used as a threshold of quality to be determined by the user.}
+
+\item{method}{string: the method of extracting slopes:
+\itemize{
+ \item 'all' all slopes
+ \item 'min' extracts lowest absolute slopes, specify the number of extracted\cr slopes (parameter: n.slope)
+ \item 'max' extracts highest absolute slopes, specify the number of extracted slopes (parameter: n.slope)
+ \item 'lower.tail' extracts slopes from a lower tail of absolute slope distribution, specify percentage of a lower tail (parameter: percent)
+ \item 'upper.tail' extracts slopes from an upper tail of absolute slope distribution, specify percentage of an upper tail (parameter: percent)
+ \item 'calcSMR.mlnd' calculates the mean of the lowest normal distribution\cr (MLND) using parameter G (see Appendix S1 in Chabot et al, 2016)
+ \item 'calcSMR.quant' calculates quantile value of slope distribution using parameter q (see Appendix S1 in Chabot et al, 2016)
+ \item 'calcSMR.low10' calculates the mean of the 10 lowest absolute slopes (see Appendix S1 in Chabot et al, 2016)
+ \item 'calcSMR.low10pc' calculates the mean of the lowest 10% of absolute slopes, after the 5 from 10 lowest have been removed as outliers (see Herrmann & Enders, 2000; Appendix S1 in Chabot et al, 2016)
+ }}
+
+\item{r2}{numeric: minimal coefficient of determination (r2) for extracted slopes. Coefficient of determination is used as a threshold of quality to be determined by the user.}
+
 \item{length}{integer: length of a measurement period for slope calculations (in seconds)}
-\item{plot.data}{logical: if TRUE, then a graph with raw data for extracted slopes is plotted}
+
+\item{n.slope}{integer: the number of extracted slopes, only one slope is calculated for each measurement period (used in the methods "min" and "max")}
+
+\item{percent}{integer: percentage of lower or upper tail (used in the methods "lower.tail" and "upper.tail", respectively)}
+
+\item{q}{integer: quantile is used in the method"calcSMR.quant"}
+
+\item{G}{integer: G value is used in the method "calcSMR.mlnd"}
 }
 \value{
 The function returns a data frame with the information about extracted slopes. The data frame is used in the functions \code{\link{QC.slope}} and \code{\link{calculate.MR}}.
 }
 \description{
-The function extracts the slopes of the linear regression
-of corrected O2 concenration over time with defined parameters
-(see Arguments).
+The function extracts the slopes of the linear regression of corrected O2 concentration over time with defined parameters (see Arguments).
 }
 \examples{
 # if the data have been already loaded to R,
-# skip the first three lines of the code:
-setwd(path.package("FishResp", quiet = FALSE))
-load("data/SMR.clean.RData")
-load("data/AMR.clean.RData")
+# skip the first two lines of the code:
+data(SMR.clean)
+data(AMR.clean)
 
 SMR.slope <- extract.slope(SMR.clean,
                            method = "min",
-                           n.slope = 3,
+                           n.slope = 6,
                            r2=0.95,
-                           length = 1200,
-                           plot.data = TRUE)
+                           length = 1200)
 
 AMR.slope <- extract.slope(AMR.clean,
-                           method = "max",
-                           n.slope = 3,
+                           method = "all",
                            r2=0.8,
-                           length = 300,
-                           plot.data = TRUE)
+                           length = 300)
 
+}
+\references{
+{ Chabot, D., Steffensen, J. F., & Farrell, A. P. (2016). The determination of standard metabolic rate in fishes. Journal of Fish Biology, 88(1), 81-121.\cr Herrmann, J. P., & Enders, E. C. (2000). Effect of body size on the standard metabolism of horse mackerel. Journal of Fish Biology, 57(3), 746-760.}
 }

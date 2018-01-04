@@ -1,14 +1,6 @@
 #' Export Metabolic Rate
 #'
-#' The function is used to export final dataset with
-#' information about background respiration, absolute
-#' and mass-specific metabolic rates into a .txt or .csv
-#' file. If two traits (MR.data.1, MR.data.2) are used,
-#' the datasets might be merged. Additionaly, absolute,
-#' mass-specific and factorial metabolic scope might be
-#' calculated, where MR.data.1 is standard or resting
-#' metabolic rate and MR.data.2 is active or maximum
-#' metabolic rate.
+#' The function is used to export final dataset with information about background respiration, absolute and mass-specific metabolic rates into a .txt or .csv file. If two traits (MR.data.1, MR.data.2) are used, the datasets might be merged. Additionally, absolute, mass-specific and factorial metabolic scope might be calculated, where MR.data.1 is standard or resting metabolic rate and MR.data.2 is active or maximum metabolic rate.
 #'
 #' @usage
 #' export.MR(MR.data.1, MR.data.2, file = "",
@@ -17,36 +9,25 @@
 #'           plot.MS.mass = TRUE,
 #'           plot.MS.fact = TRUE)
 #'
-#' @param MR.data.1  a data frame obtained by using the function
-#' \code{\link{extract.slope}}
-#' @param MR.data.2  a data frame obtained by using the function
-#' \code{\link{extract.slope}}
+#' @param MR.data.1  a data frame obtained by using the function \code{\link{extract.slope}}
+#' @param MR.data.2  a data frame obtained by using the function \code{\link{extract.slope}}
 #' @param file  the name of an exported file with results of the analysis
-#' @param simplify  logical: if TRUE, the number of columns in the
-#' extracted data frame is reduced
-#' @param MS  logical: if TRUE, metabolic scope is calculated and
-#' attached to the exported dataset
-#' @param plot.MS.abs  logical: if TRUE, the graph of absolute
-#' metabolic scope is plotted
-#' @param plot.MS.mass  logical: if TRUE, the graph of mass-specific
-#' metabolic scope is plotted
-#' @param plot.MS.fact  logical: if TRUE, the graph of factorial
-#' metabolic scope is plotted
+#' @param simplify  logical: if TRUE, the number of columns in the extracted data frame is reduced
+#' @param MS  logical: if TRUE, metabolic scope is calculated and attached to the exported dataset
+#' @param plot.MS.abs  logical: if TRUE, the graph of absolute metabolic scope is plotted
+#' @param plot.MS.mass  logical: if TRUE, the graph of mass-specific metabolic scope is plotted
+#' @param plot.MS.fact  logical: if TRUE, the graph of factorial metabolic scope is plotted
 #'
-#' @return If only one traits exists, the function exports
-#' a data frame with full or simplified structure. If both
-#' traits are used, the function returns and exports 'MR.data.1'
-#' and 'MR.data.2' with metabolic scope parameters (optionally).
+#' @return If only one traits exists, the function exports a data frame with full or simplified structure. If both traits are used, the function returns and exports 'MR.data.1' and 'MR.data.2' with metabolic scope parameters (optionally).
 #'
 #' @importFrom lattice bwplot
 #' @importFrom utils write.table write.csv
 #'
 #' @examples
 #' # if the data have been already loaded to R,
-#' # skip the first three lines of the code:
-#' setwd(path.package("FishResp", quiet = FALSE))
-#' load("data/SMR.RData")
-#' load("data/AMR.RData")
+#' # skip the first two lines of the code:
+#' data(SMR)
+#' data(AMR)
 #'
 #' results <- export.MR(SMR, AMR,
 #'                      file = "results.txt",
@@ -67,20 +48,20 @@ export.MR <- function(MR.data.1, MR.data.2, file = "",
   if(missing(MR.data.2)){
 
     if(simplify == TRUE){
-      MR.data.1 <- MR.data.1[,c(1,2,3,4,7,11,13,14,15)]
-    }
-    else{}
-
-    if(grepl("\\.txt", file) == TRUE){
-      write.table(MR.data.1, file, sep = "\t",  row.names = FALSE)
-    }
-    else if(grepl("\\.csv", file) == TRUE){
-      write.csv(MR.data.1, file,  row.names = FALSE)
+      MR.data.1 <- MR.data.1[,c(1,2,3,4,16,7,11,13,14,15)]
     }
     else{
-      print("Please, check: the file should be in .txt or .csv format")
-    }
-
+      MR.data.1 <- MR.data.1[,c(1,2,3,4,16,5,6,7,8,9,10,11,12,13,14,15)]
+      if(grepl("\\.txt", file) == TRUE){
+        write.table(MR.data.1, file, sep = "\t",  row.names = FALSE)
+      }
+      else if(grepl("\\.csv", file) == TRUE){
+        write.csv(MR.data.1, file,  row.names = FALSE)
+      }
+      else{
+        print("Please, check: the file should be in .txt or .csv format")
+     }
+   }
     return(MR.data.1)
   }
 
@@ -115,7 +96,7 @@ export.MR <- function(MR.data.1, MR.data.2, file = "",
 
     if(MS == FALSE){
       if(simplify == TRUE){
-        final.data <- final.data[,c(1,2,3,4,7,11,13,14,15,18,22,24,25,26)]
+        final.data <- final.data[,c(1,2,3,4,5,8,12,14,15,16,19,23,25,26,27)]
       }
       else{}
 
@@ -134,17 +115,17 @@ export.MR <- function(MR.data.1, MR.data.2, file = "",
 
     if(MS == TRUE){
 
-      final.data$MS.abs <- final.data[,25] - final.data[,14]
-      final.data$MS.mass <- final.data[,26] - final.data[,15]
-      final.data$MS.fact <- final.data[,25] / final.data[,14]
+      final.data$MS.abs <- final.data[,26] - final.data[,15]
+      final.data$MS.mass <- final.data[,27] - final.data[,16]
+      final.data$MS.fact <- final.data[,26] / final.data[,15]
 
-      a <- bwplot(MS.abs~final.data[,17]|Ind, data=final.data, as.table = T,
-                  ylab = "Absolute MS (mgO2/h)",
+      a <- bwplot(MS.abs~final.data[,18]|Ind, data=final.data, as.table = T,
+                  ylab = paste("Absolute MS (", final.data$DO.unit[1], "/h)", sep = ""),
                   main = "Absolute metabolic scope")
-      b <- bwplot(MS.mass~final.data[,17]|Ind, data=final.data, as.table = T,
-                  ylab = "Mass-specific MS (mgO2/kg/h)",
+      b <- bwplot(MS.mass~final.data[,18]|Ind, data=final.data, as.table = T,
+                  ylab = paste("Mass-specific MS (", final.data$DO.unit[1], "/kg/h)", sep = ""),
                   main = "Mass-specific metabolic scope")
-      d <- bwplot(MS.fact~final.data[,17]|Ind, data=final.data, as.table = T,
+      d <- bwplot(MS.fact~final.data[,18]|Ind, data=final.data, as.table = T,
                   ylab = "Factorial MS (coefficient)",
                   main = "Factorial metabolic scope")
 
@@ -164,8 +145,8 @@ export.MR <- function(MR.data.1, MR.data.2, file = "",
       }
 
       if(simplify == TRUE){
-        final.data <- final.data[,c(1,2,3,4,7,11,13,14,15,18,
-                                    22,24,25,26,27,28,29)]
+        final.data <- final.data[,c(1,2,3,4,5,8,12,14,15,16,19,
+                                    23,25,26,27,28,29,30)]
       }
       else{}
 

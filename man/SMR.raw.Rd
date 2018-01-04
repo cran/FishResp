@@ -27,7 +27,6 @@
 SMR.raw
 }
 \description{
-The dataset containing raw data of standard metabolic rate measurements
-obtained by using the function \code{\link{import.meas}})
+The dataset containing raw data of standard metabolic rate measurements obtained by using the function \code{\link{import.meas}})
 }
 \keyword{datasets}

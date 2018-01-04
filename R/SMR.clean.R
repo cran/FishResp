@@ -2,10 +2,7 @@
 #' @aliases SMR.clean
 #' @docType data
 #' @title Standard Metabolic Rate: Corrected Raw Data
-#' @description
-#' A dataset containing raw data of standard metabolic rate
-#' measurements corrected for background respiration using
-#' the function \code{\link{correct.meas}}
+#' @description A dataset containing raw data of standard metabolic rate measurements corrected for background respiration using the function \code{\link{correct.meas}}
 #' @usage SMR.clean
 #' @format A data frame with 115200 rows and 16 variables:
 #' \describe{
@@ -24,7 +21,7 @@
 #'   \item{Temp}{Temperature at each second (C)}
 #'   \item{O2}{Actual level of dissolved oxygen at each second (mgO2/L)}
 #'   \item{BR}{Slope of background respiration (mgO2/L/h)}
-#'   \item{O2.correct}{Actual level of dissolved oxygen at each second
-#'   corrected by slope of background respiration (mgO2/L)}
+#'   \item{O2.correct}{Actual level of dissolved oxygen at each second corrected by slope of background respiration (mgO2/L)}
+#'   \item{DO.unit}{the measure unit of DO concentration}
 #' }
 "SMR.clean"

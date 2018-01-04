@@ -2,9 +2,7 @@
 #' @aliases pre
 #' @docType data
 #' @title Pre Raw Data
-#' @description
-#' A dataset containing raw data of a background test conducted before metabolic
-#' rate measurements (pre-test), obtained by using the function \code{\link{import.test}}.
+#' @description A dataset containing raw data of a background test conducted before metabolic rate measurements (pre-test), obtained by using the function \code{\link{import.test}}.
 #' @usage pre
 #' @format A data frame with 4800 rows and 7 variables:
 #' \describe{

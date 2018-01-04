@@ -1,49 +1,28 @@
 #' Correction of Metabolic Rate Measurements
 #'
-#' The function is used to correct metabolic rate measurements
-#' for background respiration. To this end, oxygen consumption
-#' is estimated as the slope of the linear regression of measured
-#' O2 concentration over time, and is extracted for background
-#' respiration test and for each period of actual measurements.
-#' The correction is based on substraction of oxygen consumption
-#' obtained during background respiration test from oxygen
-#' consumption obtained during metabolic rate measurements.
+#' The function is used to correct metabolic rate measurements for background respiration. To this end, oxygen consumption is estimated as the slope of the linear regression of measured O2 concentration over time, and is extracted for background respiration test and for each period of actual measurements. The correction is based on subtraction of oxygen consumption obtained during background respiration test from oxygen consumption obtained during metabolic rate measurements.
 #'
 #' @usage
 #' correct.meas(info.data, pre.data, post.data, meas.data,
 #'              method = c("pre.test", "post.test", "average",
-#'                         "progressive", "parallel"),
+#'                         "linear", "exponential", "parallel"),
 #'              empty.chamber = c("CH1", "CH2", "CH3", "CH4",
 #'                                "CH5", "CH6", "CH7", "CH8"))
 #'
-#' @param info.data  a data frame obtained by using the function
-#' \code{\link{input.info}}
-#' @param pre.data  a data frame obtained by using the function
-#' \code{\link{import.test}} for "pre.test" method
-#' @param post.data  a data frame obtained by using the function
-#' \code{\link{import.test}} for "post.test" method
-#' @param meas.data  a data frame obtained by using the function
-#' \code{\link{import.meas}}
-#' @param method  string: the name of the method used for background
-#' respiration correction:
+#' @param info.data  a data frame obtained by using the function \code{\link{input.info}}
+#' @param pre.data  a data frame obtained by using the function \code{\link{import.test}} for "pre.test" method
+#' @param post.data  a data frame obtained by using the function \code{\link{import.test}} for "post.test" method
+#' @param meas.data  a data frame obtained by using the function \code{\link{import.meas}}
+#' @param method  string: the name of the method used for background respiration correction:
 #' \itemize{
-#' \item  "pre.test" - substracts oxygen consumption of pre.data from
-#' oxygen consumptions of meas.data
-#' \item  "post.test" - substracts oxygen consumption of post.data from
-#' oxygen consumptions of meas.data
-#' \item  "average" - substracts an averaged oxygen consumption of pre.data
-#' and post.data from oxygen consumptions of meas.data
-#' \item  "progressive" - substracts a vector of progressively changing
-#' microbial consumptions from oxygen consumptions of meas.data. The values
-#' of oxygen consumption are linearly predicted from two reference points:
-#' oxygen consumption of pre.data and oxygen consumption of post.data.
-#' The number of elements in the vector equals to the total number of
-#' periods in metabolic rate measurements.
-#' \item  "parallel" - substracts oxygen consumption in an empty chamber
-#' from oxygen consumptions of meas.data for each chamber
+#' \item  "pre.test" - subtracts oxygen consumption of pre.data from oxygen consumptions of meas.data
+#' \item  "post.test" - subtracts oxygen consumption of post.data from oxygen consumptions of meas.data
+#' \item  "average" - subtracts an averaged oxygen consumption of pre.data and\cr post.data from oxygen consumptions of meas.data
+#' \item  "linear" - subtracts a vector of progressively changing microbial consumptions from oxygen consumptions of meas.data. The values of oxygen consumption are linearly predicted from two reference points: oxygen consumption of pre.data and oxygen consumption of post.data. The number of elements in the vector equals to the total number of periods in metabolic rate measurements.
+#' \item  "exponential" - subtracts a vector of progressively changing microbial consumptions from oxygen consumptions of meas.data. The values of oxygen consumption are exponentially predicted from two reference points: oxygen consumption of pre.data and oxygen consumption of post.data. The number of elements in the vector equals to the total number of periods in metabolic rate measurements.
+#' \item  "parallel" - subtracts oxygen consumption in an empty chamber from oxygen consumptions of meas.data for each chamber
 #' }
-#' @param empty.chamber  string: the name of an empty chamber used only
-#' for the method 'parallel'
+#' @param empty.chamber  string: the name of an empty chamber used only for the method 'parallel'
 #'
 #' @importFrom chron chron dates times
 #' @importFrom grDevices dev.new
@@ -51,39 +30,35 @@
 #' @importFrom stats coef lm predict.lm
 #' @importFrom utils head read.table tail write.table
 #'
-#' @return  The function returns a data frame containing data of metabolic
-#' rate measurements corrected for background respiration. The data frame
-#' is used in the functions \code{\link{QC.meas}}, \code{\link{QC.activity}},
-#' \code{\link{extract.slope}} and \code{\link{QC.slope}}.
+#' @return  The function returns a data frame containing data of metabolic rate measurements corrected for background respiration. The data frame is used in the functions \code{\link{QC.meas}}, \code{\link{QC.activity}},\cr \code{\link{extract.slope}} and \code{\link{QC.slope}}.
 #'
 #' @examples
 #' # if the data have been already loaded to R,
-#' # skip the first six lines of the code:
-#' setwd(path.package("FishResp", quiet = FALSE))
-#' load("data/info.RData")
-#' load("data/pre.RData")
-#' load("data/post.RData")
-#' load("data/SMR.raw.RData")
-#' load("data/AMR.raw.RData")
-#'
+#' # skip the first five lines of the code:
+#' data(info)
+#' data(pre)
+#' data(post)
+#' data(AMR.raw)
+#' \dontrun{
+#' data(SMR.raw)
 #' SMR.clean <- correct.meas(info.data = info,
 #'                           pre.data = pre,
 #'                           meas.data = SMR.raw,
 #'                           method = "pre.test")
+#' }
 #'
 #' AMR.clean <- correct.meas(info.data = info,
 #'                           post.data = post,
 #'                           meas.data = AMR.raw,
 #'                           method = "post.test")
 #'
-#' @references { Svendsen, M. B. S., P. G. Bushnell, and J. F. Steffensen. 2016.
-#' Design and setup of intermittent-flow respirometry system for aquatic organisms. J. Fish Biol. 88: 26-50.}
+#' @references {Svendsen, M. B. S., Bushnell, P. G., & Steffensen, J. F. (2016). Design and setup of intermittent-flow respirometry system for aquatic organisms. Journal of Fish Biology, 88(1), 26-50.}
 #'
 #' @export
 
 correct.meas <- function (info.data, pre.data, post.data, meas.data,
                         method = c("pre.test", "post.test", "average",
-                                   "progressive", "parallel"),
+                                   "linear", "exponential", "parallel"),
                         empty.chamber = c("CH1", "CH2", "CH3", "CH4",
                                           "CH5", "CH6", "CH7", "CH8")){
   Date.Time <- Date <- Real.Time <- Time <- Phase <- Start.Meas <- End.Meas <- Temp.1 <- Ox.1 <- NULL
@@ -158,7 +133,7 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       rm(temp.lm)
     }
 
-    else if(method == "progressive"){
+    else if(method == "linear"){
       M.phase <- levels(temp.df$Phase)
 
       b<-NULL
@@ -182,14 +157,42 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       rm(list = c("temp.lm1", "temp.lm2", "a", "b", "i", "x", "y", "pro"))
     }
 
+    else if(method == "exponential"){
+      M.phase <- levels(temp.df$Phase)
+
+      b<-NULL
+      for (i in M.phase){
+        a <- as.numeric(substr(i, 2, 3))
+        b <-append(b, a)
+      }
+
+      y<-NULL
+      for (i in b){
+        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH1"))
+        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH1"))
+        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
+        pro = temp.lm1$coefficients * exp.coef^i
+        temp.lm1$coefficients[1] <- pro
+        lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
+        x<-as.vector(predict.lm(lm.M, temp.CH1[temp.CH1$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
+        y<-append(y, x)
+      }
+      any(y>0)
+      temp.CH1$BR<-y
+      rm(list = ls(pattern = "lm.M"))
+      rm(list = c("temp.lm1", "temp.lm2", "a", "b", "i", "x", "y", "pro", "exp.coef"))
+    }
+
     else{
-      print("Please, choose the method: pre.test, post.test, average or progressive")
+      print("Please, choose the method: pre.test, post.test, average, linear or exponential")
     }
 
     #--------------------------------------------------------------------------------------------------------------------------------------------------#
     MR.data.all<-temp.CH1
     MR.data.all<-subset(MR.data.all, select=c(Date.Time:End.Meas, Chamber.No, Ind, Weight, Volume, Init.O2, Temp, O2, BR))
     MR.data.all$O2.correct<-MR.data.all$O2 - MR.data.all$BR
+
+    MR.data.all$DO.unit <- info.data$DO.unit[1]
     return(MR.data.all)
 
     rm(temp.df)
@@ -311,7 +314,7 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       rm(temp.lm)
     }
 
-    else if(method == "progressive"){
+    else if(method == "linear"){
       M.phase <- levels(temp.df$Phase)
 
       b<-NULL
@@ -355,17 +358,66 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       rm(list = c("temp.lm1", "temp.lm2", "a", "b", "i", "x", "y", "pro"))
     }
 
+    else if(method == "exponential"){
+      M.phase <- levels(temp.df$Phase)
+
+      b<-NULL
+      for (i in M.phase){
+        a <- as.numeric(substr(i, 2, 3))
+        b <-append(b, a)
+      }
+
+      y<-NULL
+      for (i in b){
+        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH1"))
+        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH1"))
+        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
+        pro = temp.lm1$coefficients * exp.coef^i
+        temp.lm1$coefficients[1] <- pro
+        lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
+        x<-as.vector(predict.lm(lm.M, temp.CH1[temp.CH1$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
+        y<-append(y, x)
+      }
+      any(y>0)
+      temp.CH1$BR<-y
+      rm(list = ls(pattern = "lm.M"))
+      rm(list = c("temp.lm1", "temp.lm2", "a", "b", "i", "x", "y", "pro", "exp.coef"))
+
+
+      b<-NULL
+      for (i in M.phase){
+        a <- as.numeric(substr(i, 2, 3))
+        b <-append(b, a)
+      }
+
+      y<-NULL
+      for (i in b){
+        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH2"))
+        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH2"))
+        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
+        pro = temp.lm1$coefficients * exp.coef^i
+        temp.lm1$coefficients[1] <- pro
+        lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
+        x<-as.vector(predict.lm(lm.M, temp.CH2[temp.CH2$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
+        y<-append(y, x)
+      }
+      any(y>0)
+      temp.CH2$BR<-y
+      rm(list = ls(pattern = "lm.M"))
+      rm(list = c("temp.lm1", "temp.lm2", "a", "b", "i", "x", "y", "pro", "exp.coef"))
+    }
+
     else if(method == "parallel"){
 
       if(empty.chamber == "CH1"){
-        x <- as.numeric(temp.CH1$Init.O2-temp.CH1$O2)
+        x <- as.numeric(temp.CH1$O2-temp.CH1$Init.O2)
         temp.CH1$BR <- x
         temp.CH2$BR <- x
         rm(x)
       }
 
       else if(empty.chamber == "CH2"){
-        x <- as.numeric(temp.CH2$Init.O2-temp.CH2$O2)
+        x <- as.numeric(temp.CH2$O2-temp.CH2$Init.O2)
         temp.CH1$BR <- x
         temp.CH2$BR <- x
         rm(x)
@@ -377,13 +429,15 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     }
 
     else{
-      print("Please, choose the method: pre.test, post.test, average, progressive or parallel")
+      print("Please, choose the method: pre.test, post.test, average, linear, exponential or parallel")
     }
 
     #--------------------------------------------------------------------------------------------------------------------------------------------------#
     MR.data.all<-rbind(temp.CH1, temp.CH2)
     MR.data.all<-subset(MR.data.all, select=c(Date.Time:End.Meas, Chamber.No, Ind, Weight, Volume, Init.O2, Temp, O2, BR))
     MR.data.all$O2.correct<-MR.data.all$O2 - MR.data.all$BR
+
+    MR.data.all$DO.unit <- info.data$DO.unit[1]
     return(MR.data.all)
 
     rm(temp.df)
@@ -552,7 +606,7 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       rm(temp.lm)
     }
 
-    else if(method == "progressive"){
+    else if(method == "linear"){
       M.phase <- levels(temp.df$Phase)
 
       b<-NULL
@@ -616,10 +670,82 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       rm(list = c("temp.lm1", "temp.lm2", "a", "b", "i", "x", "y", "pro"))
     }
 
+    else if(method == "exponential"){
+      M.phase <- levels(temp.df$Phase)
+
+      b<-NULL
+      for (i in M.phase){
+        a <- as.numeric(substr(i, 2, 3))
+        b <-append(b, a)
+      }
+
+      y<-NULL
+      for (i in b){
+        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH1"))
+        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH1"))
+        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
+        pro = temp.lm1$coefficients * exp.coef^i
+        temp.lm1$coefficients[1] <- pro
+        lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
+        x<-as.vector(predict.lm(lm.M, temp.CH1[temp.CH1$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
+        y<-append(y, x)
+      }
+      any(y>0)
+      temp.CH1$BR<-y
+      rm(list = ls(pattern = "lm.M"))
+      rm(list = c("temp.lm1", "temp.lm2", "a", "b", "i", "x", "y", "pro", "exp.coef"))
+
+
+      b<-NULL
+      for (i in M.phase){
+        a <- as.numeric(substr(i, 2, 3))
+        b <-append(b, a)
+      }
+
+      y<-NULL
+      for (i in b){
+        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH2"))
+        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH2"))
+        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
+        pro = temp.lm1$coefficients * exp.coef^i
+        temp.lm1$coefficients[1] <- pro
+        lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
+        x<-as.vector(predict.lm(lm.M, temp.CH2[temp.CH2$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
+        y<-append(y, x)
+      }
+      any(y>0)
+      temp.CH2$BR<-y
+      rm(list = ls(pattern = "lm.M"))
+      rm(list = c("temp.lm1", "temp.lm2", "a", "b", "i", "x", "y", "pro", "exp.coef"))
+
+
+      b<-NULL
+      for (i in M.phase){
+        a <- as.numeric(substr(i, 2, 3))
+        b <-append(b, a)
+      }
+
+      y<-NULL
+      for (i in b){
+        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH3"))
+        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH3"))
+        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
+        pro = temp.lm1$coefficients * exp.coef^i
+        temp.lm1$coefficients[1] <- pro
+        lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
+        x<-as.vector(predict.lm(lm.M, temp.CH3[temp.CH3$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
+        y<-append(y, x)
+      }
+      any(y>0)
+      temp.CH3$BR<-y
+      rm(list = ls(pattern = "lm.M"))
+      rm(list = c("temp.lm1", "temp.lm2", "a", "b", "i", "x", "y", "pro", "exp.coef"))
+    }
+
     else if(method == "parallel"){
 
       if(empty.chamber == "CH1"){
-        x <- as.numeric(temp.CH1$Init.O2-temp.CH1$O2)
+        x <- as.numeric(temp.CH1$O2-temp.CH1$Init.O2)
         temp.CH1$BR <- x
         temp.CH2$BR <- x
         temp.CH3$BR <- x
@@ -627,7 +753,7 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
 
       else if(empty.chamber == "CH2"){
-        x <- as.numeric(temp.CH2$Init.O2-temp.CH2$O2)
+        x <- as.numeric(temp.CH2$O2-temp.CH2$Init.O2)
         temp.CH1$BR <- x
         temp.CH2$BR <- x
         temp.CH3$BR <- x
@@ -635,7 +761,7 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
 
       else if(empty.chamber == "CH3"){
-        x <- as.numeric(temp.CH3$Init.O2-temp.CH3$O2)
+        x <- as.numeric(temp.CH3$O2-temp.CH3$Init.O2)
         temp.CH1$BR <- x
         temp.CH2$BR <- x
         temp.CH3$BR <- x
@@ -648,13 +774,15 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     }
 
     else{
-      print("Please, choose the method: pre.test, post.test, average, progressive or parallel")
+      print("Please, choose the method: pre.test, post.test, average, linear, exponential or parallel")
     }
 
     #--------------------------------------------------------------------------------------------------------------------------------------------------#
     MR.data.all<-rbind(temp.CH1, temp.CH2, temp.CH3)
     MR.data.all<-subset(MR.data.all, select=c(Date.Time:End.Meas, Chamber.No, Ind, Weight, Volume, Init.O2, Temp, O2, BR))
     MR.data.all$O2.correct<-MR.data.all$O2 - MR.data.all$BR
+
+    MR.data.all$DO.unit <- info.data$DO.unit[1]
     return(MR.data.all)
 
     rm(temp.df)
@@ -870,7 +998,7 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       rm(temp.lm)
     }
 
-    else if(method == "progressive"){
+    else if(method == "linear"){
       M.phase <- levels(temp.df$Phase)
 
       b<-NULL
@@ -954,10 +1082,105 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       rm(list = c("temp.lm1", "temp.lm2", "a", "b", "i", "x", "y", "pro"))
     }
 
+    else if(method == "exponential"){
+      M.phase <- levels(temp.df$Phase)
+
+      b<-NULL
+      for (i in M.phase){
+        a <- as.numeric(substr(i, 2, 3))
+        b <-append(b, a)
+      }
+
+      y<-NULL
+      for (i in b){
+        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH1"))
+        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH1"))
+        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
+        pro = temp.lm1$coefficients * exp.coef^i
+        temp.lm1$coefficients[1] <- pro
+        lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
+        x<-as.vector(predict.lm(lm.M, temp.CH1[temp.CH1$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
+        y<-append(y, x)
+      }
+      any(y>0)
+      temp.CH1$BR<-y
+      rm(list = ls(pattern = "lm.M"))
+      rm(list = c("temp.lm1", "temp.lm2", "a", "b", "i", "x", "y", "pro", "exp.coef"))
+
+
+      b<-NULL
+      for (i in M.phase){
+        a <- as.numeric(substr(i, 2, 3))
+        b <-append(b, a)
+      }
+
+      y<-NULL
+      for (i in b){
+        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH2"))
+        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH2"))
+        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
+        pro = temp.lm1$coefficients * exp.coef^i
+        temp.lm1$coefficients[1] <- pro
+        lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
+        x<-as.vector(predict.lm(lm.M, temp.CH2[temp.CH2$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
+        y<-append(y, x)
+      }
+      any(y>0)
+      temp.CH2$BR<-y
+      rm(list = ls(pattern = "lm.M"))
+      rm(list = c("temp.lm1", "temp.lm2", "a", "b", "i", "x", "y", "pro", "exp.coef"))
+
+
+      b<-NULL
+      for (i in M.phase){
+        a <- as.numeric(substr(i, 2, 3))
+        b <-append(b, a)
+      }
+
+      y<-NULL
+      for (i in b){
+        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH3"))
+        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH3"))
+        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
+        pro = temp.lm1$coefficients * exp.coef^i
+        temp.lm1$coefficients[1] <- pro
+        lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
+        x<-as.vector(predict.lm(lm.M, temp.CH3[temp.CH3$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
+        y<-append(y, x)
+      }
+      any(y>0)
+      temp.CH3$BR<-y
+      rm(list = ls(pattern = "lm.M"))
+      rm(list = c("temp.lm1", "temp.lm2", "a", "b", "i", "x", "y", "pro", "exp.coef"))
+
+
+      b<-NULL
+      for (i in M.phase){
+        a <- as.numeric(substr(i, 2, 3))
+        b <-append(b, a)
+      }
+
+      y<-NULL
+      for (i in b){
+        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH4"))
+        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH4"))
+        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
+        pro = temp.lm1$coefficients * exp.coef^i
+        temp.lm1$coefficients[1] <- pro
+        lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
+        x<-as.vector(predict.lm(lm.M, temp.CH4[temp.CH4$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
+        y<-append(y, x)
+      }
+      any(y>0)
+      temp.CH4$BR<-y
+      rm(list = ls(pattern = "lm.M"))
+      rm(list = c("temp.lm1", "temp.lm2", "a", "b", "i", "x", "y", "pro", "exp.coef"))
+    }
+
     else if(method == "parallel"){
 
       if(empty.chamber == "CH1"){
-        x <- as.numeric(temp.CH1$Init.O2-temp.CH1$O2)
+        x <- as.numeric(temp.CH1$O2-temp.CH1$Init.O2)
         temp.CH1$BR <- x
         temp.CH2$BR <- x
         temp.CH3$BR <- x
@@ -966,7 +1189,7 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
 
       else if(empty.chamber == "CH2"){
-        x <- as.numeric(temp.CH2$Init.O2-temp.CH2$O2)
+        x <- as.numeric(temp.CH2$O2-temp.CH2$Init.O2)
         temp.CH1$BR <- x
         temp.CH2$BR <- x
         temp.CH3$BR <- x
@@ -975,7 +1198,7 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
 
       else if(empty.chamber == "CH3"){
-        x <- as.numeric(temp.CH3$Init.O2-temp.CH3$O2)
+        x <- as.numeric(temp.CH3$O2-temp.CH3$Init.O2)
         temp.CH1$BR <- x
         temp.CH2$BR <- x
         temp.CH3$BR <- x
@@ -984,7 +1207,7 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
 
       else if(empty.chamber == "CH4"){
-        x <- as.numeric(temp.CH4$Init.O2-temp.CH4$O2)
+        x <- as.numeric(temp.CH4$O2-temp.CH4$Init.O2)
         temp.CH1$BR <- x
         temp.CH2$BR <- x
         temp.CH3$BR <- x
@@ -998,13 +1221,15 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     }
 
     else{
-      print("Please, choose the method: pre.test, post.test, average, progressive or parallel")
+      print("Please, choose the method: pre.test, post.test, average, linear, exponential or parallel")
     }
 
     #--------------------------------------------------------------------------------------------------------------------------------------------------#
     MR.data.all<-rbind(temp.CH1, temp.CH2, temp.CH3, temp.CH4)
     MR.data.all<-subset(MR.data.all, select=c(Date.Time:End.Meas, Chamber.No, Ind, Weight, Volume, Init.O2, Temp, O2, BR))
     MR.data.all$O2.correct<-MR.data.all$O2 - MR.data.all$BR
+
+    MR.data.all$DO.unit <- info.data$DO.unit[1]
     return(MR.data.all)
 
     rm(temp.df)
@@ -1268,7 +1493,7 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       rm(temp.lm)
     }
 
-    else if(method == "progressive"){
+    else if(method == "linear"){
       M.phase <- levels(temp.df$Phase)
 
       b<-NULL
@@ -1372,10 +1597,128 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       rm(list = c("temp.lm1", "temp.lm2", "a", "b", "i", "x", "y", "pro"))
     }
 
+    else if(method == "exponential"){
+      M.phase <- levels(temp.df$Phase)
+
+      b<-NULL
+      for (i in M.phase){
+        a <- as.numeric(substr(i, 2, 3))
+        b <-append(b, a)
+      }
+
+      y<-NULL
+      for (i in b){
+        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH1"))
+        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH1"))
+        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
+        pro = temp.lm1$coefficients * exp.coef^i
+        temp.lm1$coefficients[1] <- pro
+        lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
+        x<-as.vector(predict.lm(lm.M, temp.CH1[temp.CH1$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
+        y<-append(y, x)
+      }
+      any(y>0)
+      temp.CH1$BR<-y
+      rm(list = ls(pattern = "lm.M"))
+      rm(list = c("temp.lm1", "temp.lm2", "a", "b", "i", "x", "y", "pro", "exp.coef"))
+
+
+      b<-NULL
+      for (i in M.phase){
+        a <- as.numeric(substr(i, 2, 3))
+        b <-append(b, a)
+      }
+
+      y<-NULL
+      for (i in b){
+        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH2"))
+        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH2"))
+        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
+        pro = temp.lm1$coefficients * exp.coef^i
+        temp.lm1$coefficients[1] <- pro
+        lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
+        x<-as.vector(predict.lm(lm.M, temp.CH2[temp.CH2$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
+        y<-append(y, x)
+      }
+      any(y>0)
+      temp.CH2$BR<-y
+      rm(list = ls(pattern = "lm.M"))
+      rm(list = c("temp.lm1", "temp.lm2", "a", "b", "i", "x", "y", "pro", "exp.coef"))
+
+
+      b<-NULL
+      for (i in M.phase){
+        a <- as.numeric(substr(i, 2, 3))
+        b <-append(b, a)
+      }
+
+      y<-NULL
+      for (i in b){
+        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH3"))
+        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH3"))
+        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
+        pro = temp.lm1$coefficients * exp.coef^i
+        temp.lm1$coefficients[1] <- pro
+        lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
+        x<-as.vector(predict.lm(lm.M, temp.CH3[temp.CH3$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
+        y<-append(y, x)
+      }
+      any(y>0)
+      temp.CH3$BR<-y
+      rm(list = ls(pattern = "lm.M"))
+      rm(list = c("temp.lm1", "temp.lm2", "a", "b", "i", "x", "y", "pro", "exp.coef"))
+
+
+      b<-NULL
+      for (i in M.phase){
+        a <- as.numeric(substr(i, 2, 3))
+        b <-append(b, a)
+      }
+
+      y<-NULL
+      for (i in b){
+        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH4"))
+        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH4"))
+        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
+        pro = temp.lm1$coefficients * exp.coef^i
+        temp.lm1$coefficients[1] <- pro
+        lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
+        x<-as.vector(predict.lm(lm.M, temp.CH4[temp.CH4$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
+        y<-append(y, x)
+      }
+      any(y>0)
+      temp.CH4$BR<-y
+      rm(list = ls(pattern = "lm.M"))
+      rm(list = c("temp.lm1", "temp.lm2", "a", "b", "i", "x", "y", "pro", "exp.coef"))
+
+
+      b<-NULL
+      for (i in M.phase){
+        a <- as.numeric(substr(i, 2, 3))
+        b <-append(b, a)
+      }
+
+      y<-NULL
+      for (i in b){
+        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH5"))
+        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH5"))
+        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
+        pro = temp.lm1$coefficients * exp.coef^i
+        temp.lm1$coefficients[1] <- pro
+        lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
+        x<-as.vector(predict.lm(lm.M, temp.CH5[temp.CH5$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
+        y<-append(y, x)
+      }
+      any(y>0)
+      temp.CH5$BR<-y
+      rm(list = ls(pattern = "lm.M"))
+      rm(list = c("temp.lm1", "temp.lm2", "a", "b", "i", "x", "y", "pro", "exp.coef"))
+    }
+
     else if(method == "parallel"){
 
       if(empty.chamber == "CH1"){
-        x <- as.numeric(temp.CH1$Init.O2-temp.CH1$O2)
+        x <- as.numeric(temp.CH1$O2-temp.CH1$Init.O2)
         temp.CH1$BR <- x
         temp.CH2$BR <- x
         temp.CH3$BR <- x
@@ -1385,7 +1728,7 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
 
       else if(empty.chamber == "CH2"){
-        x <- as.numeric(temp.CH2$Init.O2-temp.CH2$O2)
+        x <- as.numeric(temp.CH2$O2-temp.CH2$Init.O2)
         temp.CH1$BR <- x
         temp.CH2$BR <- x
         temp.CH3$BR <- x
@@ -1395,7 +1738,7 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
 
       else if(empty.chamber == "CH3"){
-        x <- as.numeric(temp.CH3$Init.O2-temp.CH3$O2)
+        x <- as.numeric(temp.CH3$O2-temp.CH3$Init.O2)
         temp.CH1$BR <- x
         temp.CH2$BR <- x
         temp.CH3$BR <- x
@@ -1405,7 +1748,7 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
 
       else if(empty.chamber == "CH4"){
-        x <- as.numeric(temp.CH4$Init.O2-temp.CH4$O2)
+        x <- as.numeric(temp.CH4$O2-temp.CH4$Init.O2)
         temp.CH1$BR <- x
         temp.CH2$BR <- x
         temp.CH3$BR <- x
@@ -1415,7 +1758,7 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
 
       else if(empty.chamber == "CH5"){
-        x <- as.numeric(temp.CH5$Init.O2-temp.CH5$O2)
+        x <- as.numeric(temp.CH5$O2-temp.CH5$Init.O2)
         temp.CH1$BR <- x
         temp.CH2$BR <- x
         temp.CH3$BR <- x
@@ -1430,13 +1773,15 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     }
 
     else{
-      print("Please, choose the method: pre.test, post.test, average, progressive or parallel")
+      print("Please, choose the method: pre.test, post.test, average, linear, exponential or parallel")
     }
 
     #--------------------------------------------------------------------------------------------------------------------------------------------------#
     MR.data.all<-rbind(temp.CH1, temp.CH2, temp.CH3, temp.CH4, temp.CH5)
     MR.data.all<-subset(MR.data.all, select=c(Date.Time:End.Meas, Chamber.No, Ind, Weight, Volume, Init.O2, Temp, O2, BR))
     MR.data.all$O2.correct<-MR.data.all$O2 - MR.data.all$BR
+
+    MR.data.all$DO.unit <- info.data$DO.unit[1]
     return(MR.data.all)
 
     rm(temp.df)
@@ -1747,7 +2092,7 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       rm(temp.lm)
     }
 
-    else if(method == "progressive"){
+    else if(method == "linear"){
       M.phase <- levels(temp.df$Phase)
 
       b<-NULL
@@ -1871,10 +2216,151 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       rm(list = c("temp.lm1", "temp.lm2", "a", "b", "i", "x", "y", "pro"))
     }
 
+    else if(method == "exponential"){
+      M.phase <- levels(temp.df$Phase)
+
+      b<-NULL
+      for (i in M.phase){
+        a <- as.numeric(substr(i, 2, 3))
+        b <-append(b, a)
+      }
+
+      y<-NULL
+      for (i in b){
+        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH1"))
+        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH1"))
+        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
+        pro = temp.lm1$coefficients * exp.coef^i
+        temp.lm1$coefficients[1] <- pro
+        lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
+        x<-as.vector(predict.lm(lm.M, temp.CH1[temp.CH1$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
+        y<-append(y, x)
+      }
+      any(y>0)
+      temp.CH1$BR<-y
+      rm(list = ls(pattern = "lm.M"))
+      rm(list = c("temp.lm1", "temp.lm2", "a", "b", "i", "x", "y", "pro", "exp.coef"))
+
+
+      b<-NULL
+      for (i in M.phase){
+        a <- as.numeric(substr(i, 2, 3))
+        b <-append(b, a)
+      }
+
+      y<-NULL
+      for (i in b){
+        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH2"))
+        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH2"))
+        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
+        pro = temp.lm1$coefficients * exp.coef^i
+        temp.lm1$coefficients[1] <- pro
+        lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
+        x<-as.vector(predict.lm(lm.M, temp.CH2[temp.CH2$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
+        y<-append(y, x)
+      }
+      any(y>0)
+      temp.CH2$BR<-y
+      rm(list = ls(pattern = "lm.M"))
+      rm(list = c("temp.lm1", "temp.lm2", "a", "b", "i", "x", "y", "pro", "exp.coef"))
+
+
+      b<-NULL
+      for (i in M.phase){
+        a <- as.numeric(substr(i, 2, 3))
+        b <-append(b, a)
+      }
+
+      y<-NULL
+      for (i in b){
+        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH3"))
+        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH3"))
+        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
+        pro = temp.lm1$coefficients * exp.coef^i
+        temp.lm1$coefficients[1] <- pro
+        lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
+        x<-as.vector(predict.lm(lm.M, temp.CH3[temp.CH3$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
+        y<-append(y, x)
+      }
+      any(y>0)
+      temp.CH3$BR<-y
+      rm(list = ls(pattern = "lm.M"))
+      rm(list = c("temp.lm1", "temp.lm2", "a", "b", "i", "x", "y", "pro", "exp.coef"))
+
+
+      b<-NULL
+      for (i in M.phase){
+        a <- as.numeric(substr(i, 2, 3))
+        b <-append(b, a)
+      }
+
+      y<-NULL
+      for (i in b){
+        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH4"))
+        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH4"))
+        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
+        pro = temp.lm1$coefficients * exp.coef^i
+        temp.lm1$coefficients[1] <- pro
+        lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
+        x<-as.vector(predict.lm(lm.M, temp.CH4[temp.CH4$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
+        y<-append(y, x)
+      }
+      any(y>0)
+      temp.CH4$BR<-y
+      rm(list = ls(pattern = "lm.M"))
+      rm(list = c("temp.lm1", "temp.lm2", "a", "b", "i", "x", "y", "pro", "exp.coef"))
+
+
+      b<-NULL
+      for (i in M.phase){
+        a <- as.numeric(substr(i, 2, 3))
+        b <-append(b, a)
+      }
+
+      y<-NULL
+      for (i in b){
+        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH5"))
+        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH5"))
+        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
+        pro = temp.lm1$coefficients * exp.coef^i
+        temp.lm1$coefficients[1] <- pro
+        lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
+        x<-as.vector(predict.lm(lm.M, temp.CH5[temp.CH5$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
+        y<-append(y, x)
+      }
+      any(y>0)
+      temp.CH5$BR<-y
+      rm(list = ls(pattern = "lm.M"))
+      rm(list = c("temp.lm1", "temp.lm2", "a", "b", "i", "x", "y", "pro", "exp.coef"))
+
+
+      b<-NULL
+      for (i in M.phase){
+        a <- as.numeric(substr(i, 2, 3))
+        b <-append(b, a)
+      }
+
+      y<-NULL
+      for (i in b){
+        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH6"))
+        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH6"))
+        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
+        pro = temp.lm1$coefficients * exp.coef^i
+        temp.lm1$coefficients[1] <- pro
+        lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
+        x<-as.vector(predict.lm(lm.M, temp.CH6[temp.CH6$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
+        y<-append(y, x)
+      }
+      any(y>0)
+      temp.CH6$BR<-y
+      rm(list = ls(pattern = "lm.M"))
+      rm(list = c("temp.lm1", "temp.lm2", "a", "b", "i", "x", "y", "pro", "exp.coef"))
+    }
+
     else if(method == "parallel"){
 
       if(empty.chamber == "CH1"){
-        x <- as.numeric(temp.CH1$Init.O2-temp.CH1$O2)
+        x <- as.numeric(temp.CH1$O2-temp.CH1$Init.O2)
         temp.CH1$BR <- x
         temp.CH2$BR <- x
         temp.CH3$BR <- x
@@ -1885,7 +2371,7 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
 
       else if(empty.chamber == "CH2"){
-        x <- as.numeric(temp.CH2$Init.O2-temp.CH2$O2)
+        x <- as.numeric(temp.CH2$O2-temp.CH2$Init.O2)
         temp.CH1$BR <- x
         temp.CH2$BR <- x
         temp.CH3$BR <- x
@@ -1896,7 +2382,7 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
 
       else if(empty.chamber == "CH3"){
-        x <- as.numeric(temp.CH3$Init.O2-temp.CH3$O2)
+        x <- as.numeric(temp.CH3$O2-temp.CH3$Init.O2)
         temp.CH1$BR <- x
         temp.CH2$BR <- x
         temp.CH3$BR <- x
@@ -1907,7 +2393,7 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
 
       else if(empty.chamber == "CH4"){
-        x <- as.numeric(temp.CH4$Init.O2-temp.CH4$O2)
+        x <- as.numeric(temp.CH4$O2-temp.CH4$Init.O2)
         temp.CH1$BR <- x
         temp.CH2$BR <- x
         temp.CH3$BR <- x
@@ -1918,7 +2404,7 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
 
       else if(empty.chamber == "CH5"){
-        x <- as.numeric(temp.CH5$Init.O2-temp.CH5$O2)
+        x <- as.numeric(temp.CH5$O2-temp.CH5$Init.O2)
         temp.CH1$BR <- x
         temp.CH2$BR <- x
         temp.CH3$BR <- x
@@ -1929,7 +2415,7 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
 
       else if(empty.chamber == "CH6"){
-        x <- as.numeric(temp.CH6$Init.O2-temp.CH6$O2)
+        x <- as.numeric(temp.CH6$O2-temp.CH6$Init.O2)
         temp.CH1$BR <- x
         temp.CH2$BR <- x
         temp.CH3$BR <- x
@@ -1945,13 +2431,15 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     }
 
     else{
-      print("Please, choose the method: pre.test, post.test, average, progressive or parallel")
+      print("Please, choose the method: pre.test, post.test, average, linear, exponential or parallel")
     }
 
     #--------------------------------------------------------------------------------------------------------------------------------------------------#
     MR.data.all<-rbind(temp.CH1, temp.CH2, temp.CH3, temp.CH4, temp.CH5, temp.CH6)
     MR.data.all<-subset(MR.data.all, select=c(Date.Time:End.Meas, Chamber.No, Ind, Weight, Volume, Init.O2, Temp, O2, BR))
     MR.data.all$O2.correct<-MR.data.all$O2 - MR.data.all$BR
+
+    MR.data.all$DO.unit <- info.data$DO.unit[1]
     return(MR.data.all)
 
     rm(temp.df)
@@ -2309,7 +2797,7 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       rm(temp.lm)
     }
 
-    else if(method == "progressive"){
+    else if(method == "linear"){
       M.phase <- levels(temp.df$Phase)
 
       b<-NULL
@@ -2453,10 +2941,173 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       rm(list = c("temp.lm1", "temp.lm2", "a", "b", "i", "x", "y", "pro"))
     }
 
+    else if(method == "exponential"){
+      M.phase <- levels(temp.df$Phase)
+
+      b<-NULL
+      for (i in M.phase){
+        a <- as.numeric(substr(i, 2, 3))
+        b <-append(b, a)
+      }
+
+      y<-NULL
+      for (i in b){
+        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH1"))
+        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH1"))
+        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
+        pro = temp.lm1$coefficients * exp.coef^i
+        temp.lm1$coefficients[1] <- pro
+        lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
+        x<-as.vector(predict.lm(lm.M, temp.CH1[temp.CH1$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
+        y<-append(y, x)
+      }
+      any(y>0)
+      temp.CH1$BR<-y
+      rm(list = ls(pattern = "lm.M"))
+      rm(list = c("temp.lm1", "temp.lm2", "a", "b", "i", "x", "y", "pro", "exp.coef"))
+
+
+      b<-NULL
+      for (i in M.phase){
+        a <- as.numeric(substr(i, 2, 3))
+        b <-append(b, a)
+      }
+
+      y<-NULL
+      for (i in b){
+        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH2"))
+        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH2"))
+        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
+        pro = temp.lm1$coefficients * exp.coef^i
+        temp.lm1$coefficients[1] <- pro
+        lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
+        x<-as.vector(predict.lm(lm.M, temp.CH2[temp.CH2$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
+        y<-append(y, x)
+      }
+      any(y>0)
+      temp.CH2$BR<-y
+      rm(list = ls(pattern = "lm.M"))
+      rm(list = c("temp.lm1", "temp.lm2", "a", "b", "i", "x", "y", "pro", "exp.coef"))
+
+
+      b<-NULL
+      for (i in M.phase){
+        a <- as.numeric(substr(i, 2, 3))
+        b <-append(b, a)
+      }
+
+      y<-NULL
+      for (i in b){
+        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH3"))
+        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH3"))
+        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
+        pro = temp.lm1$coefficients * exp.coef^i
+        temp.lm1$coefficients[1] <- pro
+        lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
+        x<-as.vector(predict.lm(lm.M, temp.CH3[temp.CH3$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
+        y<-append(y, x)
+      }
+      any(y>0)
+      temp.CH3$BR<-y
+      rm(list = ls(pattern = "lm.M"))
+      rm(list = c("temp.lm1", "temp.lm2", "a", "b", "i", "x", "y", "pro", "exp.coef"))
+
+
+      b<-NULL
+      for (i in M.phase){
+        a <- as.numeric(substr(i, 2, 3))
+        b <-append(b, a)
+      }
+
+      y<-NULL
+      for (i in b){
+        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH4"))
+        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH4"))
+        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
+        pro = temp.lm1$coefficients * exp.coef^i
+        temp.lm1$coefficients[1] <- pro
+        lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
+        x<-as.vector(predict.lm(lm.M, temp.CH4[temp.CH4$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
+        y<-append(y, x)
+      }
+      any(y>0)
+      temp.CH4$BR<-y
+      rm(list = ls(pattern = "lm.M"))
+      rm(list = c("temp.lm1", "temp.lm2", "a", "b", "i", "x", "y", "pro", "exp.coef"))
+
+
+      b<-NULL
+      for (i in M.phase){
+        a <- as.numeric(substr(i, 2, 3))
+        b <-append(b, a)
+      }
+
+      y<-NULL
+      for (i in b){
+        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH5"))
+        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH5"))
+        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
+        pro = temp.lm1$coefficients * exp.coef^i
+        temp.lm1$coefficients[1] <- pro
+        lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
+        x<-as.vector(predict.lm(lm.M, temp.CH5[temp.CH5$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
+        y<-append(y, x)
+      }
+      any(y>0)
+      temp.CH5$BR<-y
+      rm(list = ls(pattern = "lm.M"))
+      rm(list = c("temp.lm1", "temp.lm2", "a", "b", "i", "x", "y", "pro", "exp.coef"))
+
+
+      b<-NULL
+      for (i in M.phase){
+        a <- as.numeric(substr(i, 2, 3))
+        b <-append(b, a)
+      }
+
+      y<-NULL
+      for (i in b){
+        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH6"))
+        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH6"))
+        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
+        pro = temp.lm1$coefficients * exp.coef^i
+        temp.lm1$coefficients[1] <- pro
+        lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
+        x<-as.vector(predict.lm(lm.M, temp.CH6[temp.CH6$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
+        y<-append(y, x)
+      }
+      any(y>0)
+      temp.CH6$BR<-y
+      rm(list = ls(pattern = "lm.M"))
+      rm(list = c("temp.lm1", "temp.lm2", "a", "b", "i", "x", "y", "pro", "exp.coef"))
+
+      b<-NULL
+      for (i in M.phase){
+        a <- as.numeric(substr(i, 2, 3))
+        b <-append(b, a)
+      }
+
+      y<-NULL
+      for (i in b){
+        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH7"))
+        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH7"))
+        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
+        pro = temp.lm1$coefficients * exp.coef^i
+        temp.lm1$coefficients[1] <- pro
+        lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
+        x<-as.vector(predict.lm(lm.M, temp.CH7[temp.CH7$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
+        y<-append(y, x)
+      }
+      any(y>0)
+      temp.CH7$BR<-y
+      rm(list = ls(pattern = "lm.M"))
+      rm(list = c("temp.lm1", "temp.lm2", "a", "b", "i", "x", "y", "pro", "exp.coef"))
+    }
+
     else if(method == "parallel"){
 
       if(empty.chamber == "CH1"){
-        x <- as.numeric(temp.CH1$Init.O2-temp.CH1$O2)
+        x <- as.numeric(temp.CH1$O2-temp.CH1$Init.O2)
         temp.CH1$BR <- x
         temp.CH2$BR <- x
         temp.CH3$BR <- x
@@ -2468,7 +3119,7 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
 
       else if(empty.chamber == "CH2"){
-        x <- as.numeric(temp.CH2$Init.O2-temp.CH2$O2)
+        x <- as.numeric(temp.CH2$O2-temp.CH2$Init.O2)
         temp.CH1$BR <- x
         temp.CH2$BR <- x
         temp.CH3$BR <- x
@@ -2480,7 +3131,7 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
 
       else if(empty.chamber == "CH3"){
-        x <- as.numeric(temp.CH3$Init.O2-temp.CH3$O2)
+        x <- as.numeric(temp.CH3$O2-temp.CH3$Init.O2)
         temp.CH1$BR <- x
         temp.CH2$BR <- x
         temp.CH3$BR <- x
@@ -2492,7 +3143,7 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
 
       else if(empty.chamber == "CH4"){
-        x <- as.numeric(temp.CH4$Init.O2-temp.CH4$O2)
+        x <- as.numeric(temp.CH4$O2-temp.CH4$Init.O2)
         temp.CH1$BR <- x
         temp.CH2$BR <- x
         temp.CH3$BR <- x
@@ -2504,7 +3155,7 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
 
       else if(empty.chamber == "CH5"){
-        x <- as.numeric(temp.CH5$Init.O2-temp.CH5$O2)
+        x <- as.numeric(temp.CH5$O2-temp.CH5$Init.O2)
         temp.CH1$BR <- x
         temp.CH2$BR <- x
         temp.CH3$BR <- x
@@ -2516,7 +3167,7 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
 
       else if(empty.chamber == "CH6"){
-        x <- as.numeric(temp.CH6$Init.O2-temp.CH6$O2)
+        x <- as.numeric(temp.CH6$O2-temp.CH6$Init.O2)
         temp.CH1$BR <- x
         temp.CH2$BR <- x
         temp.CH3$BR <- x
@@ -2528,7 +3179,7 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
 
       else if(empty.chamber == "CH7"){
-        x <- as.numeric(temp.CH7$Init.O2-temp.CH7$O2)
+        x <- as.numeric(temp.CH7$O2-temp.CH7$Init.O2)
         temp.CH1$BR <- x
         temp.CH2$BR <- x
         temp.CH3$BR <- x
@@ -2545,13 +3196,15 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     }
 
     else{
-      print("Please, choose the method: pre.test, post.test, average, progressive or parallel")
+      print("Please, choose the method: pre.test, post.test, average, linear, exponential or parallel")
     }
 
     #--------------------------------------------------------------------------------------------------------------------------------------------------#
     MR.data.all<-rbind(temp.CH1, temp.CH2, temp.CH3, temp.CH4, temp.CH5, temp.CH6, temp.CH7)
     MR.data.all<-subset(MR.data.all, select=c(Date.Time:End.Meas, Chamber.No, Ind, Weight, Volume, Init.O2, Temp, O2, BR))
     MR.data.all$O2.correct<-MR.data.all$O2 - MR.data.all$BR
+
+    MR.data.all$DO.unit <- info.data$DO.unit[1]
     return(MR.data.all)
 
     rm(temp.df)
@@ -2956,7 +3609,7 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       rm(prepost.data)
     }
 
-    else if(method == "progressive"){
+    else if(method == "linear"){
       M.phase <- levels(temp.df$Phase)
 
       b<-NULL
@@ -3121,6 +3774,193 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       rm(list = c("M.total", "M.phase"))
     }
 
+    else if(method == "exponential"){
+      M.phase <- levels(temp.df$Phase)
+
+      b<-NULL
+      for (i in M.phase){
+        a <- as.numeric(substr(i, 2, 3))
+        b <-append(b, a)
+      }
+
+      y<-NULL
+      for (i in b){
+        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH1"))
+        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH1"))
+        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
+        pro = temp.lm1$coefficients * exp.coef^i
+        temp.lm1$coefficients[1] <- pro
+        lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
+        x<-as.vector(predict.lm(lm.M, temp.CH1[temp.CH1$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
+        y<-append(y, x)
+      }
+      any(y>0)
+      temp.CH1$BR<-y
+      rm(list = ls(pattern = "lm.M"))
+      rm(list = c("temp.lm1", "temp.lm2", "a", "b", "i", "x", "y", "pro", "exp.coef"))
+
+
+      b<-NULL
+      for (i in M.phase){
+        a <- as.numeric(substr(i, 2, 3))
+        b <-append(b, a)
+      }
+
+      y<-NULL
+      for (i in b){
+        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH2"))
+        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH2"))
+        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
+        pro = temp.lm1$coefficients * exp.coef^i
+        temp.lm1$coefficients[1] <- pro
+        lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
+        x<-as.vector(predict.lm(lm.M, temp.CH2[temp.CH2$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
+        y<-append(y, x)
+      }
+      any(y>0)
+      temp.CH2$BR<-y
+      rm(list = ls(pattern = "lm.M"))
+      rm(list = c("temp.lm1", "temp.lm2", "a", "b", "i", "x", "y", "pro", "exp.coef"))
+
+
+      b<-NULL
+      for (i in M.phase){
+        a <- as.numeric(substr(i, 2, 3))
+        b <-append(b, a)
+      }
+
+      y<-NULL
+      for (i in b){
+        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH3"))
+        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH3"))
+        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
+        pro = temp.lm1$coefficients * exp.coef^i
+        temp.lm1$coefficients[1] <- pro
+        lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
+        x<-as.vector(predict.lm(lm.M, temp.CH3[temp.CH3$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
+        y<-append(y, x)
+      }
+      any(y>0)
+      temp.CH3$BR<-y
+      rm(list = ls(pattern = "lm.M"))
+      rm(list = c("temp.lm1", "temp.lm2", "a", "b", "i", "x", "y", "pro", "exp.coef"))
+
+
+      b<-NULL
+      for (i in M.phase){
+        a <- as.numeric(substr(i, 2, 3))
+        b <-append(b, a)
+      }
+
+      y<-NULL
+      for (i in b){
+        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH4"))
+        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH4"))
+        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
+        pro = temp.lm1$coefficients * exp.coef^i
+        temp.lm1$coefficients[1] <- pro
+        lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
+        x<-as.vector(predict.lm(lm.M, temp.CH4[temp.CH4$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
+        y<-append(y, x)
+      }
+      any(y>0)
+      temp.CH4$BR<-y
+      rm(list = ls(pattern = "lm.M"))
+      rm(list = c("temp.lm1", "temp.lm2", "a", "b", "i", "x", "y", "pro", "exp.coef"))
+
+
+      b<-NULL
+      for (i in M.phase){
+        a <- as.numeric(substr(i, 2, 3))
+        b <-append(b, a)
+      }
+
+      y<-NULL
+      for (i in b){
+        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH5"))
+        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH5"))
+        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
+        pro = temp.lm1$coefficients * exp.coef^i
+        temp.lm1$coefficients[1] <- pro
+        lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
+        x<-as.vector(predict.lm(lm.M, temp.CH5[temp.CH5$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
+        y<-append(y, x)
+      }
+      any(y>0)
+      temp.CH5$BR<-y
+      rm(list = ls(pattern = "lm.M"))
+      rm(list = c("temp.lm1", "temp.lm2", "a", "b", "i", "x", "y", "pro", "exp.coef"))
+
+
+      b<-NULL
+      for (i in M.phase){
+        a <- as.numeric(substr(i, 2, 3))
+        b <-append(b, a)
+      }
+
+      y<-NULL
+      for (i in b){
+        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH6"))
+        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH6"))
+        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
+        pro = temp.lm1$coefficients * exp.coef^i
+        temp.lm1$coefficients[1] <- pro
+        lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
+        x<-as.vector(predict.lm(lm.M, temp.CH6[temp.CH6$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
+        y<-append(y, x)
+      }
+      any(y>0)
+      temp.CH6$BR<-y
+      rm(list = ls(pattern = "lm.M"))
+      rm(list = c("temp.lm1", "temp.lm2", "a", "b", "i", "x", "y", "pro", "exp.coef"))
+
+      b<-NULL
+      for (i in M.phase){
+        a <- as.numeric(substr(i, 2, 3))
+        b <-append(b, a)
+      }
+
+      y<-NULL
+      for (i in b){
+        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH7"))
+        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH7"))
+        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
+        pro = temp.lm1$coefficients * exp.coef^i
+        temp.lm1$coefficients[1] <- pro
+        lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
+        x<-as.vector(predict.lm(lm.M, temp.CH7[temp.CH7$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
+        y<-append(y, x)
+      }
+      any(y>0)
+      temp.CH7$BR<-y
+      rm(list = ls(pattern = "lm.M"))
+      rm(list = c("temp.lm1", "temp.lm2", "a", "b", "i", "x", "y", "pro", "exp.coef"))
+
+
+      b<-NULL
+      for (i in M.phase){
+        a <- as.numeric(substr(i, 2, 3))
+        b <-append(b, a)
+      }
+
+      y<-NULL
+      for (i in b){
+        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH8"))
+        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH8"))
+        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
+        pro = temp.lm1$coefficients * exp.coef^i
+        temp.lm1$coefficients[1] <- pro
+        lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
+        x<-as.vector(predict.lm(lm.M, temp.CH8[temp.CH8$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
+        y<-append(y, x)
+      }
+      any(y>0)
+      temp.CH8$BR<-y
+      rm(list = ls(pattern = "lm.M"))
+      rm(list = c("temp.lm1", "temp.lm2", "a", "b", "i", "x", "y", "pro", "exp.coef"))
+    }
+
+
     else if(method == "parallel"){
 
       if(empty.chamber == "CH1"){
@@ -3233,16 +4073,13 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     }
 
     else{
-      print("Please, choose the method: pre.test, post.test, average, progressive or parallel")
+      print("Please, choose the method: pre.test, post.test, average, linear, exponential or parallel")
     }
 
     #--------------------------------------------------------------------------------------------------------------------------------------------------#
     MR.data.all<-rbind(temp.CH1, temp.CH2, temp.CH3, temp.CH4, temp.CH5, temp.CH6, temp.CH7, temp.CH8)
     MR.data.all<-subset(MR.data.all, select=c(Date.Time:End.Meas, Chamber.No, Ind, Weight, Volume, Init.O2, Temp, O2, BR))
     MR.data.all$O2.correct<-MR.data.all$O2 - MR.data.all$BR
-    clean.data<-MR.data.all
-    clean.data$Volume <- as.numeric(as.character(clean.data$Volume))
-    clean.data$Weight <- as.numeric(as.character(clean.data$Weight))
 
     rm(temp.df)
     rm(temp.CH1)
@@ -3254,7 +4091,8 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     rm(temp.CH7)
     rm(temp.CH8)
 
-    return(clean.data)
+    MR.data.all$DO.unit <- info.data$DO.unit[1]
+    return(MR.data.all)
   }
   else{
   }

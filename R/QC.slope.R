@@ -1,9 +1,6 @@
 #' Quality Control of Slope(s)
 #'
-#' Graphical quality control test of extracted slopes
-#' represents a visual comparison of linear regression
-#' of corrected O2 concenration over time with current
-#' and alternative length of measurements.
+#' Graphical quality control test of extracted slopes represents a visual comparison of linear regression of corrected O2 concentration over time with current and alternative length of measurements.
 #'
 #' @usage
 #' QC.slope(slope.data, clean.data,
@@ -11,15 +8,11 @@
 #'                      "CH5", "CH6", "CH7", "CH8"),
 #'          current = 9999, alter = 9999)
 #'
-#' @param slope.data  a data frame obtained by using the function
-#' \code{\link{extract.slope}}
-#' @param clean.data  a data frame obtained by using the function
-#' \code{\link{correct.meas}}
+#' @param slope.data  a data frame obtained by using the function \code{\link{extract.slope}}
+#' @param clean.data  a data frame obtained by using the function \code{\link{correct.meas}}
 #' @param chamber  string: the chamber chosen for the QC test
-#' @param current  integer: current length of measurements for
-#' slope estimation (in seconds)
-#' @param alter  integer: alternative length of measurements for
-#' slope estimation (in seconds)
+#' @param current  integer: current length of measurements for slope estimation (in seconds)
+#' @param alter  integer: alternative length of measurements for slope estimation (in seconds)
 #'
 #' @importFrom chron chron times
 #' @importFrom grDevices dev.new
@@ -29,12 +22,11 @@
 #'
 #' @examples
 #' # if the data have been already loaded to R,
-#' # skip the first five lines of the code:
-#' setwd(path.package("FishResp", quiet = FALSE))
-#' load("data/SMR.slope.RData")
-#' load("data/SMR.clean.RData")
-#' load("data/AMR.slope.RData")
-#' load("data/AMR.clean.RData")
+#' # skip the first four lines of the code:
+#' data(SMR.clean)
+#' data(SMR.slope)
+#' data(AMR.clean)
+#' data(AMR.slope)
 #'
 #' QC.slope(SMR.slope, SMR.clean,
 #'          chamber = "CH1", current = 1200, alter = 600)
@@ -116,13 +108,13 @@ QC.slope <- function(slope.data, clean.data,
   model.1<-lm(O2.correct~Time, data=m1.df)
   model.2<-lm(O2.correct~Time, data=m2.df)
   plot(m.df$O2.correct~m.df$Time, main=meas[m], las=1,
-       xlab = "Time (s)", ylab = "DO (mgO2/L)")
+       xlab = "Time (s)", ylab = paste("DO (", slope.data$DO.unit[1], "/L)", sep = ""))
 
   abline(coef(model.1)[1], coef(model.1)[2], col="red", lwd=3)
   abline(coef(model.2)[1], coef(model.2)[2], col="green", lwd=3, lty=2)
-  l.1<-paste("now: r^2=",(round(summary(model.1)$r.sq, digits=2)),"; slope= ",(round(coef(model.1)[2], digits=5)),sep="")
-  l.2<-paste("alter: r^2=",(round(summary(model.2)$r.sq, digits=2)),"; slope= ",(round(coef(model.2)[2], digits=5)),sep="")
-  legend("topright", legend=c(l.1,l.2))
+  l.1<-paste("now: r^2=",(round(summary(model.1)$r.sq, digits=3)),"; slope= ",(round(coef(model.1)[2], digits=5)),sep="")
+  l.2<-paste("alter: r^2=",(round(summary(model.2)$r.sq, digits=3)),"; slope= ",(round(coef(model.2)[2], digits=5)),sep="")
+  legend("topright", legend=c(l.1,l.2), lty=c(1,2), lwd=c(2,2), col=c("red","green"))
   rm(model.1)
   rm(l.1)
   }

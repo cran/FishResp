@@ -6,56 +6,51 @@
 \usage{
 correct.meas(info.data, pre.data, post.data, meas.data,
              method = c("pre.test", "post.test", "average",
-                        "progressive", "parallel"),
+                        "linear", "exponential", "parallel"),
              empty.chamber = c("CH1", "CH2", "CH3", "CH4",
                                "CH5", "CH6", "CH7", "CH8"))
 }
 \arguments{
-\item{info.data}{a data frame obtained by using the function
-\code{\link{input.info}}}
+\item{info.data}{a data frame obtained by using the function \code{\link{input.info}}}
+
 \item{pre.data}{a data frame obtained by using the function \code{\link{import.test}} for "pre.test" method}
+
 \item{post.data}{a data frame obtained by using the function \code{\link{import.test}} for "post.test" method}
+
 \item{meas.data}{a data frame obtained by using the function \code{\link{import.meas}}}
+
 \item{method}{string: the name of the method used for background respiration correction:
 \itemize{
-\item  "pre.test" - substracts oxygen consumption of pre.data from oxygen consumptions of meas.data
-\item  "post.test" - substracts oxygen consumption of post.data from oxygen consumptions of meas.data
-\item  "average" - substracts an averaged oxygen consumption of pre.data and post.data from oxygen consumptions of meas.data
-\item  "progressive" - substracts a vector of progressively changing microbial consumptions from oxygen consumptions of meas.data. The values of oxygen consumption are linearly predicted from two reference points: oxygen consumption of pre.data and oxygen consumption of post.data. The number of elements in the vector equals to the total number of periods in metabolic rate measurements.
-\item  "parallel" - substracts oxygen consumption in an empty chamber from oxygen consumptions of meas.data for each chamber
+\item  "pre.test" - subtracts oxygen consumption of pre.data from oxygen consumptions of meas.data
+\item  "post.test" - subtracts oxygen consumption of post.data from oxygen consumptions of meas.data
+\item  "average" - subtracts an averaged oxygen consumption of pre.data and\cr post.data from oxygen consumptions of meas.data
+\item  "linear" - subtracts a vector of progressively changing microbial consumptions from oxygen consumptions of meas.data. The values of oxygen consumption are linearly predicted from two reference points: oxygen consumption of pre.data and oxygen consumption of post.data. The number of elements in the vector equals to the total number of periods in metabolic rate measurements.
+\item  "exponential" - subtracts a vector of progressively changing microbial consumptions from oxygen consumptions of meas.data. The values of oxygen consumption are exponentially predicted from two reference points: oxygen consumption of pre.data and oxygen consumption of post.data. The number of elements in the vector equals to the total number of periods in metabolic rate measurements.
+\item  "parallel" - subtracts oxygen consumption in an empty chamber from oxygen consumptions of meas.data for each chamber
 }}
+
 \item{empty.chamber}{string: the name of an empty chamber used only for the method 'parallel'}
 }
 \value{
-The function returns a data frame containing data of metabolic
-rate measurements corrected for background respiration. The data frame
-is used in the functions \code{\link{QC.meas}}, \code{\link{QC.activity}},
-\code{\link{extract.slope}} and \code{\link{QC.slope}}.
+The function returns a data frame containing data of metabolic rate measurements corrected for background respiration. The data frame is used in the functions \code{\link{QC.meas}}, \code{\link{QC.activity}},\cr \code{\link{extract.slope}} and \code{\link{QC.slope}}.
 }
 \description{
-The function is used to correct metabolic rate measurements
-for background respiration. To this end, oxygen consumption
-is estimated as the slope of the linear regression of measured
-O2 concentration over time, and is extracted for background
-respiration test and for each period of actual measurements.
-The correction is based on substraction of oxygen consumption
-obtained during background respiration test from oxygen
-consumption obtained during metabolic rate measurements.
+The function is used to correct metabolic rate measurements for background respiration. To this end, oxygen consumption is estimated as the slope of the linear regression of measured O2 concentration over time, and is extracted for background respiration test and for each period of actual measurements. The correction is based on subtraction of oxygen consumption obtained during background respiration test from oxygen consumption obtained during metabolic rate measurements.
 }
 \examples{
 # if the data have been already loaded to R,
-# skip the first six lines of the code:
-setwd(path.package("FishResp", quiet = FALSE))
-load("data/info.RData")
-load("data/pre.RData")
-load("data/post.RData")
-load("data/SMR.raw.RData")
-load("data/AMR.raw.RData")
-
+# skip the first five lines of the code:
+data(info)
+data(pre)
+data(post)
+data(AMR.raw)
+\dontrun{
+data(SMR.raw)
 SMR.clean <- correct.meas(info.data = info,
                           pre.data = pre,
                           meas.data = SMR.raw,
                           method = "pre.test")
+}
 
 AMR.clean <- correct.meas(info.data = info,
                           post.data = post,
@@ -64,6 +59,5 @@ AMR.clean <- correct.meas(info.data = info,
 
 }
 \references{
-{ Svendsen, M. B. S., P. G. Bushnell, and J. F. Steffensen. 2016.
-Design and setup of intermittent-flow respirometry system for aquatic organisms. J. Fish Biol. 88: 26-50.}
+{Svendsen, M. B. S., Bushnell, P. G., & Steffensen, J. F. (2016). Design and setup of intermittent-flow respirometry system for aquatic organisms. Journal of Fish Biology, 88(1), 26-50.}
 }

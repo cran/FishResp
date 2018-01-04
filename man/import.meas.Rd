@@ -4,8 +4,10 @@
 \alias{import.meas}
 \title{Import Raw Data of Metabolic Rate Measurements}
 \usage{
-import.meas(file, n.chamber = c(1,2,3,4,5,6,7,8),
-            logger = c("AutoResp", "Standard"),
+import.meas(file, info.data,
+            n.chamber = c(1,2,3,4,5,6,7,8),
+            logger = c("AutoResp", "FishResp"),
+            date.format = c("DMY", "MDY", "YMD"),
             start.measure = "00:00:00",
             stop.measure = "23:59:59",
             plot.temperature = TRUE,
@@ -13,43 +15,58 @@ import.meas(file, n.chamber = c(1,2,3,4,5,6,7,8),
 }
 \arguments{
 \item{file}{the name of a file  which raw data of metabolic rate measurements are to be read from}
+
+\item{info.data}{a data frame obtained by using the function \code{\link{input.info}}}
+
 \item{n.chamber}{integer: the number of chambers used in an experiment (including empty ones)}
-\item{logger}{string: the name of a logger software for intermittent-flow respirometry
+
+\item{logger}{string: the name of a logger software used for intermittent-flow respirometry
 \itemize{
   \item 'AutoResp' if you use commercial software of 'Loligo Systems'
-  \item 'Standard' if you do not use the above-mentioned software, standardize data to the format described below (see Details in the function \code{\link{import.test}})
+  \item 'FishResp' if you do not use the above-mentioned software, standardize data to the format described below (see Details in the\cr function \code{\link{import.test}})
 }}
+
+\item{date.format}{string: date format (DMY, MDY or YMD)}
+
 \item{start.measure}{chron: time when metabolic rate measurements are started}
+
 \item{stop.measure}{chron: time when metabolic rate measurements are finished}
+
 \item{plot.temperature}{logical: if TRUE then the graph of raw temperature data is plotted}
+
 \item{plot.oxygen}{logical: if TRUE then the graph of raw oxygen data is plotted}
 }
 \value{
-The function returns a data frame containing standardized
-raw data of metabolic rate measurements. The data frame should be
-used in the function \code{\link{correct.meas}} to correct metabolic
-rate measurements for background respiration.
+The function returns a data frame containing standardized raw data of metabolic rate measurements. The data frame should be used in the function \code{\link{correct.meas}} to correct metabolic rate measurements for background respiration.
 }
 \description{
-The function is used to import raw data of metabolic rate
-measurements to R environment.
+The function is used to import raw data of metabolic rate measurements to R environment.
 }
 \examples{
 # Import raw data for standard and active metabolic
 # rate measurements (SMR and AMR, respectively)
-setwd(path.package("FishResp", quiet = FALSE))
 
-SMR.raw <- import.meas("extdata/stickleback/SMR_raw.txt.xz",
+# if the data have been already loaded to R,
+# skip the first line of the code:
+data(info)
+\dontrun{
+SMR.path = system.file("extdata/stickleback/SMR_raw.txt.xz", package = "FishResp")
+SMR.raw <- import.meas(file = SMR.path,
+                       info.data = info,
                        logger = "AutoResp",
                        n.chamber = 4,
+                       date.format = "DMY",
                        start.measure = "20:00:00",
                        stop.measure = "08:00:00",
                        plot.temperature = TRUE,
                        plot.oxygen = TRUE)
-
-AMR.raw <- import.meas("extdata/stickleback/AMR_raw.txt.xz",
+}
+AMR.path = system.file("extdata/stickleback/AMR_raw.txt.xz", package = "FishResp")
+AMR.raw <- import.meas(file = AMR.path,
+                       info.data = info,
                        logger = "AutoResp",
                        n.chamber = 4,
+                       date.format = "DMY",
                        plot.temperature = TRUE,
                        plot.oxygen = TRUE)
 

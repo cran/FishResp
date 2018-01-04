@@ -2,9 +2,7 @@
 #' @aliases AMR.raw
 #' @docType data
 #' @title Active Metabolic Rate: Raw Data
-#' @description
-#' The dataset containing raw data of active metabolic rate measurements
-#' obtained by using the function \code{\link{import.meas}})
+#' @description The dataset containing raw data of active metabolic rate measurements obtained by using the function \code{\link{import.meas}})
 #' @usage AMR.raw
 #' @format A data frame with 1800 rows and 16 variables:
 #' \describe{

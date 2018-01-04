@@ -4,82 +4,70 @@
 \alias{import.test}
 \title{Import Background Respiration Data}
 \usage{
-import.test(file, n.chamber = c(1,2,3,4,5,6,7,8),
-            logger = c("AutoResp", "Standard"),
+import.test(file, info.data,
+            n.chamber = c(1,2,3,4,5,6,7,8),
+            logger = c("AutoResp", "FishResp"),
             plot.temperature = TRUE,
             plot.oxygen = TRUE)
 }
 \arguments{
-\item{file}{the name of a file  which the pre- or post-test data
-are to be read from}
+\item{file}{the name of a file  which the pre- or post-test data are to be read from}
 
-\item{n.chamber}{integer: the number of chambers used in an
-experiment (including empty ones)}
+\item{info.data}{a data frame obtained by using the function \code{\link{input.info}}}
 
-\item{logger}{string: the name of a logger
-software used for intermittent-flow respirometry:
+\item{n.chamber}{integer: the number of chambers used in an experiment (including empty ones)}
+
+\item{logger}{string: the name of a logger software used for intermittent-flow respirometry:
 \itemize{
   \item 'AutoResp' if you use commercial software of 'Loligo Systems'
-  \item 'Standard' if you do not use the above-mentioned software,
-  standardize data to the format described below (see Details)
+  \item 'FishResp' if you do not use the above-mentioned software, standardize data to the 'FishResp' format described below (see Details)
 }}
 
-\item{plot.temperature}{logical: if TRUE then the graph of raw
-temperature data is plotted}
+\item{plot.temperature}{logical: if TRUE then the graph of raw  temperature data is plotted}
 
-\item{plot.oxygen}{logical: if TRUE then the graph of raw oxygen
-data is plotted}
+\item{plot.oxygen}{logical: if TRUE then the graph of raw oxygen data is plotted}
 }
 \value{
-The function returns a data frame containing standardized
-raw data of a background respiration test. The data frame should be
-used in the function \code{\link{correct.meas}} to correct metabolic
-rate measurements for background respiration.
+The function returns a data frame containing standardized raw data of a background respiration test. The data frame should be used in the function \code{\link{correct.meas}} to correct metabolic rate measurements for background respiration.
 }
 \description{
-The function is used to import raw data of background respiration
-to R environment. The test should be done immediatly before and/or
-after the actual metabolic rate measurements (pre-test and post-test,
-respectively).
+The function is used to import raw data of background respiration  to R environment. The test should be done immediately before and/or after the actual metabolic rate measurements (pre-test and post-test, respectively).
 }
 \details{
-Do not use this function if an empty chamber is used for controlling
-background respiration in parallel with actual metabolic rate
-measurements. See about application of 'parallel' method in the
-function \code{\link{correct.meas}}
-
-If you use closed respirometry approach, please standardize raw data.
-The example of "Standard" format for 4-channel respirometry system
-is shown here:
-
+Do not use this function if an empty chamber is used for controlling background respiration in parallel with actual metabolic rate measurements. See about application of 'parallel' method in the function \code{\link{correct.meas}} \cr If you use closed respirometry approach, please standardize raw data. The example of "FishResp" format for 4-channel respirometry system is shown here:
 \tabular{cccccccccc}{
   Date&Time \tab Phase \tab Temp.1 \tab Ox.1 \tab Temp.2 \tab Ox.2 \tab Temp.3 \tab Ox.3 \tab Temp.4 \tab Ox.4\cr
   19/08/2016/18:47:20 \tab F1 \tab 24.49 \tab 7.78 \tab 24.56 \tab 7.73 \tab 24.49 \tab 7.78 \tab 24.56 \tab 7.73\cr
   19/08/2016/18:47:21 \tab F1 \tab 24.49 \tab 7.78 \tab 24.56 \tab 7.73 \tab 24.49 \tab 7.78 \tab 24.56 \tab 7.73\cr
   19/08/2016/18:47:22 \tab M1 \tab 24.49 \tab 7.77 \tab 24.56 \tab 7.72 \tab 24.49 \tab 7.78 \tab 24.56 \tab 7.73\cr
   19/08/2016/18:47:23 \tab M1 \tab 24.49 \tab 7.76 \tab 24.56 \tab 7.72 \tab 24.49 \tab 7.78 \tab 24.56 \tab 7.73\cr
-}
-where:
+} where the items are:
 \itemize{
 \item Time step-interval is one second: one row of data per second.
 \item Date&Time is measured in 24-hour clock format: "dd/mm/yyyy/hh:mm:ss"
-\item Phase should have at least two levels: M (measurement) and F (flush). The
-number of a period should be attached to the levels of a phase: F1, M1, F2, M2 ...
+\item Phase should have at least two levels: M (measurement) and F (flush). The number of a period should be attached to the levels of a phase: F1, M1, F2, M2 ...
 \item Ox.1 contains values of dissolved oxygen in Chamber 1
 \item Temp.1 contains values of water temperature in Chamber 1
 }
 }
 \examples{
 # Import raw data for pre- and post-tests
-setwd(path.package("FishResp", quiet = FALSE))
 
-pre <- import.test("extdata/stickleback/pre_raw.txt.xz",
+# if the data have been already loaded to R,
+# skip the first line of the code:
+data(info)
+
+pre.path = system.file("extdata/stickleback/pre_raw.txt.xz", package = "FishResp")
+pre <- import.test(pre.path,
+                   info.data = info,
                    logger = "AutoResp",
                    n.chamber = 4,
                    plot.temperature = TRUE,
                    plot.oxygen = TRUE)
 
-post <- import.test("extdata/stickleback/post_raw.txt.xz",
+post.path = system.file("extdata/stickleback/post_raw.txt.xz", package = "FishResp")
+post <- import.test(post.path,
+                    info.data = info,
                     logger = "AutoResp",
                     n.chamber = 4,
                     plot.temperature = TRUE,

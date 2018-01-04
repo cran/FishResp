@@ -2,9 +2,7 @@
 #' @aliases SMR.raw
 #' @docType data
 #' @title Standard Metabolic Rate: Raw Data
-#' @description
-#' The dataset containing raw data of standard metabolic rate measurements
-#' obtained by using the function \code{\link{import.meas}})
+#' @description The dataset containing raw data of standard metabolic rate measurements obtained by using the function \code{\link{import.meas}})
 #' @usage SMR.raw
 #' @format A data frame with 28800 rows and 16 variables:
 #' \describe{

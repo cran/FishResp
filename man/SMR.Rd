@@ -13,26 +13,20 @@
   \item{Date.Time}{Date and Time of a period (mm/dd/yy hh:mm:ss)}
   \item{Phase}{Phase and period of measurements (e.g. M1, F3)}
   \item{Temp}{Average temperature over a period of measurements (C)}
-  \item{Slope.with.BR}{Slope of animal oxygen consumption with
-  slope of background respiration (mgO2/L/h)}
-  \item{Slope}{Slope of animal oxygen consumption without
-  background respiration (mgO2/L/h)}
-  \item{SE}{Standard error of a slope of animal oxygen consumption
-  without background respiration (mgO2/L/h)}
-  \item{R2}{r2 of a slope of animal oxygen consumption
-  without background respiration}
-  \item{MR.abs.with.BR}{Absolute SMR with background
-  respiration (mgO2/h)}
+  \item{Slope.with.BR}{Slope of animal oxygen consumption with slope of\cr background respiration (mgO2/L/h)}
+  \item{Slope}{Slope of animal oxygen consumption without background respiration (mgO2/L/h)}
+  \item{SE}{Standard error of a slope of animal oxygen consumption without\cr background respiration (mgO2/L/h)}
+  \item{R2}{r2 of a slope of animal oxygen consumption without background respiration}
+  \item{MR.abs.with.BR}{Absolute SMR with background respiration (mgO2/h)}
   \item{BR}{Percentage rate of background respiration}
   \item{MR.abs}{Absolute SMR (mgO2/h)}
   \item{MR.mass}{Mass-specific SMR (mgO2/kg/h)}
+  \item{DO.unit}{the measure unit of DO concentration}
 }}
 \usage{
 SMR
 }
 \description{
-A dataset containing background respiration, absolute and
-mass-specific standard metabolic rate data obtained by using
-the function \code{\link{calculate.MR}}
+A dataset containing background respiration, absolute and mass-specific standard metabolic rate data obtained by using the function \code{\link{calculate.MR}}
 }
 \keyword{datasets}

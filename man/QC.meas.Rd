@@ -12,40 +12,30 @@ QC.meas(clean.data,
                "Corrected.O2.chambers"))
 }
 \arguments{
-\item{clean.data}{a data frame obtained by using the function
-\code{\link{correct.meas}}}
+\item{clean.data}{a data frame obtained by using the function \code{\link{correct.meas}}}
 
-\item{QC}{string: the name of a visual QC test. Five options
-are available:
+\item{QC}{string: the name of a visual QC test. Five options are available:
 \itemize{
-\item  "Temperature" a graph of temperature vs. time
-ordered by chambers
-\item  "Total.O2.chambers" a graph of dissolved oxygen
-vs. time ordered by chambers
-\item  "Total.O2.phases" a graph of dissolved oxygen
-vs. time ordered by chambers and phases
-\item  "Corrected.O2.chambers" a graph of dissolved
-oxygen corrected for background respiration vs. time
-ordered by chambers
-\item  "Corrected.O2.phases" a graph of dissolved oxygen
- corrected for background respiration vs. time ordered
- by chambers and phases
+\item  "Temperature" a graph of temperature vs. time  ordered by chambers
+\item  "Total.O2.chambers" a graph of dissolved oxygen vs. time ordered by chambers
+\item  "Total.O2.phases" a graph of dissolved oxygen vs. time ordered by chambers and phases
+\item  "Corrected.O2.chambers" a graph of dissolved oxygen corrected for background respiration vs. time ordered by chambers
+\item  "Corrected.O2.phases" a graph of dissolved oxygen corrected for background respiration vs. time ordered by chambers and phases
  }}
 }
 \description{
-Graphical quality control tests of temperature and oxygen raw
-data before and after correction for background respiration
+Graphical quality control tests of temperature and oxygen raw data before and after correction for background respiration
 }
 \examples{
+\dontrun{
 # if the data have been already loaded to R,
-# skip the first two lines of the code:
-setwd(path.package("FishResp", quiet = FALSE))
-load("data/SMR.clean.RData")
+# skip the first line of the code:
+data(SMR.clean)
 
 QC.meas(SMR.clean, "Temperature")
 QC.meas(SMR.clean, "Total.O2.phases")
 QC.meas(SMR.clean, "Corrected.O2.phases")
 QC.meas(SMR.clean, "Total.O2.chambers")
 QC.meas(SMR.clean, "Corrected.O2.chambers")
-
+}
 }

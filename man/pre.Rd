@@ -18,7 +18,6 @@
 pre
 }
 \description{
-A dataset containing raw data of a background test conducted before metabolic
-rate measurements (pre-test), obtained by using the function \code{\link{import.test}}.
+A dataset containing raw data of a background test conducted before metabolic rate measurements (pre-test), obtained by using the function \code{\link{import.test}}.
 }
 \keyword{datasets}

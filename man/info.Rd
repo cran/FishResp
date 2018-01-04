@@ -9,13 +9,12 @@
   \item{ID}{ID of an animal}
   \item{Weight}{Wet weight of an animal (g)}
   \item{Volume}{The volume of chambers (mL)}
+  \item{DO.unit}{the measure unit of DO concentration}
 }}
 \usage{
 info
 }
 \description{
-A dataset containing the information about individuals (three-spined
-sticklebacks) and chambers (Blazka-type, 250 mL) which were input
-manually in the function \code{\link{input.info}})
+A dataset containing the information about individuals (three-spined sticklebacks) and chambers (Blazka-type, 250 mL) which were input manually in the function \code{\link{input.info}})
 }
 \keyword{datasets}

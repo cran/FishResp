@@ -10,34 +10,26 @@ QC.slope(slope.data, clean.data,
          current = 9999, alter = 9999)
 }
 \arguments{
-\item{slope.data}{a data frame obtained by using the function
-\code{\link{extract.slope}}}
+\item{slope.data}{a data frame obtained by using the function \code{\link{extract.slope}}}
 
-\item{clean.data}{a data frame obtained by using the function
-\code{\link{correct.meas}}}
+\item{clean.data}{a data frame obtained by using the function \code{\link{correct.meas}}}
 
 \item{chamber}{string: the chamber chosen for the QC test}
 
-\item{current}{integer: current length of measurements for
-slope estimation (in seconds)}
+\item{current}{integer: current length of measurements for slope estimation (in seconds)}
 
-\item{alter}{integer: alternative length of measurements for
-slope estimation (in seconds)}
+\item{alter}{integer: alternative length of measurements for slope estimation (in seconds)}
 }
 \description{
-Graphical quality control test of extracted slopes
-represents a visual comparison of linear regression
-of corrected O2 concenration over time with current
-and alternative length of measurements.
+Graphical quality control test of extracted slopes represents a visual comparison of linear regression of corrected O2 concentration over time with current and alternative length of measurements.
 }
 \examples{
 # if the data have been already loaded to R,
-# skip the first five lines of the code:
-setwd(path.package("FishResp", quiet = FALSE))
-load("data/SMR.slope.RData")
-load("data/SMR.clean.RData")
-load("data/AMR.slope.RData")
-load("data/AMR.clean.RData")
+# skip the first four lines of the code:
+data(SMR.clean)
+data(SMR.slope)
+data(AMR.clean)
+data(AMR.slope)
 
 QC.slope(SMR.slope, SMR.clean,
          chamber = "CH1", current = 1200, alter = 600)
