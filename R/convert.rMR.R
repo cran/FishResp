@@ -30,7 +30,7 @@
 #'
 #' convert.rMR(import.file = AMR.path,
 #'             export.file = "converted_AMR_raw.txt",
-#'             n.chamber = 4, logger = "AutoResp", salinity = 0,
+#'             n.chamber = 2, logger = "AutoResp", salinity = 0,
 #'             DO.units.in = "mg/L", DO.units.out = "PP",
 #'             bar.press = 101.325, bar.units.in = "kpa")
 #'

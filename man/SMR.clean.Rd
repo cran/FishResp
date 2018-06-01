@@ -15,7 +15,7 @@
   \item{End.Meas}{The last second of a measurement period (hh:mm:ss)}
   \item{Chamber.No}{The number of a chamber}
   \item{Ind}{ID of an animal}
-  \item{Weight}{wet weight of an animal (g)}
+  \item{Mass}{wet mass of an animal (g)}
   \item{Volume}{the volume of a chamber (mL)}
   \item{Init.O2}{Initial level of dissolved oxygen (mgO2/L)}
   \item{Temp}{Temperature at each second (C)}

@@ -62,7 +62,7 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
                         empty.chamber = c("CH1", "CH2", "CH3", "CH4",
                                           "CH5", "CH6", "CH7", "CH8")){
   Date.Time <- Date <- Real.Time <- Time <- Phase <- Start.Meas <- End.Meas <- Temp.1 <- Ox.1 <- NULL
-  Chamber.No <- Ind <- Weight <- Volume <- Init.O2 <- Temp <- O2 <- BR <- Temp.2 <- Ox.2 <- Temp.3 <- NULL
+  Chamber.No <- Ind <- Mass <- Volume <- Init.O2 <- Temp <- O2 <- BR <- Temp.2 <- Ox.2 <- Temp.3 <- NULL
   Ox.3 <- Temp.4 <- Ox.4 <- Temp.5 <- Ox.5 <- Temp.6 <- Ox.6 <- Temp.7 <- Ox.7 <- Temp.8 <- Ox.8 <- NULL
 
   if (ncol(meas.data) == 10){
@@ -79,13 +79,13 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     names(temp.CH1)<-c(names(temp.df)[1:7], "Temp", "O2")
     temp.CH1$Chamber.No<-as.factor(rep("CH1", dim(temp.CH1)[1]))
     temp.CH1$Ind<-as.factor(rep(info.data$ID[1], dim(temp.CH1)[1]))
-    temp.CH1$Weight<-rep(info.data$Weight[1], dim(temp.CH1)[1])
+    temp.CH1$Mass<-rep(info.data$Mass[1], dim(temp.CH1)[1])
     temp.CH1$Volume <- rep(info.data$Volume[1], dim(temp.CH1)[1])
 
     # rather than have you manually run the code for each unique measurement period, let's automate the process with a 'for' loop
     x<-levels(temp.CH1$Phase)
     temp2.df<-data.frame(Date.Time=chron(), Date=chron(), Real.Time=times(), Time=integer(), Phase=factor(), Start.Meas=times(), End.Meas=times(),
-                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Weight=numeric(), Volume=numeric(), Init.O2=numeric())
+                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Mass=numeric(), Volume=numeric(), Init.O2=numeric())
     for(i in 1:length(x))
     {	x.df<-subset(temp.CH1, Phase==x[i])
     x.init<-rep(x.df$O2[1], dim(x.df)[1])
@@ -189,7 +189,7 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
 
     #--------------------------------------------------------------------------------------------------------------------------------------------------#
     MR.data.all<-temp.CH1
-    MR.data.all<-subset(MR.data.all, select=c(Date.Time:End.Meas, Chamber.No, Ind, Weight, Volume, Init.O2, Temp, O2, BR))
+    MR.data.all<-subset(MR.data.all, select=c(Date.Time:End.Meas, Chamber.No, Ind, Mass, Volume, Init.O2, Temp, O2, BR))
     MR.data.all$O2.correct<-MR.data.all$O2 - MR.data.all$BR
 
     MR.data.all$DO.unit <- info.data$DO.unit[1]
@@ -214,13 +214,13 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     names(temp.CH1)<-c(names(temp.df)[1:7], "Temp", "O2")
     temp.CH1$Chamber.No<-as.factor(rep("CH1", dim(temp.CH1)[1]))
     temp.CH1$Ind<-as.factor(rep(info.data$ID[1], dim(temp.CH1)[1]))
-    temp.CH1$Weight<-rep(info.data$Weight[1], dim(temp.CH1)[1])
+    temp.CH1$Mass<-rep(info.data$Mass[1], dim(temp.CH1)[1])
     temp.CH1$Volume <- rep(info.data$Volume[1], dim(temp.CH1)[1])
 
     # rather than have you manually run the code for each unique measurement period, let's automate the process with a 'for' loop
     x<-levels(temp.CH1$Phase)
     temp2.df<-data.frame(Date.Time=chron(), Date=chron(), Real.Time=times(), Time=integer(), Phase=factor(), Start.Meas=times(), End.Meas=times(),
-                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Weight=numeric(), Volume=numeric(), Init.O2=numeric())
+                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Mass=numeric(), Volume=numeric(), Init.O2=numeric())
     for(i in 1:length(x))
     {	x.df<-subset(temp.CH1, Phase==x[i])
     x.init<-rep(x.df$O2[1], dim(x.df)[1])
@@ -240,12 +240,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     names(temp.CH2)<-c(names(temp.df)[1:7], "Temp", "O2")
     temp.CH2$Chamber.No<-as.factor(rep("CH2", dim(temp.CH2)[1]))
     temp.CH2$Ind<-as.factor(rep(info.data$ID[2], dim(temp.CH2)[1]))
-    temp.CH2$Weight<-rep(info.data$Weight[2], dim(temp.CH2)[1])
+    temp.CH2$Mass<-rep(info.data$Mass[2], dim(temp.CH2)[1])
     temp.CH2$Volume <- rep(info.data$Volume[2], dim(temp.CH2)[1])
 
     x<-levels(temp.CH2$Phase)
     temp2.df<-data.frame(Date.Time=chron(), Date=chron(), Real.Time=times(), Time=integer(), Phase=factor(), Start.Meas=times(), End.Meas=times(),
-                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Weight=numeric(), Volume=numeric(), Init.O2=numeric())
+                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Mass=numeric(), Volume=numeric(), Init.O2=numeric())
     for(i in 1:length(x))
     {	x.df<-subset(temp.CH2, Phase==x[i])
     x.init<-rep(x.df$O2[1], dim(x.df)[1])
@@ -434,7 +434,7 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
 
     #--------------------------------------------------------------------------------------------------------------------------------------------------#
     MR.data.all<-rbind(temp.CH1, temp.CH2)
-    MR.data.all<-subset(MR.data.all, select=c(Date.Time:End.Meas, Chamber.No, Ind, Weight, Volume, Init.O2, Temp, O2, BR))
+    MR.data.all<-subset(MR.data.all, select=c(Date.Time:End.Meas, Chamber.No, Ind, Mass, Volume, Init.O2, Temp, O2, BR))
     MR.data.all$O2.correct<-MR.data.all$O2 - MR.data.all$BR
 
     MR.data.all$DO.unit <- info.data$DO.unit[1]
@@ -460,13 +460,13 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     names(temp.CH1)<-c(names(temp.df)[1:7], "Temp", "O2")
     temp.CH1$Chamber.No<-as.factor(rep("CH1", dim(temp.CH1)[1]))
     temp.CH1$Ind<-as.factor(rep(info.data$ID[1], dim(temp.CH1)[1]))
-    temp.CH1$Weight<-rep(info.data$Weight[1], dim(temp.CH1)[1])
+    temp.CH1$Mass<-rep(info.data$Mass[1], dim(temp.CH1)[1])
     temp.CH1$Volume <- rep(info.data$Volume[1], dim(temp.CH1)[1])
 
     # rather than have you manually run the code for each unique measurement period, let's automate the process with a 'for' loop
     x<-levels(temp.CH1$Phase)
     temp2.df<-data.frame(Date.Time=chron(), Date=chron(), Real.Time=times(), Time=integer(), Phase=factor(), Start.Meas=times(), End.Meas=times(),
-                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Weight=numeric(), Volume=numeric(), Init.O2=numeric())
+                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Mass=numeric(), Volume=numeric(), Init.O2=numeric())
     for(i in 1:length(x))
     {	x.df<-subset(temp.CH1, Phase==x[i])
     x.init<-rep(x.df$O2[1], dim(x.df)[1])
@@ -486,12 +486,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     names(temp.CH2)<-c(names(temp.df)[1:7], "Temp", "O2")
     temp.CH2$Chamber.No<-as.factor(rep("CH2", dim(temp.CH2)[1]))
     temp.CH2$Ind<-as.factor(rep(info.data$ID[2], dim(temp.CH2)[1]))
-    temp.CH2$Weight<-rep(info.data$Weight[2], dim(temp.CH2)[1])
+    temp.CH2$Mass<-rep(info.data$Mass[2], dim(temp.CH2)[1])
     temp.CH2$Volume <- rep(info.data$Volume[2], dim(temp.CH2)[1])
 
     x<-levels(temp.CH2$Phase)
     temp2.df<-data.frame(Date.Time=chron(), Date=chron(), Real.Time=times(), Time=integer(), Phase=factor(), Start.Meas=times(), End.Meas=times(),
-                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Weight=numeric(), Volume=numeric(), Init.O2=numeric())
+                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Mass=numeric(), Volume=numeric(), Init.O2=numeric())
     for(i in 1:length(x))
     {	x.df<-subset(temp.CH2, Phase==x[i])
     x.init<-rep(x.df$O2[1], dim(x.df)[1])
@@ -511,12 +511,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     names(temp.CH3)<-c(names(temp.df)[1:7], "Temp", "O2")
     temp.CH3$Chamber.No<-as.factor(rep("CH3", dim(temp.CH3)[1]))
     temp.CH3$Ind<-as.factor(rep(info.data$ID[3], dim(temp.CH3)[1]))
-    temp.CH3$Weight<-rep(info.data$Weight[3], dim(temp.CH3)[1])
+    temp.CH3$Mass<-rep(info.data$Mass[3], dim(temp.CH3)[1])
     temp.CH3$Volume <- rep(info.data$Volume[3], dim(temp.CH3)[1])
 
     x<-levels(temp.CH3$Phase)
     temp2.df<-data.frame(Date.Time=chron(), Date=chron(), Real.Time=times(), Time=integer(), Phase=factor(), Start.Meas=times(), End.Meas=times(),
-                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Weight=numeric(), Volume=numeric(), Init.O2=numeric())
+                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Mass=numeric(), Volume=numeric(), Init.O2=numeric())
     for(i in 1:length(x))
     {	x.df<-subset(temp.CH3, Phase==x[i])
     x.init<-rep(x.df$O2[1], dim(x.df)[1])
@@ -779,7 +779,7 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
 
     #--------------------------------------------------------------------------------------------------------------------------------------------------#
     MR.data.all<-rbind(temp.CH1, temp.CH2, temp.CH3)
-    MR.data.all<-subset(MR.data.all, select=c(Date.Time:End.Meas, Chamber.No, Ind, Weight, Volume, Init.O2, Temp, O2, BR))
+    MR.data.all<-subset(MR.data.all, select=c(Date.Time:End.Meas, Chamber.No, Ind, Mass, Volume, Init.O2, Temp, O2, BR))
     MR.data.all$O2.correct<-MR.data.all$O2 - MR.data.all$BR
 
     MR.data.all$DO.unit <- info.data$DO.unit[1]
@@ -806,13 +806,13 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     names(temp.CH1)<-c(names(temp.df)[1:7], "Temp", "O2")
     temp.CH1$Chamber.No<-as.factor(rep("CH1", dim(temp.CH1)[1]))
     temp.CH1$Ind<-as.factor(rep(info.data$ID[1], dim(temp.CH1)[1]))
-    temp.CH1$Weight<-rep(info.data$Weight[1], dim(temp.CH1)[1])
+    temp.CH1$Mass<-rep(info.data$Mass[1], dim(temp.CH1)[1])
     temp.CH1$Volume <- rep(info.data$Volume[1], dim(temp.CH1)[1])
 
     # rather than have you manually run the code for each unique measurement period, let's automate the process with a 'for' loop
     x<-levels(temp.CH1$Phase)
     temp2.df<-data.frame(Date.Time=chron(), Date=chron(), Real.Time=times(), Time=integer(), Phase=factor(), Start.Meas=times(), End.Meas=times(),
-                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Weight=numeric(), Volume=numeric(), Init.O2=numeric())
+                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Mass=numeric(), Volume=numeric(), Init.O2=numeric())
     for(i in 1:length(x))
     {	x.df<-subset(temp.CH1, Phase==x[i])
     x.init<-rep(x.df$O2[1], dim(x.df)[1])
@@ -832,12 +832,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     names(temp.CH2)<-c(names(temp.df)[1:7], "Temp", "O2")
     temp.CH2$Chamber.No<-as.factor(rep("CH2", dim(temp.CH2)[1]))
     temp.CH2$Ind<-as.factor(rep(info.data$ID[2], dim(temp.CH2)[1]))
-    temp.CH2$Weight<-rep(info.data$Weight[2], dim(temp.CH2)[1])
+    temp.CH2$Mass<-rep(info.data$Mass[2], dim(temp.CH2)[1])
     temp.CH2$Volume <- rep(info.data$Volume[2], dim(temp.CH2)[1])
 
     x<-levels(temp.CH2$Phase)
     temp2.df<-data.frame(Date.Time=chron(), Date=chron(), Real.Time=times(), Time=integer(), Phase=factor(), Start.Meas=times(), End.Meas=times(),
-                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Weight=numeric(), Volume=numeric(), Init.O2=numeric())
+                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Mass=numeric(), Volume=numeric(), Init.O2=numeric())
     for(i in 1:length(x))
     {	x.df<-subset(temp.CH2, Phase==x[i])
     x.init<-rep(x.df$O2[1], dim(x.df)[1])
@@ -857,12 +857,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     names(temp.CH3)<-c(names(temp.df)[1:7], "Temp", "O2")
     temp.CH3$Chamber.No<-as.factor(rep("CH3", dim(temp.CH3)[1]))
     temp.CH3$Ind<-as.factor(rep(info.data$ID[3], dim(temp.CH3)[1]))
-    temp.CH3$Weight<-rep(info.data$Weight[3], dim(temp.CH3)[1])
+    temp.CH3$Mass<-rep(info.data$Mass[3], dim(temp.CH3)[1])
     temp.CH3$Volume <- rep(info.data$Volume[3], dim(temp.CH3)[1])
 
     x<-levels(temp.CH3$Phase)
     temp2.df<-data.frame(Date.Time=chron(), Date=chron(), Real.Time=times(), Time=integer(), Phase=factor(), Start.Meas=times(), End.Meas=times(),
-                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Weight=numeric(), Volume=numeric(), Init.O2=numeric())
+                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Mass=numeric(), Volume=numeric(), Init.O2=numeric())
     for(i in 1:length(x))
     {	x.df<-subset(temp.CH3, Phase==x[i])
     x.init<-rep(x.df$O2[1], dim(x.df)[1])
@@ -882,12 +882,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     names(temp.CH4)<-c(names(temp.df)[1:7], "Temp", "O2")
     temp.CH4$Chamber.No<-as.factor(rep("CH4", dim(temp.CH4)[1]))
     temp.CH4$Ind<-as.factor(rep(info.data$ID[4], dim(temp.CH4)[1]))
-    temp.CH4$Weight<-rep(info.data$Weight[4], dim(temp.CH4)[1])
+    temp.CH4$Mass<-rep(info.data$Mass[4], dim(temp.CH4)[1])
     temp.CH4$Volume <- rep(info.data$Volume[4], dim(temp.CH4)[1])
 
     x<-levels(temp.CH4$Phase)
     temp2.df<-data.frame(Date.Time=chron(), Date=chron(), Real.Time=times(), Time=integer(), Phase=factor(), Start.Meas=times(), End.Meas=times(),
-                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Weight=numeric(), Volume=numeric(), Init.O2=numeric())
+                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Mass=numeric(), Volume=numeric(), Init.O2=numeric())
     for(i in 1:length(x))
     {	x.df<-subset(temp.CH4, Phase==x[i])
     x.init<-rep(x.df$O2[1], dim(x.df)[1])
@@ -1226,7 +1226,7 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
 
     #--------------------------------------------------------------------------------------------------------------------------------------------------#
     MR.data.all<-rbind(temp.CH1, temp.CH2, temp.CH3, temp.CH4)
-    MR.data.all<-subset(MR.data.all, select=c(Date.Time:End.Meas, Chamber.No, Ind, Weight, Volume, Init.O2, Temp, O2, BR))
+    MR.data.all<-subset(MR.data.all, select=c(Date.Time:End.Meas, Chamber.No, Ind, Mass, Volume, Init.O2, Temp, O2, BR))
     MR.data.all$O2.correct<-MR.data.all$O2 - MR.data.all$BR
 
     MR.data.all$DO.unit <- info.data$DO.unit[1]
@@ -1255,13 +1255,13 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     names(temp.CH1)<-c(names(temp.df)[1:7], "Temp", "O2")
     temp.CH1$Chamber.No<-as.factor(rep("CH1", dim(temp.CH1)[1]))
     temp.CH1$Ind<-as.factor(rep(info.data$ID[1], dim(temp.CH1)[1]))
-    temp.CH1$Weight<-rep(info.data$Weight[1], dim(temp.CH1)[1])
+    temp.CH1$Mass<-rep(info.data$Mass[1], dim(temp.CH1)[1])
     temp.CH1$Volume <- rep(info.data$Volume[1], dim(temp.CH1)[1])
 
     # rather than have you manually run the code for each unique measurement period, let's automate the process with a 'for' loop
     x<-levels(temp.CH1$Phase)
     temp2.df<-data.frame(Date.Time=chron(), Date=chron(), Real.Time=times(), Time=integer(), Phase=factor(), Start.Meas=times(), End.Meas=times(),
-                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Weight=numeric(), Volume=numeric(), Init.O2=numeric())
+                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Mass=numeric(), Volume=numeric(), Init.O2=numeric())
     for(i in 1:length(x))
     {	x.df<-subset(temp.CH1, Phase==x[i])
     x.init<-rep(x.df$O2[1], dim(x.df)[1])
@@ -1281,12 +1281,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     names(temp.CH2)<-c(names(temp.df)[1:7], "Temp", "O2")
     temp.CH2$Chamber.No<-as.factor(rep("CH2", dim(temp.CH2)[1]))
     temp.CH2$Ind<-as.factor(rep(info.data$ID[2], dim(temp.CH2)[1]))
-    temp.CH2$Weight<-rep(info.data$Weight[2], dim(temp.CH2)[1])
+    temp.CH2$Mass<-rep(info.data$Mass[2], dim(temp.CH2)[1])
     temp.CH2$Volume <- rep(info.data$Volume[2], dim(temp.CH2)[1])
 
     x<-levels(temp.CH2$Phase)
     temp2.df<-data.frame(Date.Time=chron(), Date=chron(), Real.Time=times(), Time=integer(), Phase=factor(), Start.Meas=times(), End.Meas=times(),
-                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Weight=numeric(), Volume=numeric(), Init.O2=numeric())
+                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Mass=numeric(), Volume=numeric(), Init.O2=numeric())
     for(i in 1:length(x))
     {	x.df<-subset(temp.CH2, Phase==x[i])
     x.init<-rep(x.df$O2[1], dim(x.df)[1])
@@ -1306,12 +1306,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     names(temp.CH3)<-c(names(temp.df)[1:7], "Temp", "O2")
     temp.CH3$Chamber.No<-as.factor(rep("CH3", dim(temp.CH3)[1]))
     temp.CH3$Ind<-as.factor(rep(info.data$ID[3], dim(temp.CH3)[1]))
-    temp.CH3$Weight<-rep(info.data$Weight[3], dim(temp.CH3)[1])
+    temp.CH3$Mass<-rep(info.data$Mass[3], dim(temp.CH3)[1])
     temp.CH3$Volume <- rep(info.data$Volume[3], dim(temp.CH3)[1])
 
     x<-levels(temp.CH3$Phase)
     temp2.df<-data.frame(Date.Time=chron(), Date=chron(), Real.Time=times(), Time=integer(), Phase=factor(), Start.Meas=times(), End.Meas=times(),
-                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Weight=numeric(), Volume=numeric(), Init.O2=numeric())
+                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Mass=numeric(), Volume=numeric(), Init.O2=numeric())
     for(i in 1:length(x))
     {	x.df<-subset(temp.CH3, Phase==x[i])
     x.init<-rep(x.df$O2[1], dim(x.df)[1])
@@ -1331,12 +1331,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     names(temp.CH4)<-c(names(temp.df)[1:7], "Temp", "O2")
     temp.CH4$Chamber.No<-as.factor(rep("CH4", dim(temp.CH4)[1]))
     temp.CH4$Ind<-as.factor(rep(info.data$ID[4], dim(temp.CH4)[1]))
-    temp.CH4$Weight<-rep(info.data$Weight[4], dim(temp.CH4)[1])
+    temp.CH4$Mass<-rep(info.data$Mass[4], dim(temp.CH4)[1])
     temp.CH4$Volume <- rep(info.data$Volume[4], dim(temp.CH4)[1])
 
     x<-levels(temp.CH4$Phase)
     temp2.df<-data.frame(Date.Time=chron(), Date=chron(), Real.Time=times(), Time=integer(), Phase=factor(), Start.Meas=times(), End.Meas=times(),
-                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Weight=numeric(), Volume=numeric(), Init.O2=numeric())
+                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Mass=numeric(), Volume=numeric(), Init.O2=numeric())
     for(i in 1:length(x))
     {	x.df<-subset(temp.CH4, Phase==x[i])
     x.init<-rep(x.df$O2[1], dim(x.df)[1])
@@ -1356,12 +1356,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     names(temp.CH5)<-c(names(temp.df)[1:7], "Temp", "O2")
     temp.CH5$Chamber.No<-as.factor(rep("CH5", dim(temp.CH5)[1]))
     temp.CH5$Ind<-as.factor(rep(info.data$ID[5], dim(temp.CH5)[1]))
-    temp.CH5$Weight<-rep(info.data$Weight[5], dim(temp.CH5)[1])
+    temp.CH5$Mass<-rep(info.data$Mass[5], dim(temp.CH5)[1])
     temp.CH5$Volume <- rep(info.data$Volume[5], dim(temp.CH5)[1])
 
     x<-levels(temp.CH5$Phase)
     temp2.df<-data.frame(Date.Time=chron(), Date=chron(), Real.Time=times(), Time=integer(), Phase=factor(), Start.Meas=times(), End.Meas=times(),
-                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Weight=numeric(), Volume=numeric(), Init.O2=numeric())
+                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Mass=numeric(), Volume=numeric(), Init.O2=numeric())
     for(i in 1:length(x))
     {	x.df<-subset(temp.CH5, Phase==x[i])
     x.init<-rep(x.df$O2[1], dim(x.df)[1])
@@ -1778,7 +1778,7 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
 
     #--------------------------------------------------------------------------------------------------------------------------------------------------#
     MR.data.all<-rbind(temp.CH1, temp.CH2, temp.CH3, temp.CH4, temp.CH5)
-    MR.data.all<-subset(MR.data.all, select=c(Date.Time:End.Meas, Chamber.No, Ind, Weight, Volume, Init.O2, Temp, O2, BR))
+    MR.data.all<-subset(MR.data.all, select=c(Date.Time:End.Meas, Chamber.No, Ind, Mass, Volume, Init.O2, Temp, O2, BR))
     MR.data.all$O2.correct<-MR.data.all$O2 - MR.data.all$BR
 
     MR.data.all$DO.unit <- info.data$DO.unit[1]
@@ -1808,13 +1808,13 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     names(temp.CH1)<-c(names(temp.df)[1:7], "Temp", "O2")
     temp.CH1$Chamber.No<-as.factor(rep("CH1", dim(temp.CH1)[1]))
     temp.CH1$Ind<-as.factor(rep(info.data$ID[1], dim(temp.CH1)[1]))
-    temp.CH1$Weight<-rep(info.data$Weight[1], dim(temp.CH1)[1])
+    temp.CH1$Mass<-rep(info.data$Mass[1], dim(temp.CH1)[1])
     temp.CH1$Volume <- rep(info.data$Volume[1], dim(temp.CH1)[1])
 
     # rather than have you manually run the code for each unique measurement period, let's automate the process with a 'for' loop
     x<-levels(temp.CH1$Phase)
     temp2.df<-data.frame(Date.Time=chron(), Date=chron(), Real.Time=times(), Time=integer(), Phase=factor(), Start.Meas=times(), End.Meas=times(),
-                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Weight=numeric(), Volume=numeric(), Init.O2=numeric())
+                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Mass=numeric(), Volume=numeric(), Init.O2=numeric())
     for(i in 1:length(x))
     {	x.df<-subset(temp.CH1, Phase==x[i])
     x.init<-rep(x.df$O2[1], dim(x.df)[1])
@@ -1834,12 +1834,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     names(temp.CH2)<-c(names(temp.df)[1:7], "Temp", "O2")
     temp.CH2$Chamber.No<-as.factor(rep("CH2", dim(temp.CH2)[1]))
     temp.CH2$Ind<-as.factor(rep(info.data$ID[2], dim(temp.CH2)[1]))
-    temp.CH2$Weight<-rep(info.data$Weight[2], dim(temp.CH2)[1])
+    temp.CH2$Mass<-rep(info.data$Mass[2], dim(temp.CH2)[1])
     temp.CH2$Volume <- rep(info.data$Volume[2], dim(temp.CH2)[1])
 
     x<-levels(temp.CH2$Phase)
     temp2.df<-data.frame(Date.Time=chron(), Date=chron(), Real.Time=times(), Time=integer(), Phase=factor(), Start.Meas=times(), End.Meas=times(),
-                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Weight=numeric(), Volume=numeric(), Init.O2=numeric())
+                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Mass=numeric(), Volume=numeric(), Init.O2=numeric())
     for(i in 1:length(x))
     {	x.df<-subset(temp.CH2, Phase==x[i])
     x.init<-rep(x.df$O2[1], dim(x.df)[1])
@@ -1859,12 +1859,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     names(temp.CH3)<-c(names(temp.df)[1:7], "Temp", "O2")
     temp.CH3$Chamber.No<-as.factor(rep("CH3", dim(temp.CH3)[1]))
     temp.CH3$Ind<-as.factor(rep(info.data$ID[3], dim(temp.CH3)[1]))
-    temp.CH3$Weight<-rep(info.data$Weight[3], dim(temp.CH3)[1])
+    temp.CH3$Mass<-rep(info.data$Mass[3], dim(temp.CH3)[1])
     temp.CH3$Volume <- rep(info.data$Volume[3], dim(temp.CH3)[1])
 
     x<-levels(temp.CH3$Phase)
     temp2.df<-data.frame(Date.Time=chron(), Date=chron(), Real.Time=times(), Time=integer(), Phase=factor(), Start.Meas=times(), End.Meas=times(),
-                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Weight=numeric(), Volume=numeric(), Init.O2=numeric())
+                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Mass=numeric(), Volume=numeric(), Init.O2=numeric())
     for(i in 1:length(x))
     {	x.df<-subset(temp.CH3, Phase==x[i])
     x.init<-rep(x.df$O2[1], dim(x.df)[1])
@@ -1884,12 +1884,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     names(temp.CH4)<-c(names(temp.df)[1:7], "Temp", "O2")
     temp.CH4$Chamber.No<-as.factor(rep("CH4", dim(temp.CH4)[1]))
     temp.CH4$Ind<-as.factor(rep(info.data$ID[4], dim(temp.CH4)[1]))
-    temp.CH4$Weight<-rep(info.data$Weight[4], dim(temp.CH4)[1])
+    temp.CH4$Mass<-rep(info.data$Mass[4], dim(temp.CH4)[1])
     temp.CH4$Volume <- rep(info.data$Volume[4], dim(temp.CH4)[1])
 
     x<-levels(temp.CH4$Phase)
     temp2.df<-data.frame(Date.Time=chron(), Date=chron(), Real.Time=times(), Time=integer(), Phase=factor(), Start.Meas=times(), End.Meas=times(),
-                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Weight=numeric(), Volume=numeric(), Init.O2=numeric())
+                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Mass=numeric(), Volume=numeric(), Init.O2=numeric())
     for(i in 1:length(x))
     {	x.df<-subset(temp.CH4, Phase==x[i])
     x.init<-rep(x.df$O2[1], dim(x.df)[1])
@@ -1909,12 +1909,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     names(temp.CH5)<-c(names(temp.df)[1:7], "Temp", "O2")
     temp.CH5$Chamber.No<-as.factor(rep("CH5", dim(temp.CH5)[1]))
     temp.CH5$Ind<-as.factor(rep(info.data$ID[5], dim(temp.CH5)[1]))
-    temp.CH5$Weight<-rep(info.data$Weight[5], dim(temp.CH5)[1])
+    temp.CH5$Mass<-rep(info.data$Mass[5], dim(temp.CH5)[1])
     temp.CH5$Volume <- rep(info.data$Volume[5], dim(temp.CH5)[1])
 
     x<-levels(temp.CH5$Phase)
     temp2.df<-data.frame(Date.Time=chron(), Date=chron(), Real.Time=times(), Time=integer(), Phase=factor(), Start.Meas=times(), End.Meas=times(),
-                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Weight=numeric(), Volume=numeric(), Init.O2=numeric())
+                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Mass=numeric(), Volume=numeric(), Init.O2=numeric())
     for(i in 1:length(x))
     {	x.df<-subset(temp.CH5, Phase==x[i])
     x.init<-rep(x.df$O2[1], dim(x.df)[1])
@@ -1934,12 +1934,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     names(temp.CH6)<-c(names(temp.df)[1:7], "Temp", "O2")
     temp.CH6$Chamber.No<-as.factor(rep("CH6", dim(temp.CH6)[1]))
     temp.CH6$Ind<-as.factor(rep(info.data$ID[6], dim(temp.CH6)[1]))
-    temp.CH6$Weight<-rep(info.data$Weight[6], dim(temp.CH6)[1])
+    temp.CH6$Mass<-rep(info.data$Mass[6], dim(temp.CH6)[1])
     temp.CH6$Volume <- rep(info.data$Volume[6], dim(temp.CH6)[1])
 
     x<-levels(temp.CH6$Phase)
     temp2.df<-data.frame(Date.Time=chron(), Date=chron(), Real.Time=times(), Time=integer(), Phase=factor(), Start.Meas=times(), End.Meas=times(),
-                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Weight=numeric(), Volume=numeric(), Init.O2=numeric())
+                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Mass=numeric(), Volume=numeric(), Init.O2=numeric())
     for(i in 1:length(x))
     {	x.df<-subset(temp.CH6, Phase==x[i])
     x.init<-rep(x.df$O2[1], dim(x.df)[1])
@@ -2436,7 +2436,7 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
 
     #--------------------------------------------------------------------------------------------------------------------------------------------------#
     MR.data.all<-rbind(temp.CH1, temp.CH2, temp.CH3, temp.CH4, temp.CH5, temp.CH6)
-    MR.data.all<-subset(MR.data.all, select=c(Date.Time:End.Meas, Chamber.No, Ind, Weight, Volume, Init.O2, Temp, O2, BR))
+    MR.data.all<-subset(MR.data.all, select=c(Date.Time:End.Meas, Chamber.No, Ind, Mass, Volume, Init.O2, Temp, O2, BR))
     MR.data.all$O2.correct<-MR.data.all$O2 - MR.data.all$BR
 
     MR.data.all$DO.unit <- info.data$DO.unit[1]
@@ -2467,13 +2467,13 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     names(temp.CH1)<-c(names(temp.df)[1:7], "Temp", "O2")
     temp.CH1$Chamber.No<-as.factor(rep("CH1", dim(temp.CH1)[1]))
     temp.CH1$Ind<-as.factor(rep(info.data$ID[1], dim(temp.CH1)[1]))
-    temp.CH1$Weight<-rep(info.data$Weight[1], dim(temp.CH1)[1])
+    temp.CH1$Mass<-rep(info.data$Mass[1], dim(temp.CH1)[1])
     temp.CH1$Volume <- rep(info.data$Volume[1], dim(temp.CH1)[1])
 
     # rather than have you manually run the code for each unique measurement period, let's automate the process with a 'for' loop
     x<-levels(temp.CH1$Phase)
     temp2.df<-data.frame(Date.Time=chron(), Date=chron(), Real.Time=times(), Time=integer(), Phase=factor(), Start.Meas=times(), End.Meas=times(),
-                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Weight=numeric(), Volume=numeric(), Init.O2=numeric())
+                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Mass=numeric(), Volume=numeric(), Init.O2=numeric())
     for(i in 1:length(x))
     {	x.df<-subset(temp.CH1, Phase==x[i])
     x.init<-rep(x.df$O2[1], dim(x.df)[1])
@@ -2493,12 +2493,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     names(temp.CH2)<-c(names(temp.df)[1:7], "Temp", "O2")
     temp.CH2$Chamber.No<-as.factor(rep("CH2", dim(temp.CH2)[1]))
     temp.CH2$Ind<-as.factor(rep(info.data$ID[2], dim(temp.CH2)[1]))
-    temp.CH2$Weight<-rep(info.data$Weight[2], dim(temp.CH2)[1])
+    temp.CH2$Mass<-rep(info.data$Mass[2], dim(temp.CH2)[1])
     temp.CH2$Volume <- rep(info.data$Volume[2], dim(temp.CH2)[1])
 
     x<-levels(temp.CH2$Phase)
     temp2.df<-data.frame(Date.Time=chron(), Date=chron(), Real.Time=times(), Time=integer(), Phase=factor(), Start.Meas=times(), End.Meas=times(),
-                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Weight=numeric(), Volume=numeric(), Init.O2=numeric())
+                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Mass=numeric(), Volume=numeric(), Init.O2=numeric())
     for(i in 1:length(x))
     {	x.df<-subset(temp.CH2, Phase==x[i])
     x.init<-rep(x.df$O2[1], dim(x.df)[1])
@@ -2518,12 +2518,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     names(temp.CH3)<-c(names(temp.df)[1:7], "Temp", "O2")
     temp.CH3$Chamber.No<-as.factor(rep("CH3", dim(temp.CH3)[1]))
     temp.CH3$Ind<-as.factor(rep(info.data$ID[3], dim(temp.CH3)[1]))
-    temp.CH3$Weight<-rep(info.data$Weight[3], dim(temp.CH3)[1])
+    temp.CH3$Mass<-rep(info.data$Mass[3], dim(temp.CH3)[1])
     temp.CH3$Volume <- rep(info.data$Volume[3], dim(temp.CH3)[1])
 
     x<-levels(temp.CH3$Phase)
     temp2.df<-data.frame(Date.Time=chron(), Date=chron(), Real.Time=times(), Time=integer(), Phase=factor(), Start.Meas=times(), End.Meas=times(),
-                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Weight=numeric(), Volume=numeric(), Init.O2=numeric())
+                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Mass=numeric(), Volume=numeric(), Init.O2=numeric())
     for(i in 1:length(x))
     {	x.df<-subset(temp.CH3, Phase==x[i])
     x.init<-rep(x.df$O2[1], dim(x.df)[1])
@@ -2543,12 +2543,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     names(temp.CH4)<-c(names(temp.df)[1:7], "Temp", "O2")
     temp.CH4$Chamber.No<-as.factor(rep("CH4", dim(temp.CH4)[1]))
     temp.CH4$Ind<-as.factor(rep(info.data$ID[4], dim(temp.CH4)[1]))
-    temp.CH4$Weight<-rep(info.data$Weight[4], dim(temp.CH4)[1])
+    temp.CH4$Mass<-rep(info.data$Mass[4], dim(temp.CH4)[1])
     temp.CH4$Volume <- rep(info.data$Volume[4], dim(temp.CH4)[1])
 
     x<-levels(temp.CH4$Phase)
     temp2.df<-data.frame(Date.Time=chron(), Date=chron(), Real.Time=times(), Time=integer(), Phase=factor(), Start.Meas=times(), End.Meas=times(),
-                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Weight=numeric(), Volume=numeric(), Init.O2=numeric())
+                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Mass=numeric(), Volume=numeric(), Init.O2=numeric())
     for(i in 1:length(x))
     {	x.df<-subset(temp.CH4, Phase==x[i])
     x.init<-rep(x.df$O2[1], dim(x.df)[1])
@@ -2568,12 +2568,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     names(temp.CH5)<-c(names(temp.df)[1:7], "Temp", "O2")
     temp.CH5$Chamber.No<-as.factor(rep("CH5", dim(temp.CH5)[1]))
     temp.CH5$Ind<-as.factor(rep(info.data$ID[5], dim(temp.CH5)[1]))
-    temp.CH5$Weight<-rep(info.data$Weight[5], dim(temp.CH5)[1])
+    temp.CH5$Mass<-rep(info.data$Mass[5], dim(temp.CH5)[1])
     temp.CH5$Volume <- rep(info.data$Volume[5], dim(temp.CH5)[1])
 
     x<-levels(temp.CH5$Phase)
     temp2.df<-data.frame(Date.Time=chron(), Date=chron(), Real.Time=times(), Time=integer(), Phase=factor(), Start.Meas=times(), End.Meas=times(),
-                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Weight=numeric(), Volume=numeric(), Init.O2=numeric())
+                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Mass=numeric(), Volume=numeric(), Init.O2=numeric())
     for(i in 1:length(x))
     {	x.df<-subset(temp.CH5, Phase==x[i])
     x.init<-rep(x.df$O2[1], dim(x.df)[1])
@@ -2593,12 +2593,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     names(temp.CH6)<-c(names(temp.df)[1:7], "Temp", "O2")
     temp.CH6$Chamber.No<-as.factor(rep("CH6", dim(temp.CH6)[1]))
     temp.CH6$Ind<-as.factor(rep(info.data$ID[6], dim(temp.CH6)[1]))
-    temp.CH6$Weight<-rep(info.data$Weight[6], dim(temp.CH6)[1])
+    temp.CH6$Mass<-rep(info.data$Mass[6], dim(temp.CH6)[1])
     temp.CH6$Volume <- rep(info.data$Volume[6], dim(temp.CH6)[1])
 
     x<-levels(temp.CH6$Phase)
     temp2.df<-data.frame(Date.Time=chron(), Date=chron(), Real.Time=times(), Time=integer(), Phase=factor(), Start.Meas=times(), End.Meas=times(),
-                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Weight=numeric(), Volume=numeric(), Init.O2=numeric())
+                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Mass=numeric(), Volume=numeric(), Init.O2=numeric())
     for(i in 1:length(x))
     {	x.df<-subset(temp.CH6, Phase==x[i])
     x.init<-rep(x.df$O2[1], dim(x.df)[1])
@@ -2618,12 +2618,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     names(temp.CH7)<-c(names(temp.df)[1:7], "Temp", "O2")
     temp.CH7$Chamber.No<-as.factor(rep("CH7", dim(temp.CH7)[1]))
     temp.CH7$Ind<-as.factor(rep(info.data$ID[7], dim(temp.CH7)[1]))
-    temp.CH7$Weight<-rep(info.data$Weight[7], dim(temp.CH7)[1])
+    temp.CH7$Mass<-rep(info.data$Mass[7], dim(temp.CH7)[1])
     temp.CH7$Volume <- rep(info.data$Volume[7], dim(temp.CH7)[1])
 
     x<-levels(temp.CH7$Phase)
     temp2.df<-data.frame(Date.Time=chron(), Date=chron(), Real.Time=times(), Time=integer(), Phase=factor(), Start.Meas=times(), End.Meas=times(),
-                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Weight=numeric(), Volume=numeric(), Init.O2=numeric())
+                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Mass=numeric(), Volume=numeric(), Init.O2=numeric())
     for(i in 1:length(x))
     {	x.df<-subset(temp.CH7, Phase==x[i])
     x.init<-rep(x.df$O2[1], dim(x.df)[1])
@@ -3201,7 +3201,7 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
 
     #--------------------------------------------------------------------------------------------------------------------------------------------------#
     MR.data.all<-rbind(temp.CH1, temp.CH2, temp.CH3, temp.CH4, temp.CH5, temp.CH6, temp.CH7)
-    MR.data.all<-subset(MR.data.all, select=c(Date.Time:End.Meas, Chamber.No, Ind, Weight, Volume, Init.O2, Temp, O2, BR))
+    MR.data.all<-subset(MR.data.all, select=c(Date.Time:End.Meas, Chamber.No, Ind, Mass, Volume, Init.O2, Temp, O2, BR))
     MR.data.all$O2.correct<-MR.data.all$O2 - MR.data.all$BR
 
     MR.data.all$DO.unit <- info.data$DO.unit[1]
@@ -3233,13 +3233,13 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     names(temp.CH1)<-c(names(temp.df)[1:7], "Temp", "O2")
     temp.CH1$Chamber.No<-as.factor(rep("CH1", dim(temp.CH1)[1]))
     temp.CH1$Ind<-as.factor(rep(info.data$ID[1], dim(temp.CH1)[1]))
-    temp.CH1$Weight<-rep(info.data$Weight[1], dim(temp.CH1)[1])
+    temp.CH1$Mass<-rep(info.data$Mass[1], dim(temp.CH1)[1])
     temp.CH1$Volume <- rep(info.data$Volume[1], dim(temp.CH1)[1])
 
     # rather than have you manually run the code for each unique measurement period, let's automate the process with a 'for' loop
     x<-levels(temp.CH1$Phase)
     temp2.df<-data.frame(Date.Time=chron(), Date=chron(), Real.Time=times(), Time=integer(), Phase=factor(), Start.Meas=times(), End.Meas=times(),
-                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Weight=numeric(), Volume=numeric(), Init.O2=numeric())
+                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Mass=numeric(), Volume=numeric(), Init.O2=numeric())
     for(i in 1:length(x))
     {	x.df<-subset(temp.CH1, Phase==x[i])
     x.init<-rep(x.df$O2[1], dim(x.df)[1])
@@ -3259,12 +3259,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     names(temp.CH2)<-c(names(temp.df)[1:7], "Temp", "O2")
     temp.CH2$Chamber.No<-as.factor(rep("CH2", dim(temp.CH2)[1]))
     temp.CH2$Ind<-as.factor(rep(info.data$ID[2], dim(temp.CH2)[1]))
-    temp.CH2$Weight<-rep(info.data$Weight[2], dim(temp.CH2)[1])
+    temp.CH2$Mass<-rep(info.data$Mass[2], dim(temp.CH2)[1])
     temp.CH2$Volume <- rep(info.data$Volume[2], dim(temp.CH2)[1])
 
     x<-levels(temp.CH2$Phase)
     temp2.df<-data.frame(Date.Time=chron(), Date=chron(), Real.Time=times(), Time=integer(), Phase=factor(), Start.Meas=times(), End.Meas=times(),
-                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Weight=numeric(), Volume=numeric(), Init.O2=numeric())
+                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Mass=numeric(), Volume=numeric(), Init.O2=numeric())
     for(i in 1:length(x))
     {	x.df<-subset(temp.CH2, Phase==x[i])
     x.init<-rep(x.df$O2[1], dim(x.df)[1])
@@ -3284,12 +3284,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     names(temp.CH3)<-c(names(temp.df)[1:7], "Temp", "O2")
     temp.CH3$Chamber.No<-as.factor(rep("CH3", dim(temp.CH3)[1]))
     temp.CH3$Ind<-as.factor(rep(info.data$ID[3], dim(temp.CH3)[1]))
-    temp.CH3$Weight<-rep(info.data$Weight[3], dim(temp.CH3)[1])
+    temp.CH3$Mass<-rep(info.data$Mass[3], dim(temp.CH3)[1])
     temp.CH3$Volume <- rep(info.data$Volume[3], dim(temp.CH3)[1])
 
     x<-levels(temp.CH3$Phase)
     temp2.df<-data.frame(Date.Time=chron(), Date=chron(), Real.Time=times(), Time=integer(), Phase=factor(), Start.Meas=times(), End.Meas=times(),
-                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Weight=numeric(), Volume=numeric(), Init.O2=numeric())
+                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Mass=numeric(), Volume=numeric(), Init.O2=numeric())
     for(i in 1:length(x))
     {	x.df<-subset(temp.CH3, Phase==x[i])
     x.init<-rep(x.df$O2[1], dim(x.df)[1])
@@ -3309,12 +3309,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     names(temp.CH4)<-c(names(temp.df)[1:7], "Temp", "O2")
     temp.CH4$Chamber.No<-as.factor(rep("CH4", dim(temp.CH4)[1]))
     temp.CH4$Ind<-as.factor(rep(info.data$ID[4], dim(temp.CH4)[1]))
-    temp.CH4$Weight<-rep(info.data$Weight[4], dim(temp.CH4)[1])
+    temp.CH4$Mass<-rep(info.data$Mass[4], dim(temp.CH4)[1])
     temp.CH4$Volume <- rep(info.data$Volume[4], dim(temp.CH4)[1])
 
     x<-levels(temp.CH4$Phase)
     temp2.df<-data.frame(Date.Time=chron(), Date=chron(), Real.Time=times(), Time=integer(), Phase=factor(), Start.Meas=times(), End.Meas=times(),
-                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Weight=numeric(), Volume=numeric(), Init.O2=numeric())
+                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Mass=numeric(), Volume=numeric(), Init.O2=numeric())
     for(i in 1:length(x))
     {	x.df<-subset(temp.CH4, Phase==x[i])
     x.init<-rep(x.df$O2[1], dim(x.df)[1])
@@ -3334,12 +3334,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     names(temp.CH5)<-c(names(temp.df)[1:7], "Temp", "O2")
     temp.CH5$Chamber.No<-as.factor(rep("CH5", dim(temp.CH5)[1]))
     temp.CH5$Ind<-as.factor(rep(info.data$ID[5], dim(temp.CH5)[1]))
-    temp.CH5$Weight<-rep(info.data$Weight[5], dim(temp.CH5)[1])
+    temp.CH5$Mass<-rep(info.data$Mass[5], dim(temp.CH5)[1])
     temp.CH5$Volume <- rep(info.data$Volume[5], dim(temp.CH5)[1])
 
     x<-levels(temp.CH5$Phase)
     temp2.df<-data.frame(Date.Time=chron(), Date=chron(), Real.Time=times(), Time=integer(), Phase=factor(), Start.Meas=times(), End.Meas=times(),
-                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Weight=numeric(), Volume=numeric(), Init.O2=numeric())
+                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Mass=numeric(), Volume=numeric(), Init.O2=numeric())
     for(i in 1:length(x))
     {	x.df<-subset(temp.CH5, Phase==x[i])
     x.init<-rep(x.df$O2[1], dim(x.df)[1])
@@ -3359,12 +3359,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     names(temp.CH6)<-c(names(temp.df)[1:7], "Temp", "O2")
     temp.CH6$Chamber.No<-as.factor(rep("CH6", dim(temp.CH6)[1]))
     temp.CH6$Ind<-as.factor(rep(info.data$ID[6], dim(temp.CH6)[1]))
-    temp.CH6$Weight<-rep(info.data$Weight[6], dim(temp.CH6)[1])
+    temp.CH6$Mass<-rep(info.data$Mass[6], dim(temp.CH6)[1])
     temp.CH6$Volume <- rep(info.data$Volume[6], dim(temp.CH6)[1])
 
     x<-levels(temp.CH6$Phase)
     temp2.df<-data.frame(Date.Time=chron(), Date=chron(), Real.Time=times(), Time=integer(), Phase=factor(), Start.Meas=times(), End.Meas=times(),
-                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Weight=numeric(), Volume=numeric(), Init.O2=numeric())
+                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Mass=numeric(), Volume=numeric(), Init.O2=numeric())
     for(i in 1:length(x))
     {	x.df<-subset(temp.CH6, Phase==x[i])
     x.init<-rep(x.df$O2[1], dim(x.df)[1])
@@ -3384,12 +3384,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     names(temp.CH7)<-c(names(temp.df)[1:7], "Temp", "O2")
     temp.CH7$Chamber.No<-as.factor(rep("CH7", dim(temp.CH7)[1]))
     temp.CH7$Ind<-as.factor(rep(info.data$ID[7], dim(temp.CH7)[1]))
-    temp.CH7$Weight<-rep(info.data$Weight[7], dim(temp.CH7)[1])
+    temp.CH7$Mass<-rep(info.data$Mass[7], dim(temp.CH7)[1])
     temp.CH7$Volume <- rep(info.data$Volume[7], dim(temp.CH7)[1])
 
     x<-levels(temp.CH7$Phase)
     temp2.df<-data.frame(Date.Time=chron(), Date=chron(), Real.Time=times(), Time=integer(), Phase=factor(), Start.Meas=times(), End.Meas=times(),
-                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Weight=numeric(), Volume=numeric(), Init.O2=numeric())
+                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Mass=numeric(), Volume=numeric(), Init.O2=numeric())
     for(i in 1:length(x))
     {	x.df<-subset(temp.CH7, Phase==x[i])
     x.init<-rep(x.df$O2[1], dim(x.df)[1])
@@ -3409,12 +3409,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     names(temp.CH8)<-c(names(temp.df)[1:7], "Temp", "O2")
     temp.CH8$Chamber.No<-as.factor(rep("CH8", dim(temp.CH8)[1]))
     temp.CH8$Ind<-as.factor(rep(info.data$ID[8], dim(temp.CH8)[1]))
-    temp.CH8$Weight<-rep(info.data$Weight[8], dim(temp.CH8)[1])
+    temp.CH8$Mass<-rep(info.data$Mass[8], dim(temp.CH8)[1])
     temp.CH8$Volume <- rep(info.data$Volume[8], dim(temp.CH8)[1])
 
     x<-levels(temp.CH8$Phase)
     temp2.df<-data.frame(Date.Time=chron(), Date=chron(), Real.Time=times(), Time=integer(), Phase=factor(), Start.Meas=times(), End.Meas=times(),
-                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Weight=numeric(), Volume=numeric(), Init.O2=numeric())
+                         Temp=numeric(), O2=numeric(), Chamber.No=factor(), Ind=factor(), Mass=numeric(), Volume=numeric(), Init.O2=numeric())
     for(i in 1:length(x))
     {	x.df<-subset(temp.CH8, Phase==x[i])
     x.init<-rep(x.df$O2[1], dim(x.df)[1])
@@ -4078,7 +4078,7 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
 
     #--------------------------------------------------------------------------------------------------------------------------------------------------#
     MR.data.all<-rbind(temp.CH1, temp.CH2, temp.CH3, temp.CH4, temp.CH5, temp.CH6, temp.CH7, temp.CH8)
-    MR.data.all<-subset(MR.data.all, select=c(Date.Time:End.Meas, Chamber.No, Ind, Weight, Volume, Init.O2, Temp, O2, BR))
+    MR.data.all<-subset(MR.data.all, select=c(Date.Time:End.Meas, Chamber.No, Ind, Mass, Volume, Init.O2, Temp, O2, BR))
     MR.data.all$O2.correct<-MR.data.all$O2 - MR.data.all$BR
 
     rm(temp.df)

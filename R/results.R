@@ -8,7 +8,7 @@
 #' \describe{
 #'   \item{Chamber.No}{The number of a chamber}
 #'   \item{Ind}{ID of an animal}
-#'   \item{Weight}{wet weight of an animal (g)}
+#'   \item{Mass}{wet mass of an animal (g)}
 #'   \item{Volume}{the volume of a chamber (mL)}
 #'   \item{DO.unit}{the measure unit of DO concentration}
 #'   \item{SMR_Temp}{Average temperature over a period of SMR measurements (C)}

@@ -8,7 +8,7 @@
 #' \describe{
 #'   \item{Chamber.No}{The number of a chamber}
 #'   \item{Ind}{ID of an animal}
-#'   \item{Weight}{wet weight of an animal (g)}
+#'   \item{Mass}{wet mass of an animal (g)}
 #'   \item{Volume}{the volume of a chamber (mL)}
 #'   \item{Date.Time}{Date and Time of a period (mm/dd/yy hh:mm:ss)}
 #'   \item{Phase}{Phase and period of measurements (e.g. M1, F3)}

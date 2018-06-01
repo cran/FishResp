@@ -16,9 +16,9 @@ QC.slope(slope.data, clean.data,
 
 \item{chamber}{string: the chamber chosen for the QC test}
 
-\item{current}{integer: current length of measurements for slope estimation (in seconds)}
+\item{current}{integer: current length of measurements for slope estimation (in seconds, black line)}
 
-\item{alter}{integer: alternative length of measurements for slope estimation (in seconds)}
+\item{alter}{integer: alternative length of measurements for slope estimation (in seconds, red line)}
 }
 \description{
 Graphical quality control test of extracted slopes represents a visual comparison of linear regression of corrected O2 concentration over time with current and alternative length of measurements.

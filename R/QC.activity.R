@@ -33,7 +33,7 @@ QC.activity <- function(clean.data, compare = TRUE){
   a <- nlevels(MR.data.all$Chamber.No)
 
   if(compare == TRUE){
-    MR.mass.with.BR <- MR.data.all$MR.abs.with.BR/MR.data.all$Weight*1000
+    MR.mass.with.BR <- MR.data.all$MR.abs.with.BR/MR.data.all$Mass*1000
     xyplot(MR.mass + MR.mass.with.BR ~ Date.Time, groups=Chamber.No, grid = TRUE,
            data=MR.data.all, main="Activity during the whole period of measurements",
            type=c("a", "p"), allow.multiple=T, layout=(c(1,2)),

@@ -87,34 +87,90 @@ import.test <- function(file, info.data,
     if (n.chamber == 1){
       test.data<-subset(test.data, select=c(V1, V2, V6, V7))
       names(test.data)<-c("Time", "Phase", "Temp.1", "Ox.1")
+      for(i in 3:ncol(test.data)){test.data[,i] = as.numeric(gsub(',','.', test.data[,i]))}
+      aaa <- max(test.data$Ox.1, na.rm = TRUE)
+      if(all(is.na(test.data$Ox.1))){test.data$Ox.1[is.na(test.data$Ox.1)] <- aaa}
     }
     else if (n.chamber == 2){
       test.data<-subset(test.data, select=c(V1, V2, V6, V7, V9, V10))
       names(test.data)<-c("Time", "Phase", "Temp.1", "Ox.1", "Temp.2", "Ox.2")
+      for(i in 3:ncol(test.data)){test.data[,i] = as.numeric(gsub(',','.', test.data[,i]))}
+      aaa <- max(c(test.data$Ox.1, test.data$Ox.2), na.rm = TRUE)
+      if(all(is.na(test.data$Ox.1))){test.data$Ox.1[is.na(test.data$Ox.1)] <- aaa}
+      if(all(is.na(test.data$Ox.2))){test.data$Ox.2[is.na(test.data$Ox.2)] <- aaa}
     }
     else if (n.chamber == 3){
       test.data<-subset(test.data, select=c(V1, V2, V6, V7, V9, V10, V12, V13))
       names(test.data)<-c("Time", "Phase", "Temp.1", "Ox.1", "Temp.2", "Ox.2", "Temp.3", "Ox.3")
+      for(i in 3:ncol(test.data)){test.data[,i] = as.numeric(gsub(',','.', test.data[,i]))}
+      aaa <- max(c(test.data$Ox.1, test.data$Ox.2, test.data$Ox.3), na.rm = TRUE)
+      if(all(is.na(test.data$Ox.1))){test.data$Ox.1[is.na(test.data$Ox.1)] <- aaa}
+      if(all(is.na(test.data$Ox.2))){test.data$Ox.2[is.na(test.data$Ox.2)] <- aaa}
+      if(all(is.na(test.data$Ox.3))){test.data$Ox.3[is.na(test.data$Ox.3)] <- aaa}
     }
     else if (n.chamber == 4){
       test.data<-subset(test.data, select=c(V1, V2, V6, V7, V9, V10, V12, V13, V15, V16))
       names(test.data)<-c("Time", "Phase", "Temp.1", "Ox.1", "Temp.2", "Ox.2", "Temp.3", "Ox.3", "Temp.4", "Ox.4")
+      for(i in 3:ncol(test.data)){test.data[,i] = as.numeric(gsub(',','.', test.data[,i]))}
+      aaa <- max(c(test.data$Ox.1, test.data$Ox.2, test.data$Ox.3, test.data$Ox.4), na.rm = TRUE)
+      if(all(is.na(test.data$Ox.1))){test.data$Ox.1[is.na(test.data$Ox.1)] <- aaa}
+      if(all(is.na(test.data$Ox.2))){test.data$Ox.2[is.na(test.data$Ox.2)] <- aaa}
+      if(all(is.na(test.data$Ox.3))){test.data$Ox.3[is.na(test.data$Ox.3)] <- aaa}
+      if(all(is.na(test.data$Ox.4))){test.data$Ox.4[is.na(test.data$Ox.4)] <- aaa}
     }
     else if (n.chamber == 5){
       test.data<-subset(test.data, select=c(V1, V2, V6, V7, V9, V10, V12, V13, V15, V16, V18, V19))
       names(test.data)<-c("Time", "Phase", "Temp.1", "Ox.1", "Temp.2", "Ox.2", "Temp.3", "Ox.3", "Temp.4", "Ox.4", "Temp.5", "Ox.5")
+      for(i in 3:ncol(test.data)){test.data[,i] = as.numeric(gsub(',','.', test.data[,i]))}
+      aaa <- max(c(test.data$Ox.1, test.data$Ox.2, test.data$Ox.3, test.data$Ox.4,
+                   test.data$Ox.5), na.rm = TRUE)
+      if(all(is.na(test.data$Ox.1))){test.data$Ox.1[is.na(test.data$Ox.1)] <- aaa}
+      if(all(is.na(test.data$Ox.2))){test.data$Ox.2[is.na(test.data$Ox.2)] <- aaa}
+      if(all(is.na(test.data$Ox.3))){test.data$Ox.3[is.na(test.data$Ox.3)] <- aaa}
+      if(all(is.na(test.data$Ox.4))){test.data$Ox.4[is.na(test.data$Ox.4)] <- aaa}
+      if(all(is.na(test.data$Ox.5))){test.data$Ox.5[is.na(test.data$Ox.5)] <- aaa}
     }
     else if (n.chamber == 6){
       test.data<-subset(test.data, select=c(V1, V2, V6, V7, V9, V10, V12, V13, V15, V16, V18, V19, V21, V22))
       names(test.data)<-c("Time", "Phase", "Temp.1", "Ox.1", "Temp.2", "Ox.2", "Temp.3", "Ox.3", "Temp.4", "Ox.4", "Temp.5", "Ox.5", "Temp.6", "Ox.6")
+      for(i in 3:ncol(test.data)){test.data[,i] = as.numeric(gsub(',','.', test.data[,i]))}
+      aaa <- max(c(test.data$Ox.1, test.data$Ox.2, test.data$Ox.3, test.data$Ox.4,
+                   test.data$Ox.5, test.data$Ox.6), na.rm = TRUE)
+      if(all(is.na(test.data$Ox.1))){test.data$Ox.1[is.na(test.data$Ox.1)] <- aaa}
+      if(all(is.na(test.data$Ox.2))){test.data$Ox.2[is.na(test.data$Ox.2)] <- aaa}
+      if(all(is.na(test.data$Ox.3))){test.data$Ox.3[is.na(test.data$Ox.3)] <- aaa}
+      if(all(is.na(test.data$Ox.4))){test.data$Ox.4[is.na(test.data$Ox.4)] <- aaa}
+      if(all(is.na(test.data$Ox.5))){test.data$Ox.5[is.na(test.data$Ox.5)] <- aaa}
+      if(all(is.na(test.data$Ox.6))){test.data$Ox.6[is.na(test.data$Ox.6)] <- aaa}
     }
     else if (n.chamber == 7){
       test.data<-subset(test.data, select=c(V1, V2, V6, V7, V9, V10, V12, V13, V15, V16, V18, V19, V21, V22, V24, V25))
       names(test.data)<-c("Time", "Phase", "Temp.1", "Ox.1", "Temp.2", "Ox.2", "Temp.3", "Ox.3", "Temp.4", "Ox.4", "Temp.5", "Ox.5", "Temp.6", "Ox.6", "Temp.7", "Ox.7")
+      for(i in 3:ncol(test.data)){test.data[,i] = as.numeric(gsub(',','.', test.data[,i]))}
+      aaa <- max(c(test.data$Ox.1, test.data$Ox.2, test.data$Ox.3, test.data$Ox.4,
+                   test.data$Ox.5, test.data$Ox.6, test.data$Ox.7), na.rm = TRUE)
+      if(all(is.na(test.data$Ox.1))){test.data$Ox.1[is.na(test.data$Ox.1)] <- aaa}
+      if(all(is.na(test.data$Ox.2))){test.data$Ox.2[is.na(test.data$Ox.2)] <- aaa}
+      if(all(is.na(test.data$Ox.3))){test.data$Ox.3[is.na(test.data$Ox.3)] <- aaa}
+      if(all(is.na(test.data$Ox.4))){test.data$Ox.4[is.na(test.data$Ox.4)] <- aaa}
+      if(all(is.na(test.data$Ox.5))){test.data$Ox.5[is.na(test.data$Ox.5)] <- aaa}
+      if(all(is.na(test.data$Ox.6))){test.data$Ox.6[is.na(test.data$Ox.6)] <- aaa}
+      if(all(is.na(test.data$Ox.7))){test.data$Ox.7[is.na(test.data$Ox.7)] <- aaa}
     }
     else if (n.chamber == 8){
       test.data<-subset(test.data, select=c(V1, V2, V6, V7, V9, V10, V12, V13, V15, V16, V18, V19, V21, V22, V24, V25, V27, V28))
       names(test.data)<-c("Time", "Phase", "Temp.1", "Ox.1", "Temp.2", "Ox.2", "Temp.3", "Ox.3", "Temp.4", "Ox.4", "Temp.5", "Ox.5", "Temp.6", "Ox.6", "Temp.7", "Ox.7", "Temp.8", "Ox.8")
+      for(i in 3:ncol(test.data)){test.data[,i] = as.numeric(gsub(',','.', test.data[,i]))}
+      aaa <- max(c(test.data$Ox.1, test.data$Ox.2, test.data$Ox.3, test.data$Ox.4,
+                   test.data$Ox.5, test.data$Ox.6, test.data$Ox.7, test.data$Ox.8), na.rm = TRUE)
+      if(all(is.na(test.data$Ox.1))){test.data$Ox.1[is.na(test.data$Ox.1)] <- aaa}
+      if(all(is.na(test.data$Ox.2))){test.data$Ox.2[is.na(test.data$Ox.2)] <- aaa}
+      if(all(is.na(test.data$Ox.3))){test.data$Ox.3[is.na(test.data$Ox.3)] <- aaa}
+      if(all(is.na(test.data$Ox.4))){test.data$Ox.4[is.na(test.data$Ox.4)] <- aaa}
+      if(all(is.na(test.data$Ox.5))){test.data$Ox.5[is.na(test.data$Ox.5)] <- aaa}
+      if(all(is.na(test.data$Ox.6))){test.data$Ox.6[is.na(test.data$Ox.6)] <- aaa}
+      if(all(is.na(test.data$Ox.7))){test.data$Ox.7[is.na(test.data$Ox.7)] <- aaa}
+      if(all(is.na(test.data$Ox.8))){test.data$Ox.8[is.na(test.data$Ox.8)] <- aaa}
     }
     else{
       print("Please, choose number of chambers between 1 and 8")
@@ -129,34 +185,90 @@ import.test <- function(file, info.data,
     if (n.chamber == 1){
       test.data<-subset(test.data, select=c(V1, V2, V3, V4))
       names(test.data)<-c("Time", "Phase", "Temp.1", "Ox.1")
+      for(i in 3:ncol(test.data)){test.data[,i] = as.numeric(gsub(',','.', test.data[,i]))}
+      aaa <- max(test.data$Ox.1, na.rm = TRUE)
+      if(all(is.na(test.data$Ox.1))){test.data$Ox.1[is.na(test.data$Ox.1)] <- aaa}
     }
     else if (n.chamber == 2){
       test.data<-subset(test.data, select=c(V1, V2, V3, V4, V5, V6))
       names(test.data)<-c("Time", "Phase", "Temp.1", "Ox.1", "Temp.2", "Ox.2")
+      for(i in 3:ncol(test.data)){test.data[,i] = as.numeric(gsub(',','.', test.data[,i]))}
+      aaa <- max(c(test.data$Ox.1, test.data$Ox.2), na.rm = TRUE)
+      if(all(is.na(test.data$Ox.1))){test.data$Ox.1[is.na(test.data$Ox.1)] <- aaa}
+      if(all(is.na(test.data$Ox.2))){test.data$Ox.2[is.na(test.data$Ox.2)] <- aaa}
     }
     else if (n.chamber == 3){
       test.data<-subset(test.data, select=c(V1, V2, V3, V4, V5, V6, V7, V8))
       names(test.data)<-c("Time", "Phase", "Temp.1", "Ox.1", "Temp.2", "Ox.2", "Temp.3", "Ox.3")
+      for(i in 3:ncol(test.data)){test.data[,i] = as.numeric(gsub(',','.', test.data[,i]))}
+      aaa <- max(c(test.data$Ox.1, test.data$Ox.2, test.data$Ox.3), na.rm = TRUE)
+      if(all(is.na(test.data$Ox.1))){test.data$Ox.1[is.na(test.data$Ox.1)] <- aaa}
+      if(all(is.na(test.data$Ox.2))){test.data$Ox.2[is.na(test.data$Ox.2)] <- aaa}
+      if(all(is.na(test.data$Ox.3))){test.data$Ox.3[is.na(test.data$Ox.3)] <- aaa}
     }
     else if (n.chamber == 4){
       test.data<-subset(test.data, select=c(V1, V2, V3, V4, V5, V6, V7, V8, V9, V10))
       names(test.data)<-c("Time", "Phase", "Temp.1", "Ox.1", "Temp.2", "Ox.2", "Temp.3", "Ox.3", "Temp.4", "Ox.4")
+      for(i in 3:ncol(test.data)){test.data[,i] = as.numeric(gsub(',','.', test.data[,i]))}
+      aaa <- max(c(test.data$Ox.1, test.data$Ox.2, test.data$Ox.3, test.data$Ox.4), na.rm = TRUE)
+      if(all(is.na(test.data$Ox.1))){test.data$Ox.1[is.na(test.data$Ox.1)] <- aaa}
+      if(all(is.na(test.data$Ox.2))){test.data$Ox.2[is.na(test.data$Ox.2)] <- aaa}
+      if(all(is.na(test.data$Ox.3))){test.data$Ox.3[is.na(test.data$Ox.3)] <- aaa}
+      if(all(is.na(test.data$Ox.4))){test.data$Ox.4[is.na(test.data$Ox.4)] <- aaa}
     }
     else if (n.chamber == 5){
       test.data<-subset(test.data, select=c(V1, V2, V3, V4, V5, V6, V7, V8, V9, V10, V11, V12))
       names(test.data)<-c("Time", "Phase", "Temp.1", "Ox.1", "Temp.2", "Ox.2", "Temp.3", "Ox.3", "Temp.4", "Ox.4", "Temp.5", "Ox.5")
+      for(i in 3:ncol(test.data)){test.data[,i] = as.numeric(gsub(',','.', test.data[,i]))}
+      aaa <- max(c(test.data$Ox.1, test.data$Ox.2, test.data$Ox.3, test.data$Ox.4,
+                   test.data$Ox.5), na.rm = TRUE)
+      if(all(is.na(test.data$Ox.1))){test.data$Ox.1[is.na(test.data$Ox.1)] <- aaa}
+      if(all(is.na(test.data$Ox.2))){test.data$Ox.2[is.na(test.data$Ox.2)] <- aaa}
+      if(all(is.na(test.data$Ox.3))){test.data$Ox.3[is.na(test.data$Ox.3)] <- aaa}
+      if(all(is.na(test.data$Ox.4))){test.data$Ox.4[is.na(test.data$Ox.4)] <- aaa}
+      if(all(is.na(test.data$Ox.5))){test.data$Ox.5[is.na(test.data$Ox.5)] <- aaa}
     }
     else if (n.chamber == 6){
       test.data<-subset(test.data, select=c(V1, V2, V3, V4, V5, V6, V7, V8, V9, V10, V11, V12, V13, V14))
       names(test.data)<-c("Time", "Phase", "Temp.1", "Ox.1", "Temp.2", "Ox.2", "Temp.3", "Ox.3", "Temp.4", "Ox.4", "Temp.5", "Ox.5", "Temp.6", "Ox.6")
+      for(i in 3:ncol(test.data)){test.data[,i] = as.numeric(gsub(',','.', test.data[,i]))}
+      aaa <- max(c(test.data$Ox.1, test.data$Ox.2, test.data$Ox.3, test.data$Ox.4,
+                   test.data$Ox.5, test.data$Ox.6), na.rm = TRUE)
+      if(all(is.na(test.data$Ox.1))){test.data$Ox.1[is.na(test.data$Ox.1)] <- aaa}
+      if(all(is.na(test.data$Ox.2))){test.data$Ox.2[is.na(test.data$Ox.2)] <- aaa}
+      if(all(is.na(test.data$Ox.3))){test.data$Ox.3[is.na(test.data$Ox.3)] <- aaa}
+      if(all(is.na(test.data$Ox.4))){test.data$Ox.4[is.na(test.data$Ox.4)] <- aaa}
+      if(all(is.na(test.data$Ox.5))){test.data$Ox.5[is.na(test.data$Ox.5)] <- aaa}
+      if(all(is.na(test.data$Ox.6))){test.data$Ox.6[is.na(test.data$Ox.6)] <- aaa}
     }
     else if (n.chamber == 7){
       test.data<-subset(test.data, select=c(V1, V2, V3, V4, V5, V6, V7, V8, V9, V10, V11, V12, V13, V14, V15, V16))
       names(test.data)<-c("Time", "Phase", "Temp.1", "Ox.1", "Temp.2", "Ox.2", "Temp.3", "Ox.3", "Temp.4", "Ox.4", "Temp.5", "Ox.5", "Temp.6", "Ox.6", "Temp.7", "Ox.7")
+      for(i in 3:ncol(test.data)){test.data[,i] = as.numeric(gsub(',','.', test.data[,i]))}
+      aaa <- max(c(test.data$Ox.1, test.data$Ox.2, test.data$Ox.3, test.data$Ox.4,
+                   test.data$Ox.5, test.data$Ox.6, test.data$Ox.7), na.rm = TRUE)
+      if(all(is.na(test.data$Ox.1))){test.data$Ox.1[is.na(test.data$Ox.1)] <- aaa}
+      if(all(is.na(test.data$Ox.2))){test.data$Ox.2[is.na(test.data$Ox.2)] <- aaa}
+      if(all(is.na(test.data$Ox.3))){test.data$Ox.3[is.na(test.data$Ox.3)] <- aaa}
+      if(all(is.na(test.data$Ox.4))){test.data$Ox.4[is.na(test.data$Ox.4)] <- aaa}
+      if(all(is.na(test.data$Ox.5))){test.data$Ox.5[is.na(test.data$Ox.5)] <- aaa}
+      if(all(is.na(test.data$Ox.6))){test.data$Ox.6[is.na(test.data$Ox.6)] <- aaa}
+      if(all(is.na(test.data$Ox.7))){test.data$Ox.7[is.na(test.data$Ox.7)] <- aaa}
     }
     else if (n.chamber == 8){
       test.data<-subset(test.data, select=c(V1, V2, V3, V4, V5, V6, V7, V8, V9, V10, V11, V12, V13, V14, V15, V16, V17, V18))
       names(test.data)<-c("Time", "Phase", "Temp.1", "Ox.1", "Temp.2", "Ox.2", "Temp.3", "Ox.3", "Temp.4", "Ox.4", "Temp.5", "Ox.5", "Temp.6", "Ox.6", "Temp.7", "Ox.7", "Temp.8", "Ox.8")
+      for(i in 3:ncol(test.data)){test.data[,i] = as.numeric(gsub(',','.', test.data[,i]))}
+      aaa <- max(c(test.data$Ox.1, test.data$Ox.2, test.data$Ox.3, test.data$Ox.4,
+                   test.data$Ox.5, test.data$Ox.6, test.data$Ox.7, test.data$Ox.8), na.rm = TRUE)
+      if(all(is.na(test.data$Ox.1))){test.data$Ox.1[is.na(test.data$Ox.1)] <- aaa}
+      if(all(is.na(test.data$Ox.2))){test.data$Ox.2[is.na(test.data$Ox.2)] <- aaa}
+      if(all(is.na(test.data$Ox.3))){test.data$Ox.3[is.na(test.data$Ox.3)] <- aaa}
+      if(all(is.na(test.data$Ox.4))){test.data$Ox.4[is.na(test.data$Ox.4)] <- aaa}
+      if(all(is.na(test.data$Ox.5))){test.data$Ox.5[is.na(test.data$Ox.5)] <- aaa}
+      if(all(is.na(test.data$Ox.6))){test.data$Ox.6[is.na(test.data$Ox.6)] <- aaa}
+      if(all(is.na(test.data$Ox.7))){test.data$Ox.7[is.na(test.data$Ox.7)] <- aaa}
+      if(all(is.na(test.data$Ox.8))){test.data$Ox.8[is.na(test.data$Ox.8)] <- aaa}
     }
     else{
       print("Please, choose number of chambers between 1 and 8")
@@ -167,7 +279,7 @@ import.test <- function(file, info.data,
     print("Please, choose the format of your data between AutoResp and FishResp")
   }
 
-
+  rm(aaa)
   test.data <- subset(test.data, Phase == "M1")
   test.data$Phase <- factor(test.data$Phase)
 

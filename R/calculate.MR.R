@@ -44,8 +44,8 @@
 
 calculate.MR  <- function(slope.data, density = 1000, plot.BR = TRUE,
                           plot.MR.abs = TRUE, plot.MR.mass = TRUE){
-                          V = slope.data$Volume - (slope.data$Weight/density/1000)
-                          BW = slope.data$Weight/1000
+                          V = slope.data$Volume - (slope.data$Mass/density/1000)
+                          BW = slope.data$Mass/1000
                           # is 1080 the average density of fish body?
 
   slope.data$MR.abs.with.BR = -(slope.data$Slope.with.BR*V)

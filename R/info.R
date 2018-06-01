@@ -7,7 +7,7 @@
 #' @format A data frame with 4 rows and 3 variables:
 #' \describe{
 #'   \item{ID}{ID of an animal}
-#'   \item{Weight}{Wet weight of an animal (g)}
+#'   \item{Mass}{Wet mass of an animal (g)}
 #'   \item{Volume}{The volume of chambers (mL)}
 #'   \item{DO.unit}{the measure unit of DO concentration}
 #' }

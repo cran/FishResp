@@ -11,8 +11,8 @@
 #' @param slope.data  a data frame obtained by using the function \code{\link{extract.slope}}
 #' @param clean.data  a data frame obtained by using the function \code{\link{correct.meas}}
 #' @param chamber  string: the chamber chosen for the QC test
-#' @param current  integer: current length of measurements for slope estimation (in seconds)
-#' @param alter  integer: alternative length of measurements for slope estimation (in seconds)
+#' @param current  integer: current length of measurements for slope estimation (in seconds, black line)
+#' @param alter  integer: alternative length of measurements for slope estimation (in seconds, red line)
 #'
 #' @importFrom chron chron times
 #' @importFrom grDevices dev.new
@@ -59,7 +59,7 @@ QC.slope <- function(slope.data, clean.data,
   Chamber.No <- Phase <- m1.df <- m2.df <- Time <- NULL
   chlevels<-levels(slope.data$Chamber.No)
   extracted.data<-data.frame(Date.Time=chron(), Date=chron(), Real.Time=times(), Time=integer(), Phase=factor(), Start.Meas=times(), End.Meas=times(),
-                             Chamber.No=factor(), Ind=factor(), Weight=numeric(), Volume=numeric(), Init.O2=numeric(), Temp=numeric(), O2=numeric(), BOD=numeric(), O2.correct=numeric())
+                             Chamber.No=factor(), Ind=factor(), Mass=numeric(), Volume=numeric(), Init.O2=numeric(), Temp=numeric(), O2=numeric(), BOD=numeric(), O2.correct=numeric())
 
   for(i in 1:length(chlevels)){
     meas<-as.character(subset(slope.data, Chamber.No==chlevels[i])$Phase)
@@ -107,14 +107,14 @@ QC.slope <- function(slope.data, clean.data,
   m2.df<-subset(m.df, Time<=alter)
   model.1<-lm(O2.correct~Time, data=m1.df)
   model.2<-lm(O2.correct~Time, data=m2.df)
-  plot(m.df$O2.correct~m.df$Time, main=meas[m], las=1,
+  plot(m.df$O2.correct~m.df$Time, main=meas[m], las=1, col = "steelblue2",
        xlab = "Time (s)", ylab = paste("DO (", slope.data$DO.unit[1], "/L)", sep = ""))
 
-  abline(coef(model.1)[1], coef(model.1)[2], col="red", lwd=3)
-  abline(coef(model.2)[1], coef(model.2)[2], col="green", lwd=3, lty=2)
-  l.1<-paste("now: r^2=",(round(summary(model.1)$r.sq, digits=3)),"; slope= ",(round(coef(model.1)[2], digits=5)),sep="")
-  l.2<-paste("alter: r^2=",(round(summary(model.2)$r.sq, digits=3)),"; slope= ",(round(coef(model.2)[2], digits=5)),sep="")
-  legend("topright", legend=c(l.1,l.2), lty=c(1,2), lwd=c(2,2), col=c("red","green"))
+  abline(coef(model.1)[1], coef(model.1)[2], col="black", lwd=3)
+  abline(coef(model.2)[1], coef(model.2)[2], col = "red", lwd=3, lty=2)
+  l.1<-paste(current, "s: r^2=",(round(summary(model.1)$r.sq, digits=3)),"; slope= ",(round(coef(model.1)[2], digits=5)),sep="")
+  l.2<-paste(alter, "s: r^2=",(round(summary(model.2)$r.sq, digits=3)),"; slope= ",(round(coef(model.2)[2], digits=5)),sep="")
+  legend("topright", legend=c(l.1,l.2), lty=c(1,2), lwd=c(2,2), col=c("black", "red"))
   rm(model.1)
   rm(l.1)
   }
@@ -125,4 +125,3 @@ QC.slope <- function(slope.data, clean.data,
   rm(m1.df)
   rm(m2.df)
 }
-

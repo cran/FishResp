@@ -5,11 +5,11 @@
 #' @usage
 #' extract.slope(clean.data,
 #'               method = c("all", "min", "max",
-#'                          "upper.tail", "lower.tail",
+#'                          "lower.tail", "upper.tail",
 #'                          "calcSMR.mlnd", "calcSMR.quant",
 #'                          "calcSMR.low10", "calcSMR.low10pc"),
-#'               r2=0.9, length = 9999, n.slope = 1000,
-#'               percent = 10, q = 0.1, G = 1:4)
+#'               r2=0.95, length = 9999, n.slope = 1000,
+#'               percent = 10, p = 0.25, G = 1:4)
 #'
 #' @param clean.data  a data frame obtained by using the function \code{\link{correct.meas}}
 #' @param method  string: the method of extracting slopes:
@@ -20,16 +20,16 @@
 #'   \item 'lower.tail' extracts slopes from a lower tail of absolute slope distribution, specify percentage of a lower tail (parameter: percent)
 #'   \item 'upper.tail' extracts slopes from an upper tail of absolute slope distribution, specify percentage of an upper tail (parameter: percent)
 #'   \item 'calcSMR.mlnd' calculates the mean of the lowest normal distribution\cr (MLND) using parameter G (see Appendix S1 in Chabot et al, 2016)
-#'   \item 'calcSMR.quant' calculates quantile value of slope distribution using parameter q (see Appendix S1 in Chabot et al, 2016)
+#'   \item 'calcSMR.quant' calculates quantile value of slope distribution using parameter p (see Appendix S1 in Chabot et al, 2016)
 #'   \item 'calcSMR.low10' calculates the mean of the 10 lowest absolute slopes (see Appendix S1 in Chabot et al, 2016)
 #'   \item 'calcSMR.low10pc' calculates the mean of the lowest 10% of absolute slopes, after the 5 from 10 lowest have been removed as outliers (see Herrmann & Enders, 2000; Appendix S1 in Chabot et al, 2016)
 #'   }
-#' @param r2  numeric: minimal coefficient of determination (r2) for extracted slopes. Coefficient of determination is used as a threshold of quality to be determined by the user.
-#' @param length  integer: length of a measurement period for slope calculations (in seconds)
-#' @param n.slope  integer: the number of extracted slopes, only one slope is calculated for each measurement period (used in the methods "min" and "max")
-#' @param percent integer: percentage of lower or upper tail (used in the methods "lower.tail" and "upper.tail", respectively)
-#' @param q integer: quantile is used in the method"calcSMR.quant"
-#' @param G integer: G value is used in the method "calcSMR.mlnd"
+#' @param r2  numeric: minimal coefficient of determination (r2) for extracted slopes. Coefficient of determination is used as a threshold of quality to be determined by the user (by default r2 = 0.95)
+#' @param length  integer: length of a measurement period for slope calculations (in seconds; by default - full length)
+#' @param n.slope  integer: the number of extracted slopes, only one slope is calculated for each measurement period (used in the methods "min" and "max"; by default - all slopes)
+#' @param percent integer: percentage of lower or upper tail (used in the methods "lower.tail" and "upper.tail", respectively; by default percent = 10)
+#' @param p integer: p-value of quantile used in the method "calcSMR.quant" (by default p = 0.25)
+#' @param G integer: G value is used in the method "calcSMR.mlnd" (by default G = 1:4)
 #'
 #' @return The function returns a data frame with the information about extracted slopes. The data frame is used in the functions \code{\link{QC.slope}} and \code{\link{calculate.MR}}.
 #'
@@ -48,24 +48,24 @@
 #'
 #' SMR.slope <- extract.slope(SMR.clean,
 #'                            method = "min",
-#'                            n.slope = 6,
+#'                            n.slope = 3,
 #'                            r2=0.95,
 #'                            length = 1200)
 #'
 #' AMR.slope <- extract.slope(AMR.clean,
 #'                            method = "all",
-#'                            r2=0.8,
+#'                            r2=0.95,
 #'                            length = 300)
 #'
 #' @references { Chabot, D., Steffensen, J. F., & Farrell, A. P. (2016). The determination of standard metabolic rate in fishes. Journal of Fish Biology, 88(1), 81-121.\cr Herrmann, J. P., & Enders, E. C. (2000). Effect of body size on the standard metabolism of horse mackerel. Journal of Fish Biology, 57(3), 746-760.}
 #'
 #' @export
 
-extract.slope <- function(clean.data, method = c("all", "min", "max", "upper.tail", "lower.tail",
+extract.slope <- function(clean.data, method = c("all", "min", "max", "lower.tail", "upper.tail",
                                                  "calcSMR.mlnd", "calcSMR.quant", "calcSMR.low10", "calcSMR.low10pc"),
-                          r2=0.9, length = 9999, n.slope = 1000, percent = 10, q = 0.1, G = 1:4){
+                          r2=0.95, length = 9999, n.slope = 1000, percent = 10, p = 0.25, G = 1:4){
   Chamber.No <- Phase <- out.df <- R2 <- NULL
-  MR.est.all<-data.frame(Chamber.No=factor(), Ind=factor(), Weight=numeric(), Volume=numeric(), Date.Time = chron(), Phase=factor(),
+  MR.est.all<-data.frame(Chamber.No=factor(), Ind=factor(), Mass=numeric(), Volume=numeric(), Date.Time = chron(), Phase=factor(),
                          Temp=numeric(), Slope.with.BR=numeric(), Slope=numeric(), SE=numeric(), R2=numeric())
 
   chamber<-levels(clean.data$Chamber.No)
@@ -78,7 +78,7 @@ extract.slope <- function(clean.data, method = c("all", "min", "max", "upper.tai
       m.df<-subset(m.df, m.df$Time<=length)
       model.with.BR <- lm(O2~Time, data=m.df)
       model<-lm(O2.correct~Time, data=m.df)
-      out.df<-data.frame(Chamber.No=head(m.df, 1)$Chamber.No, Ind=head(m.df, 1)$Ind, Weight=head(m.df, 1)$Weight, Volume=head(m.df, 1)$Volume,
+      out.df<-data.frame(Chamber.No=head(m.df, 1)$Chamber.No, Ind=head(m.df, 1)$Ind, Mass=head(m.df, 1)$Mass, Volume=head(m.df, 1)$Volume,
                          Date.Time = tail(m.df, 1)$Date.Time, Phase=head(m.df, 1)$Phase, Temp=mean(m.df$Temp), Slope.with.BR = coef(model.with.BR)[2],
                          Slope=coef(model)[2],  SE=summary(model)$coef[4], R2=summary(model)$r.squared)
       row.names(out.df)<-NULL
@@ -96,7 +96,7 @@ extract.slope <- function(clean.data, method = c("all", "min", "max", "upper.tai
   rm(out.df)
 
   #--------------------------------------------------------------------------------------------------------------------------------------------------#
-  MR.est<-data.frame(Chamber.No=factor(), Ind=factor(), Weight=numeric(), Volume=numeric(), Phase=factor(), Temp=numeric(),
+  MR.est<-data.frame(Chamber.No=factor(), Ind=factor(), Mass=numeric(), Volume=numeric(), Phase=factor(), Temp=numeric(),
                      Slope.with.BR=numeric(), Slope=numeric(), SE=numeric(), R2=numeric())
 
   # I've tweaked the code slightly here to ensure that we're only looking at data which fit a model of linear O2 consumption
@@ -172,14 +172,14 @@ extract.slope <- function(clean.data, method = c("all", "min", "max", "upper.tai
       MR.est<-rbind(MR.est, out.df)
     }
     else if (method == "calcSMR.quant"){
-      quant=quantile(abs(chamber.df$Slope), q)
+      quant=quantile(abs(chamber.df$Slope), p)
       rate <- as.numeric(-abs(quant))
       s <- which.min(abs(chamber.df$Slope - rate))
       out.df <- chamber.df[s,]
       out.df$Slope <- rate
       row.names(out.df)<-NULL
       MR.est<-rbind(MR.est, out.df)
-      rm(quant, rate, s, out.df)
+      rm(quant, rate, s)
     }
     else if (method == "calcSMR.low10"){
       u = sort(chamber.df$Slope, decreasing = TRUE)
@@ -197,7 +197,7 @@ extract.slope <- function(clean.data, method = c("all", "min", "max", "upper.tai
       out.df$SE<-NA
       out.df$R2<-mean(chamber.df$R2[chamber.df$Slope >= min.low10])
 
-      rm(s, u, low10pc, max.low10pc, min.low10pc)
+      rm(s, u, low10, max.low10, min.low10)
       row.names(out.df)<-NULL
       MR.est<-rbind(MR.est, out.df)
     }
@@ -236,7 +236,7 @@ extract.slope <- function(clean.data, method = c("all", "min", "max", "upper.tai
 
   slope.data <- MR.est
   slope.data$Volume <- as.numeric(as.character(slope.data$Volume))
-  slope.data$Weight <- as.numeric(as.character(slope.data$Weight))
+  slope.data$Mass <- as.numeric(as.character(slope.data$Mass))
   slope.data$DO.unit <- clean.data$DO.unit[1]
   return(slope.data)
 }

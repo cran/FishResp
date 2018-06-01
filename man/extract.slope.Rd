@@ -6,11 +6,11 @@
 \usage{
 extract.slope(clean.data,
               method = c("all", "min", "max",
-                         "upper.tail", "lower.tail",
+                         "lower.tail", "upper.tail",
                          "calcSMR.mlnd", "calcSMR.quant",
                          "calcSMR.low10", "calcSMR.low10pc"),
-              r2=0.9, length = 9999, n.slope = 1000,
-              percent = 10, q = 0.1, G = 1:4)
+              r2=0.95, length = 9999, n.slope = 1000,
+              percent = 10, p = 0.25, G = 1:4)
 }
 \arguments{
 \item{clean.data}{a data frame obtained by using the function \code{\link{correct.meas}}}
@@ -23,22 +23,22 @@ extract.slope(clean.data,
  \item 'lower.tail' extracts slopes from a lower tail of absolute slope distribution, specify percentage of a lower tail (parameter: percent)
  \item 'upper.tail' extracts slopes from an upper tail of absolute slope distribution, specify percentage of an upper tail (parameter: percent)
  \item 'calcSMR.mlnd' calculates the mean of the lowest normal distribution\cr (MLND) using parameter G (see Appendix S1 in Chabot et al, 2016)
- \item 'calcSMR.quant' calculates quantile value of slope distribution using parameter q (see Appendix S1 in Chabot et al, 2016)
+ \item 'calcSMR.quant' calculates quantile value of slope distribution using parameter p (see Appendix S1 in Chabot et al, 2016)
  \item 'calcSMR.low10' calculates the mean of the 10 lowest absolute slopes (see Appendix S1 in Chabot et al, 2016)
  \item 'calcSMR.low10pc' calculates the mean of the lowest 10% of absolute slopes, after the 5 from 10 lowest have been removed as outliers (see Herrmann & Enders, 2000; Appendix S1 in Chabot et al, 2016)
  }}
 
-\item{r2}{numeric: minimal coefficient of determination (r2) for extracted slopes. Coefficient of determination is used as a threshold of quality to be determined by the user.}
+\item{r2}{numeric: minimal coefficient of determination (r2) for extracted slopes. Coefficient of determination is used as a threshold of quality to be determined by the user (by default r2 = 0.95)}
 
-\item{length}{integer: length of a measurement period for slope calculations (in seconds)}
+\item{length}{integer: length of a measurement period for slope calculations (in seconds; by default - full length)}
 
-\item{n.slope}{integer: the number of extracted slopes, only one slope is calculated for each measurement period (used in the methods "min" and "max")}
+\item{n.slope}{integer: the number of extracted slopes, only one slope is calculated for each measurement period (used in the methods "min" and "max"; by default - all slopes)}
 
-\item{percent}{integer: percentage of lower or upper tail (used in the methods "lower.tail" and "upper.tail", respectively)}
+\item{percent}{integer: percentage of lower or upper tail (used in the methods "lower.tail" and "upper.tail", respectively; by default percent = 10)}
 
-\item{q}{integer: quantile is used in the method"calcSMR.quant"}
+\item{p}{integer: p-value of quantile used in the method "calcSMR.quant" (by default p = 0.25)}
 
-\item{G}{integer: G value is used in the method "calcSMR.mlnd"}
+\item{G}{integer: G value is used in the method "calcSMR.mlnd" (by default G = 1:4)}
 }
 \value{
 The function returns a data frame with the information about extracted slopes. The data frame is used in the functions \code{\link{QC.slope}} and \code{\link{calculate.MR}}.
@@ -54,13 +54,13 @@ data(AMR.clean)
 
 SMR.slope <- extract.slope(SMR.clean,
                            method = "min",
-                           n.slope = 6,
+                           n.slope = 3,
                            r2=0.95,
                            length = 1200)
 
 AMR.slope <- extract.slope(AMR.clean,
                            method = "all",
-                           r2=0.8,
+                           r2=0.95,
                            length = 300)
 
 }
