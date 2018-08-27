@@ -16,7 +16,7 @@ input.info(ID = c(NA, NA, NA, NA, NA, NA, NA, NA),
 
 \item{Volume}{numeric: the volume of chambers in milliliters (mL)}
 
-\item{DO.unit}{character: dissolved oxygen unit used in raw data}
+\item{DO.unit}{character: dissolved oxygen used in raw data should be measured in 'mg/L', 'mmol/L' or 'ml/L'. If other measurement units were used, convert them to 'mg/L', 'mmol/L' or 'ml/L' using the function \code{\link{convert.respirometry}} or \code{\link{convert.rMR}}.}
 }
 \value{
 The function returns a data frame with four columns: "ID", "Mass", "Volume", "DO.unit". The data frame is used in the functions \code{\link{import.test}}, \code{\link{import.meas}}, and \code{\link{correct.meas}}.
@@ -25,7 +25,7 @@ The function returns a data frame with four columns: "ID", "Mass", "Volume", "DO
 The function is used to input manually the information required for metabolic rate calculations: ID and wet mass of individuals, volume of chambers. Values of those parameters should be filled in the same order in a vector format replacing default NA values in the template. In addition, specify which unit has been used to measure dissolved oxygen concentration.
 }
 \details{
-It is especially important to keep such format of vectors when not the full number of individuals is in a multi-channel respirometry system. E.g.: if you use a 4-channel respirometry system with three fish and only Chamber 1 is empty, but data are still collected from there, do not remove NA values for that chamber to prevent the shift of actual data between the chambers.\cr If DO unit is different than "mg/L", "mmol/L" or "ml/L", please use the function \code{\link{convert.rMR}} or \code{\link{convert.respirometry}} to convert the unit to "mg/L", "mmol/L" or "ml/L".
+It is especially important to keep such format of vectors when not the full number of individuals is in a multi-channel respirometry system. E.g.: if you use a 4-channel respirometry system with three fish and only Chamber 1 is empty, but data are still collected from there, do not remove NA values for that chamber to prevent the shift of actual data between the chambers.
 }
 \examples{
 # Four sticklebacks in a 4-channel respirometry system

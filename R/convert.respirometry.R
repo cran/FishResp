@@ -5,13 +5,13 @@
 #' @usage
 #' convert.respirometry(import.file, export.file,
 #'                      n.chamber = c(1,2,3,4,5,6,7,8),
-#'                      logger = c("AutoResp", "FishResp"),
+#'                      logger = c("AutoResp", "FishResp", "Qbox-Aqua"),
 #'                      from, to, sal = 0, atm_pres = 1013.25)
 #'
 #' @param import.file  the name of a file with raw respirometry data which should be imported to convert DO units
 #' @param export.file  the name of a file with results of the DO unit conversion
 #' @param n.chamber  integer: the number of chambers used in an experiment (including empty ones)
-#' @param logger  string: the name of a logger software used for intermittent-flow respirometry
+#' @param logger  string: the name of a logger software used for intermittent-flow respirometry. Note, that both 'OxyView' and 'Pyro Oxygen Logger' used in couple with the 'AquaResp' software should be converted to the 'FishResp' format before running this function (see the functions \code{\link{presens.aquaresp}} or \code{\link{pyroscience.aquaresp}}, respectively).
 #' @param from  string: dissolved oxygen unit in an imported file (more information can be found in documentation of the function \code{\link{conv_o2}}, R package \pkg{respirometry})
 #' @param to  string: dissolved oxygen unit in an exported file (more information can be found in documentation of the function \code{\link{conv_o2}}, R package \pkg{respirometry})
 #' @param sal  string: salinity is measured in ppm (more information can be found in documentation of the function \code{\link{conv_o2}}, R package \pkg{respirometry})
@@ -36,7 +36,7 @@
 
 convert.respirometry <- function(import.file, export.file,
 					              n.chamber = c(1,2,3,4,5,6,7,8),
-								 logger = c("AutoResp", "FishResp"),
+								 logger = c("AutoResp", "FishResp", "Qbox-Aqua"),
 								 from, to, sal = 0,
 								 atm_pres = 1013.25){
 
@@ -525,4 +525,43 @@ convert.respirometry <- function(import.file, export.file,
                 col.names = F,
                 quote = F)
     }
+
+
+
+  else if (logger == "Qbox-Aqua"){
+
+    MR.data.body <- read.table(import.file, sep = ",", header=T,
+		                               check.names=FALSE, strip.white=T)
+
+		if (n.chamber == 1){
+		    MR.data.body[, ncol(MR.data.body)] <- conv_o2(o2 = MR.data.body[, ncol(MR.data.body)],
+	                                  from = from,
+		                                to = to,
+		                                temp = MR.data.body[,4],
+		                                sal = sal, atm_pres = atm_pres)
+		 }else{
+				print("If 'Qubit Systems' starts producing multi-chamber systems for aquatic respirometry, please contact us via email: fishresp@gmail.com")
+		 }
+
+
+  	 MR.data.name <- data.frame()
+     MR.data.name <- rbind(MR.data.name, names(MR.data.body))
+
+		 write.table(MR.data.name,
+	               file = export.file,
+	               sep = ",",
+		             row.names = F,
+		             col.names = F,
+		             quote = F)
+
+		 names(MR.data.body) <- NULL
+
+		 write.table(MR.data.body,
+	               file = export.file,
+		             append = T,
+		             sep = ",",
+                 row.names = F,
+		             col.names = F,
+		             quote = F)
+      }
   }

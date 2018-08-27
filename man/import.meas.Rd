@@ -6,10 +6,12 @@
 \usage{
 import.meas(file, info.data,
             n.chamber = c(1,2,3,4,5,6,7,8),
-            logger = c("AutoResp", "FishResp"),
+            logger = c("AutoResp", "FishResp", "Qbox-Aqua"),
             date.format = c("DMY", "MDY", "YMD"),
             start.measure = "00:00:00",
             stop.measure = "23:59:59",
+            set.date.time = NA,
+            meas.to.wait = 0,
             plot.temperature = TRUE,
             plot.oxygen = TRUE)
 }
@@ -22,8 +24,9 @@ import.meas(file, info.data,
 
 \item{logger}{string: the name of a logger software used for intermittent-flow respirometry
 \itemize{
-  \item 'AutoResp' if you use commercial software of 'Loligo Systems'
-  \item 'FishResp' if you do not use the above-mentioned software, standardize data to the format described below (see Details in the\cr function \code{\link{import.test}})
+  \item 'AutoResp' if you use commercial software by 'Loligo Systems'
+  \item 'FishResp' if you use free software 'AquaResp' in combination with equipment produced by 'PreSens' or 'Pyroscience', please convert data to the 'FishResp' format using the functions \code{\link{presens.aquaresp}} or \code{\link{pyroscience.aquaresp}}, respectively. \cr If you do not use commercial software or AquaResp for running intermittent-flow respirometry, adjust raw data manually to the 'FishResp' format (see Details below).
+  \item 'Qbox-Aqua' if you use commercial software by 'Qubit Systems'
 }}
 
 \item{date.format}{string: date format (DMY, MDY or YMD)}
@@ -31,6 +34,10 @@ import.meas(file, info.data,
 \item{start.measure}{chron: time when metabolic rate measurements are started}
 
 \item{stop.measure}{chron: time when metabolic rate measurements are finished}
+
+\item{set.date.time}{chron: this parameter is turned off by default and needed to be specified only if raw data were recorded by 'Qbox-Aqua' logger software. Specifically, input the date and time when .cmbl file was built in one of the following formats: "dd/mm/yyyy/hh:mm:ss", "mm/dd/yyyy/hh:mm:ss", or "yyyy/mm/dd/hh:mm:ss" (in accourdance to the chosen date.format parameter).}
+
+\item{meas.to.wait}{integer: the number of first rows for each measurement phase ('M') which should be reassigned to the wait phase (W). The parameter should be used when the wait phase ('W') is absent (e.g. in 'Qbox-Aqua' logger software) or not long enough to eliminate non-linear change in DO concentration over time from the measurement phase ('M') after shutting off water supply from the ambient water source.}
 
 \item{plot.temperature}{logical: if TRUE then the graph of raw temperature data is plotted}
 
@@ -41,6 +48,24 @@ The function returns a data frame containing standardized raw data of metabolic 
 }
 \description{
 The function is used to import raw data of metabolic rate measurements to R environment.
+}
+\details{
+If you use closed respirometry approach, please standardize raw data. The example of "FishResp" format for 4-channel respirometry system is shown here:
+\tabular{cccccccccc}{
+  Date&Time \tab Phase \tab Temp.1 \tab Ox.1 \tab Temp.2 \tab Ox.2 \tab Temp.3 \tab Ox.3 \tab Temp.4 \tab Ox.4\cr
+  19/08/2016/18:47:20 \tab F1 \tab 24.49 \tab 7.78 \tab 24.56 \tab 7.73 \tab 24.49 \tab 7.78 \tab 24.56 \tab 7.73\cr
+  19/08/2016/18:47:21 \tab F1 \tab 24.49 \tab 7.78 \tab 24.56 \tab 7.73 \tab 24.49 \tab 7.78 \tab 24.56 \tab 7.73\cr
+  19/08/2016/18:47:22 \tab M1 \tab 24.49 \tab 7.77 \tab 24.56 \tab 7.72 \tab 24.49 \tab 7.78 \tab 24.56 \tab 7.73\cr
+  19/08/2016/18:47:23 \tab M1 \tab 24.49 \tab 7.76 \tab 24.56 \tab 7.72 \tab 24.49 \tab 7.78 \tab 24.56 \tab 7.73\cr
+} where the items are:
+\itemize{
+\item Time step-interval is one second: one row of data per second.
+\item Date&Time should be represented in one of the following formats: "dd/mm/yyyy/hh:mm:ss", "mm/dd/yyyy/hh:mm:ss", or "yyyy/mm/dd/hh:mm:ss".
+\item Phase should have at least two levels: M (measurement) and F (flush). The number of a period should be attached to the level of a phase: F1, M1, F2, M2 ...
+\item Ox.1 contains values of dissolved oxygen measured in 'mg/L', 'mmol/L' or 'ml/L' for Chamber 1. If other measurement units were used, convert them to 'mg/L', 'mmol/L' or 'ml/L' using the function \code{\link{convert.respirometry}} or \code{\link{convert.rMR}}.
+\item Temp.1 contains values of water temperature in Celsius (C) for Chamber 1
+\item ...
+}
 }
 \examples{
 # Import raw data for standard and active metabolic
@@ -69,5 +94,19 @@ AMR.raw <- import.meas(file = AMR.path,
                        date.format = "DMY",
                        plot.temperature = TRUE,
                        plot.oxygen = TRUE)
+
+# an example for importting raw data recorded by Qbox-Aqua
+qbox.path = system.file("extdata/qbox-aqua/qbox-aqua.csv", package = "FishResp")
+RMR.raw <- import.meas(file = qbox.path,
+                        info.data = info,
+                        logger = "Qbox-Aqua",
+                        n.chamber = 1,
+                        date.format = "DMY",
+                        start.measure = "20:00:00",
+                        stop.measure = "08:00:00",
+                        set.date.time = "23/02/2014/23:30:22",
+                        meas.to.wait = 100,
+                        plot.temperature = TRUE,
+                        plot.oxygen = TRUE)
 
 }

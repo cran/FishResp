@@ -8,12 +8,13 @@
 #'            Volume = c(NA, NA, NA, NA, NA, NA, NA, NA),
 #'            DO.unit = c("mg/L", "mmol/L", "ml/L"))
 #'
-#' @details It is especially important to keep such format of vectors when not the full number of individuals is in a multi-channel respirometry system. E.g.: if you use a 4-channel respirometry system with three fish and only Chamber 1 is empty, but data are still collected from there, do not remove NA values for that chamber to prevent the shift of actual data between the chambers.\cr If DO unit is different than "mg/L", "mmol/L" or "ml/L", please use the function \code{\link{convert.rMR}} or \code{\link{convert.respirometry}} to convert the unit to "mg/L", "mmol/L" or "ml/L".
-#'
 #' @param ID  string: ID of fish or another aquatic organism
 #' @param Mass  numeric: wet mass of an individual in grams (g)
 #' @param Volume  numeric: the volume of chambers in milliliters (mL)
-#' @param DO.unit  character: dissolved oxygen unit used in raw data
+#' @param DO.unit  character: dissolved oxygen used in raw data should be measured in 'mg/L', 'mmol/L' or 'ml/L'. If other measurement units were used, convert them to 'mg/L', 'mmol/L' or 'ml/L' using the function \code{\link{convert.respirometry}} or \code{\link{convert.rMR}}.
+#'
+#'
+#' @details It is especially important to keep such format of vectors when not the full number of individuals is in a multi-channel respirometry system. E.g.: if you use a 4-channel respirometry system with three fish and only Chamber 1 is empty, but data are still collected from there, do not remove NA values for that chamber to prevent the shift of actual data between the chambers.
 #'
 #' @return The function returns a data frame with four columns: "ID", "Mass", "Volume", "DO.unit". The data frame is used in the functions \code{\link{import.test}}, \code{\link{import.meas}}, and \code{\link{correct.meas}}.
 #'

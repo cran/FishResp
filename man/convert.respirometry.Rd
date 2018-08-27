@@ -6,7 +6,7 @@
 \usage{
 convert.respirometry(import.file, export.file,
                      n.chamber = c(1,2,3,4,5,6,7,8),
-                     logger = c("AutoResp", "FishResp"),
+                     logger = c("AutoResp", "FishResp", "Qbox-Aqua"),
                      from, to, sal = 0, atm_pres = 1013.25)
 }
 \arguments{
@@ -16,7 +16,7 @@ convert.respirometry(import.file, export.file,
 
 \item{n.chamber}{integer: the number of chambers used in an experiment (including empty ones)}
 
-\item{logger}{string: the name of a logger software used for intermittent-flow respirometry}
+\item{logger}{string: the name of a logger software used for intermittent-flow respirometry. Note, that both 'OxyView' and 'Pyro Oxygen Logger' used in couple with the 'AquaResp' software should be converted to the 'FishResp' format before running this function (see the functions \code{\link{presens.aquaresp}} or \code{\link{pyroscience.aquaresp}}, respectively).}
 
 \item{from}{string: dissolved oxygen unit in an imported file (more information can be found in documentation of the function \code{\link{conv_o2}}, R package \pkg{respirometry})}
 

@@ -7,7 +7,7 @@
 QC.slope(slope.data, clean.data,
          chamber = c("CH1", "CH2", "CH3", "CH4",
                      "CH5", "CH6", "CH7", "CH8"),
-         current = 9999, alter = 9999)
+         current = 9999, alter = 9999, residuals = FALSE)
 }
 \arguments{
 \item{slope.data}{a data frame obtained by using the function \code{\link{extract.slope}}}
@@ -19,6 +19,8 @@ QC.slope(slope.data, clean.data,
 \item{current}{integer: current length of measurements for slope estimation (in seconds, black line)}
 
 \item{alter}{integer: alternative length of measurements for slope estimation (in seconds, red line)}
+
+\item{residuals}{logical: if TRUE then regression diagnostic graphs are plotted for each slope estimation (black graphs: for current slope estimation; red graphs: for alternative slope estimation). More information on diagnostic graphs can be found in the documentation of the function \code{\link{plot.lm}}.}
 }
 \description{
 Graphical quality control test of extracted slopes represents a visual comparison of linear regression of corrected O2 concentration over time with current and alternative length of measurements.
@@ -33,20 +35,9 @@ data(AMR.slope)
 
 QC.slope(SMR.slope, SMR.clean,
          chamber = "CH1", current = 1200, alter = 600)
-QC.slope(SMR.slope, SMR.clean,
-         chamber = "CH2", current = 1200, alter = 600)
-QC.slope(SMR.slope, SMR.clean,
-         chamber = "CH3", current = 1200, alter = 600)
-QC.slope(SMR.slope, SMR.clean,
-         chamber = "CH4", current = 1200, alter = 600)
 
 QC.slope(AMR.slope, AMR.clean,
-         chamber = "CH1", current = 300, alter = 600)
-QC.slope(AMR.slope, AMR.clean,
-         chamber = "CH2", current = 300, alter = 600)
-QC.slope(AMR.slope, AMR.clean,
-         chamber = "CH3", current = 300, alter = 600)
-QC.slope(AMR.slope, AMR.clean,
-         chamber = "CH4", current = 300, alter = 600)
+         chamber = "CH4", current = 300, alter = 600,
+         residuals = TRUE)
 
 }

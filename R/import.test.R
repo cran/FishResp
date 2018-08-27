@@ -1,11 +1,12 @@
 #' Import Background Respiration Data
 #'
-#' The function is used to import raw data of background respiration  to R environment. The test should be done immediately before and/or after the actual metabolic rate measurements (pre-test and post-test, respectively).
+#' The function is used to import raw data of background respiration to R environment. The test should be done immediately before and/or after the actual metabolic rate measurements (pre-test and post-test, respectively).
 #'
 #' @usage
 #' import.test(file, info.data,
 #'             n.chamber = c(1,2,3,4,5,6,7,8),
-#'             logger = c("AutoResp", "FishResp"),
+#'             logger = c("AutoResp", "FishResp", "Qbox-Aqua"),
+#'             meas.to.wait = 0,
 #'             plot.temperature = TRUE,
 #'             plot.oxygen = TRUE)
 #'
@@ -14,9 +15,11 @@
 #' @param n.chamber  integer: the number of chambers used in an experiment (including empty ones)
 #' @param logger  string: the name of a logger software used for intermittent-flow respirometry:
 #' \itemize{
-#'   \item 'AutoResp' if you use commercial software of 'Loligo Systems'
-#'   \item 'FishResp' if you do not use the above-mentioned software, standardize data to the 'FishResp' format described below (see Details)
+#'   \item 'AutoResp' if you use commercial software by 'Loligo Systems'
+#'   \item 'FishResp' if you use free software 'AquaResp' in combination with equipment produced by 'PreSens' or 'Pyroscience', please convert data to the 'FishResp' format using the functions \code{\link{presens.aquaresp}} or \code{\link{pyroscience.aquaresp}}, respectively. \cr If you do not use commercial software or AquaResp for running intermittent-flow respirometry, adjust raw data manually to the 'FishResp' format (see Details below).
+#'   \item 'Qbox-Aqua' if you use commercial software by 'Qubit Systems'
 #' }
+#' @param meas.to.wait  integer: the number of first rows for each measurement phase ('M') which should be reassigned to the wait phase (W). The parameter should be used when the wait phase ('W') is absent (e.g. in 'Qbox-Aqua' logger software) or not long enough to eliminate non-linear change in DO concentration over time from the measurement phase ('M') after shutting off water supply from the ambient water source.
 #' @param plot.temperature  logical: if TRUE then the graph of raw  temperature data is plotted
 #' @param plot.oxygen  logical: if TRUE then the graph of raw oxygen data is plotted
 #'
@@ -30,10 +33,11 @@
 #' } where the items are:
 #' \itemize{
 #' \item Time step-interval is one second: one row of data per second.
-#' \item Date&Time is measured in 24-hour clock format: "dd/mm/yyyy/hh:mm:ss"
-#' \item Phase should have at least two levels: M (measurement) and F (flush). The number of a period should be attached to the levels of a phase: F1, M1, F2, M2 ...
-#' \item Ox.1 contains values of dissolved oxygen in Chamber 1
-#' \item Temp.1 contains values of water temperature in Chamber 1
+#' \item Date&Time should be represented in one of the following formats: "dd/mm/yyyy/hh:mm:ss", "mm/dd/yyyy/hh:mm:ss", or "yyyy/mm/dd/hh:mm:ss".
+#' \item Phase should have at least two levels: M (measurement) and F (flush). The number of a period should be attached to the level of a phase: F1, M1, F2, M2 ...
+#' \item Ox.1 contains values of dissolved oxygen measured in 'mg/L', 'mmol/L' or 'ml/L' for Chamber 1. If other measurement units were used, convert them to 'mg/L', 'mmol/L' or 'ml/L' using the function \code{\link{convert.respirometry}} or \code{\link{convert.rMR}}.
+#' \item Temp.1 contains values of water temperature in Celsius (C) for Chamber 1
+#' \item ...
 #' }
 #'
 #' @return The function returns a data frame containing standardized raw data of a background respiration test. The data frame should be used in the function \code{\link{correct.meas}} to correct metabolic rate measurements for background respiration.
@@ -70,7 +74,8 @@
 
 import.test <- function(file, info.data,
                         n.chamber = c(1,2,3,4,5,6,7,8),
-                        logger = c("AutoResp", "FishResp"),
+                        logger = c("AutoResp", "FishResp", "Qbox-Aqua"),
+                        meas.to.wait = 0,
                         plot.temperature = TRUE,
                         plot.oxygen = TRUE){
   V1 <- V2 <- V3 <- V4 <- V5 <- V6 <- V7 <- V8 <- V9 <- V10 <- NULL
@@ -275,13 +280,53 @@ import.test <- function(file, info.data,
     }
   }
 
+
+  ### Qbox-Aqua format ###
+
+  else if (logger == "Qbox-Aqua"){
+    test.data<-read.table(file, sep = ",", skip=2, header=F, strip.white=T)
+    if (n.chamber == 1){
+      test.data<-subset(test.data, select=c(V1, V9, V4, ncol(test.data)))
+      names(test.data)<-c("Time", "Phase", "Temp.1", "Ox.1")
+      for(i in 3:ncol(test.data)){test.data[,i] = as.numeric(gsub(',','.', test.data[,i]))}
+      aaa <- max(test.data$Ox.1, na.rm = TRUE)
+      if(all(is.na(test.data$Ox.1))){test.data$Ox.1[is.na(test.data$Ox.1)] <- aaa}
+
+      ### Indexing measurement phases for Qbox-Aqua
+      test.data$Phase[test.data$Phase == "1"] <- "F"
+      test.data$Phase[test.data$Phase == "0"] <- "M"
+      bdrs <- which(c(FALSE, tail(test.data$Phase,-1) != head(test.data$Phase,-1)))
+      bdrs <- paste(bdrs , test.data$Phase[bdrs], sep = "")
+      M.start <- grep('M', bdrs, value=TRUE)
+      M.start <- as.integer(sub("M$", "", M.start))
+      M.end <- grep('F', bdrs, value=TRUE)
+      M.end <- as.integer(sub("F$", "", M.end)) - 1
+      if(M.end[1] < M.start[1]){M.end <- M.end[-1]}
+
+      for(i in 1:length(M.end)){
+        test.data$Phase[M.start[i]:M.end[i]] <- paste(test.data$Phase[M.start[i]:M.end[i]], i, sep = "")
+      }
+    }
+    else{
+      print("If 'Qubit Systems' starts producing multi-chamber systems for aquatic respirometry, please contact us via email: fishresp@gmail.com")
+    }
+  }
+
+
   else{
-    print("Please, choose the format of your data between AutoResp and FishResp")
+    print("Please, choose the format of your data: AutoResp, FishResp or Qbox-Aqua")
   }
 
   rm(aaa)
   test.data <- subset(test.data, Phase == "M1")
   test.data$Phase <- factor(test.data$Phase)
+
+  # cut off first n raws from 'M' phase
+  if(meas.to.wait != 0){
+    idx <- unlist(tapply(1:nrow(test.data), test.data$Phase, tail, -(meas.to.wait)), use.names=FALSE)
+    test.data <- test.data[idx, ]
+  }else{
+    }
 
   if(n.chamber == 1){
     test.CH1<-subset(test.data, select=c(Temp.1, Ox.1))
