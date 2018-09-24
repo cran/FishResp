@@ -1,23 +1,23 @@
-#' Convert raw respirometry data (respirometry)
+#' Convert Raw Respirometry Data (respirometry)
 #'
-#' This function is a modification of the function \code{\link[respirometry]{conv_o2}} from the R package \pkg{respirometry} allowing to convert raw respirometry data from one DO unit to another obtained in multichannel respirometry systems.
+#' This function is the modification of the function \code{\link[respirometry]{conv_o2}} from the R package \pkg{respirometry} allowing to convert raw respirometry data from one DO unit to another obtained in multichannel respirometry systems.
 #'
 #' @usage
 #' convert.respirometry(import.file, export.file,
 #'                      n.chamber = c(1,2,3,4,5,6,7,8),
-#'                      logger = c("AutoResp", "FishResp", "Qbox-Aqua"),
+#'                      logger = c("AutoResp", "FishResp", "QboxAqua"),
 #'                      from, to, sal = 0, atm_pres = 1013.25)
 #'
 #' @param import.file  the name of a file with raw respirometry data which should be imported to convert DO units
 #' @param export.file  the name of a file with results of the DO unit conversion
 #' @param n.chamber  integer: the number of chambers used in an experiment (including empty ones)
 #' @param logger  string: the name of a logger software used for intermittent-flow respirometry. Note, that both 'OxyView' and 'Pyro Oxygen Logger' used in couple with the 'AquaResp' software should be converted to the 'FishResp' format before running this function (see the functions \code{\link{presens.aquaresp}} or \code{\link{pyroscience.aquaresp}}, respectively).
-#' @param from  string: dissolved oxygen unit in an imported file (more information can be found in documentation of the function \code{\link{conv_o2}}, R package \pkg{respirometry})
-#' @param to  string: dissolved oxygen unit in an exported file (more information can be found in documentation of the function \code{\link{conv_o2}}, R package \pkg{respirometry})
-#' @param sal  string: salinity is measured in ppm (more information can be found in documentation of the function \code{\link{conv_o2}}, R package \pkg{respirometry})
-#' @param atm_pres  string: ambient atmospheric pressure value (more information can be found in documentation of the function \code{\link{conv_o2}}, R package \pkg{respirometry})
+#' @param from  string: dissolved oxygen unit in an imported file (more information can be found in the documentation of the function \code{\link{conv_o2}}, R package \pkg{respirometry})
+#' @param to  string: dissolved oxygen unit in an exported file (more information can be found in the documentation of the function \code{\link{conv_o2}}, R package \pkg{respirometry})
+#' @param sal  string: salinity is measured in ppm (more information can be found in the documentation of the function \code{\link{conv_o2}}, R package \pkg{respirometry})
+#' @param atm_pres  string: ambient atmospheric pressure value (more information can be found in the documentation of the function \code{\link{conv_o2}}, R package \pkg{respirometry})
 #'
-#' @return the function exports a data frame with converted DO units.
+#' @return The function exports a data frame with converted DO units.
 #'
 #' @importFrom respirometry conv_o2
 #' @importFrom utils write.table write.csv
@@ -28,7 +28,7 @@
 #'
 #' convert.respirometry(import.file = SMR.path,
 #'                      export.file = "converted_SMR_raw.txt",
-#'                      n.chamber = 2, logger = "AutoResp",
+#'                      n.chamber = 1, logger = "AutoResp",
 #'                      from = "mg_per_l", to = "mmol_per_l",
 #'                      sal = 0, atm_pres = 1013.25)
 #'
@@ -36,7 +36,7 @@
 
 convert.respirometry <- function(import.file, export.file,
 					              n.chamber = c(1,2,3,4,5,6,7,8),
-								 logger = c("AutoResp", "FishResp", "Qbox-Aqua"),
+								 logger = c("AutoResp", "FishResp", "QboxAqua"),
 								 from, to, sal = 0,
 								 atm_pres = 1013.25){
 
@@ -528,7 +528,7 @@ convert.respirometry <- function(import.file, export.file,
 
 
 
-  else if (logger == "Qbox-Aqua"){
+  else if (logger == "QboxAqua"){
 
     MR.data.body <- read.table(import.file, sep = ",", header=T,
 		                               check.names=FALSE, strip.white=T)

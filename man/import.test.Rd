@@ -6,13 +6,13 @@
 \usage{
 import.test(file, info.data,
             n.chamber = c(1,2,3,4,5,6,7,8),
-            logger = c("AutoResp", "FishResp", "Qbox-Aqua"),
+            logger = c("AutoResp", "FishResp", "QboxAqua"),
             meas.to.wait = 0,
             plot.temperature = TRUE,
             plot.oxygen = TRUE)
 }
 \arguments{
-\item{file}{the name of a file  which the pre- or post-test data are to be read from}
+\item{file}{the name of a file  which the pre- or post-test data are to be read from. Note, if the file contains more than one measurement phase (e.g. M1 and M2), only the first one (M1) will be imported in R.}
 
 \item{info.data}{a data frame obtained by using the function \code{\link{input.info}}}
 
@@ -21,11 +21,11 @@ import.test(file, info.data,
 \item{logger}{string: the name of a logger software used for intermittent-flow respirometry:
 \itemize{
   \item 'AutoResp' if you use commercial software by 'Loligo Systems'
-  \item 'FishResp' if you use free software 'AquaResp' in combination with equipment produced by 'PreSens' or 'Pyroscience', please convert data to the 'FishResp' format using the functions \code{\link{presens.aquaresp}} or \code{\link{pyroscience.aquaresp}}, respectively. \cr If you do not use commercial software or AquaResp for running intermittent-flow respirometry, adjust raw data manually to the 'FishResp' format (see Details below).
-  \item 'Qbox-Aqua' if you use commercial software by 'Qubit Systems'
+  \item 'FishResp' if you use free software 'AquaResp' in combination with equipment produced by 'PreSens' or 'Pyroscience', please convert data to the 'FishResp' format using the functions \code{\link{presens.aquaresp}} or \code{\link{pyroscience.aquaresp}}, respectively. \cr If you do not use commercial software or 'AquaResp' for running intermittent-flow respirometry, adjust raw data manually to the 'FishResp' format (see Details below).
+  \item 'QboxAqua' if you use commercial software by 'Qubit Systems'
 }}
 
-\item{meas.to.wait}{integer: the number of first rows for each measurement phase ('M') which should be reassigned to the wait phase (W). The parameter should be used when the wait phase ('W') is absent (e.g. in 'Qbox-Aqua' logger software) or not long enough to eliminate non-linear change in DO concentration over time from the measurement phase ('M') after shutting off water supply from the ambient water source.}
+\item{meas.to.wait}{integer: the number of first rows for each measurement phase (M) which should be reassigned to the wait phase (W). The parameter should be used when the wait phase (W) is absent (e.g. in 'Q-box Aqua' logger software) or not long enough to eliminate non-linear change in DO concentration over time from the measurement phase (M) after shutting off water supply from the ambient water source.}
 
 \item{plot.temperature}{logical: if TRUE then the graph of raw  temperature data is plotted}
 
@@ -47,11 +47,10 @@ Do not use this function if an empty chamber is used for controlling background 
   19/08/2016/18:47:23 \tab M1 \tab 24.49 \tab 7.76 \tab 24.56 \tab 7.72 \tab 24.49 \tab 7.78 \tab 24.56 \tab 7.73\cr
 } where the items are:
 \itemize{
-\item Time step-interval is one second: one row of data per second.
-\item Date&Time should be represented in one of the following formats: "dd/mm/yyyy/hh:mm:ss", "mm/dd/yyyy/hh:mm:ss", or "yyyy/mm/dd/hh:mm:ss".
-\item Phase should have at least two levels: M (measurement) and F (flush). The number of a period should be attached to the level of a phase: F1, M1, F2, M2 ...
+\item Date&Time should be represented in one of the following formats: "dd/mm/yyyy/hh:mm:ss", "mm/dd/yyyy/hh:mm:ss", or "yyyy/mm/dd/hh:mm:ss". Time step-interval is one second: one row of data per second.
+\item Phase should have at least two levels: M (measurement) and F (flush). The ordinal number of a phase should be attached to the level of a phase: F1, M1, F2, M2 ...
+\item Temp.1 contains values of water temperature in Celsius (\eqn{C^{o}}) for Chamber 1
 \item Ox.1 contains values of dissolved oxygen measured in 'mg/L', 'mmol/L' or 'ml/L' for Chamber 1. If other measurement units were used, convert them to 'mg/L', 'mmol/L' or 'ml/L' using the function \code{\link{convert.respirometry}} or \code{\link{convert.rMR}}.
-\item Temp.1 contains values of water temperature in Celsius (C) for Chamber 1
 \item ...
 }
 }

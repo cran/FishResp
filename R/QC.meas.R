@@ -13,11 +13,11 @@
 #' @param clean.data  a data frame obtained by using the function \code{\link{correct.meas}}
 #' @param QC  string: the name of a visual QC test. Five options are available:
 #' \itemize{
-#' \item  "Temperature" a graph of temperature vs. time  ordered by chambers
-#' \item  "Total.O2.chambers" a graph of dissolved oxygen vs. time ordered by chambers
-#' \item  "Total.O2.phases" a graph of dissolved oxygen vs. time ordered by chambers and phases
-#' \item  "Corrected.O2.chambers" a graph of dissolved oxygen corrected for background respiration vs. time ordered by chambers
-#' \item  "Corrected.O2.phases" a graph of dissolved oxygen corrected for background respiration vs. time ordered by chambers and phases
+#' \item  "Temperature": a graph of temperature vs. time  ordered by chambers
+#' \item  "Total.O2.chambers": a graph of dissolved oxygen vs. time ordered by chambers
+#' \item  "Total.O2.phases": a graph of dissolved oxygen vs. time ordered by chambers and phases
+#' \item  "Corrected.O2.chambers": a graph of dissolved oxygen corrected for background respiration vs. time ordered by chambers
+#' \item  "Corrected.O2.phases": a graph of dissolved oxygen corrected for background respiration vs. time ordered by chambers and phases
 #'  }
 #'
 #' @importFrom lattice xyplot
@@ -47,7 +47,7 @@ QC.meas <- function(clean.data,
   if (QC == "Temperature"){
     return(xyplot(Temp~Time|Phase*Chamber.No, data=clean.data,
                   par.strip.text=list(cex=0.6), cex=0.5,
-                  xlab = "Time (s)", ylab = "Temperature (C)", as.table = T,
+                  xlab = "Time (s)", ylab = bquote("Temperature (" ~ C^o ~ ")"), as.table = T,
                   scales=list(tck=c(1,0), x=list(cex=0.7), y=list(cex=0.7))))
   }
   else if (QC == "Total.O2.phases"){

@@ -14,7 +14,7 @@ input.info(ID = c(NA, NA, NA, NA, NA, NA, NA, NA),
 
 \item{Mass}{numeric: wet mass of an individual in grams (g)}
 
-\item{Volume}{numeric: the volume of chambers in milliliters (mL)}
+\item{Volume}{numeric: the volume of a chamber in milliliters (mL) or the whole respirometry loop (if measured)}
 
 \item{DO.unit}{character: dissolved oxygen used in raw data should be measured in 'mg/L', 'mmol/L' or 'ml/L'. If other measurement units were used, convert them to 'mg/L', 'mmol/L' or 'ml/L' using the function \code{\link{convert.respirometry}} or \code{\link{convert.rMR}}.}
 }

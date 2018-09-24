@@ -23,7 +23,7 @@ QC.slope(slope.data, clean.data,
 \item{residuals}{logical: if TRUE then regression diagnostic graphs are plotted for each slope estimation (black graphs: for current slope estimation; red graphs: for alternative slope estimation). More information on diagnostic graphs can be found in the documentation of the function \code{\link{plot.lm}}.}
 }
 \description{
-Graphical quality control test of extracted slopes represents a visual comparison of linear regression of corrected O2 concentration over time with current and alternative length of measurements.
+Graphical quality control test of extracted slopes represents a visual comparison of linear regression of corrected \eqn{O_{2}} concentration over time with current and alternative length of measurements.
 }
 \examples{
 # if the data have been already loaded to R,
@@ -33,11 +33,10 @@ data(SMR.slope)
 data(AMR.clean)
 data(AMR.slope)
 
-QC.slope(SMR.slope, SMR.clean,
-         chamber = "CH1", current = 1200, alter = 600)
+QC.slope(SMR.slope, SMR.clean, chamber = "CH1",
+         current = 1200, alter = 600)
 
-QC.slope(AMR.slope, AMR.clean,
-         chamber = "CH4", current = 300, alter = 600,
-         residuals = TRUE)
+QC.slope(AMR.slope, AMR.clean, chamber = "CH4",
+         current = 600, alter = 300, residuals = TRUE)
 
 }

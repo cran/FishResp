@@ -1,6 +1,6 @@
 #' Quality Control of Slope(s)
 #'
-#' Graphical quality control test of extracted slopes represents a visual comparison of linear regression of corrected O2 concentration over time with current and alternative length of measurements.
+#' Graphical quality control test of extracted slopes represents a visual comparison of linear regression of corrected \eqn{O_{2}} concentration over time with current and alternative length of measurements.
 #'
 #' @usage
 #' QC.slope(slope.data, clean.data,
@@ -29,12 +29,11 @@
 #' data(AMR.clean)
 #' data(AMR.slope)
 #'
-#' QC.slope(SMR.slope, SMR.clean,
-#'          chamber = "CH1", current = 1200, alter = 600)
+#' QC.slope(SMR.slope, SMR.clean, chamber = "CH1",
+#'          current = 1200, alter = 600)
 #'
-#' QC.slope(AMR.slope, AMR.clean,
-#'          chamber = "CH4", current = 300, alter = 600,
-#'          residuals = TRUE)
+#' QC.slope(AMR.slope, AMR.clean, chamber = "CH4",
+#'          current = 600, alter = 300, residuals = TRUE)
 #'
 #' @export
 
@@ -58,8 +57,8 @@ QC.slope <- function(slope.data, clean.data,
       out.df<-subset(chlevels.df, Phase==meas[m])
       row.names(out.df)<-NULL
       extracted.data<-rbind(extracted.data, out.df)
+      }
     }
-  }
 
   rm(chlevels)
   rm(i)
@@ -68,23 +67,16 @@ QC.slope <- function(slope.data, clean.data,
   rm(m)
   rm(out.df)
 
-  a <-length(slope.data$Chamber.No[slope.data$Chamber.No == "CH1"])
+  pop.ch <- names(which.max(table(slope.data$Chamber.No)))
+  a <-length(slope.data$Chamber.No[slope.data$Chamber.No == as.character(pop.ch)])
 
   if (a <= 3){
     par(mfrow = c(a, 1))
-  }
-  else if(a == 4){
-    dev.new()
-    par(mfrow = c(2, 2))
-  }
-  else if(a > 4 && a <= 6){
-    dev.new()
-    par(mfrow = c(3, 2))
-  }
+    }
   else{
     dev.new()
-    par(mfrow = c(3, 2), ask = T)
-  }
+    par(mfrow = c(3, 1), ask = T)
+    }
 
   rm(a)
   chamber.df<-subset(extracted.data, Chamber.No == chamber)
@@ -92,82 +84,81 @@ QC.slope <- function(slope.data, clean.data,
 
   if(residuals == FALSE){
     for(m in 1:length(meas)){
-    m.df<-subset(chamber.df, Phase==meas[m])
-    m1.df<-subset(m.df, Time<=current)
-    m2.df<-subset(m.df, Time<=alter)
-    model.1<-lm(O2.correct~Time, data=m1.df)
-    model.2<-lm(O2.correct~Time, data=m2.df)
-    plot(m.df$O2.correct~m.df$Time, main=meas[m], las=1, col = "steelblue2",
-         xlab = "Time (s)", ylab = paste("DO (", slope.data$DO.unit[1], "/L)", sep = ""))
+      m.df<-subset(chamber.df, Phase==meas[m])
+      m1.df<-subset(m.df, Time<=current)
+      m2.df<-subset(m.df, Time<=alter)
+      model.1<-lm(O2.correct~Time, data=m1.df)
+      model.2<-lm(O2.correct~Time, data=m2.df)
+      plot(m.df$O2.correct~m.df$Time, main=meas[m], las=1, col = "steelblue2",
+           xlab = "Time (s)", ylab = paste("DO (", slope.data$DO.unit[1], "/L)", sep = ""))
 
-    abline(coef(model.1)[1], coef(model.1)[2], col="black", lwd=2)
-    abline(coef(model.2)[1], coef(model.2)[2], col = "red", lwd=2, lty=2)
-    l.1<-paste(current, "s: r^2=",(round(summary(model.1)$r.sq, digits=3)),"; slope= ",(round(coef(model.1)[2], digits=5)),sep="")
-    l.2<-paste(alter, "s: r^2=",(round(summary(model.2)$r.sq, digits=3)),"; slope= ",(round(coef(model.2)[2], digits=5)),sep="")
-    legend("topright", legend=c(l.1,l.2), lty=c(1,2), lwd=c(2,2), col=c("black", "red"))
-    rm(model.1)
-    rm(l.1)
+      abline(coef(model.1)[1], coef(model.1)[2], col="black", lwd=2)
+      abline(coef(model.2)[1], coef(model.2)[2], col = "red", lwd=2, lty=2)
+      legend("topright", legend=c(expression(),
+                                  bquote(.(current) ~ "s:" ~ r^2 ~ "=" ~ .(round(summary(model.1)$r.sq, digits=3)) ~ "; slope" ~ "=" ~ .(round(coef(model.1)[2], digits=5))),
+                                  bquote(.(alter) ~ "s:" ~ r^2 ~ "=" ~ .(round(summary(model.2)$r.sq, digits=3)) ~ "; slope" ~ "=" ~ .(round(coef(model.2)[2], digits=5)))),
+                                  lty=c(1,2), lwd=c(2,2), col=c("black", "red"))
+      }
     }
-  }
 
 
   if(residuals == TRUE){
     for(m in 1:length(meas)){
-    m.df<-subset(chamber.df, Phase==meas[m])
-    m1.df<-subset(m.df, Time<=current)
-    m2.df<-subset(m.df, Time<=alter)
-    model.1<-lm(O2.correct~Time, data=m1.df)
-    model.2<-lm(O2.correct~Time, data=m2.df)
+      m.df<-subset(chamber.df, Phase==meas[m])
+      m1.df<-subset(m.df, Time<=current)
+      m2.df<-subset(m.df, Time<=alter)
+      model.1<-lm(O2.correct~Time, data=m1.df)
+      model.2<-lm(O2.correct~Time, data=m2.df)
 
-    layout(matrix(c(1,1,1,2,3,4,5,6,7), 3, 3, byrow = TRUE))
+      layout(matrix(c(1,1,1,2,3,4,5,6,7), 3, 3, byrow = TRUE))
 
-    plot(m.df$O2.correct~m.df$Time, main=meas[m], las=1, col = "steelblue2",
-         xlab = "Time (s)", ylab = paste("DO (", slope.data$DO.unit[1], "/L)", sep = ""))
-    abline(coef(model.1)[1], coef(model.1)[2], col="black", lwd=2)
-    abline(coef(model.2)[1], coef(model.2)[2], col = "red", lwd=2, lty=2)
-    l.1<-paste(current, "s: r^2=",(round(summary(model.1)$r.sq, digits=3)),"; slope= ",(round(coef(model.1)[2], digits=5)),sep="")
-    l.2<-paste(alter, "s: r^2=",(round(summary(model.2)$r.sq, digits=3)),"; slope= ",(round(coef(model.2)[2], digits=5)),sep="")
-    legend("topright", legend=c(l.1,l.2), lty=c(1,2), lwd=c(2,2), col=c("black", "red"))
+      plot(m.df$O2.correct~m.df$Time, main=meas[m], las=1, col = "steelblue2",
+           xlab = "Time (s)", ylab = paste("DO (", slope.data$DO.unit[1], "/L)", sep = ""))
 
-    panel.smooth.1 <- function (x, y, col = par("col"), bg = NA, pch = par("pch"),
+      abline(coef(model.1)[1], coef(model.1)[2], col="black", lwd=2)
+      abline(coef(model.2)[1], coef(model.2)[2], col = "red", lwd=2, lty=2)
+      legend("topright", legend=c(expression(),
+                                  bquote(.(current) ~ "s:" ~ r^2 ~ "=" ~ .(round(summary(model.1)$r.sq, digits=3)) ~ "; slope" ~ "=" ~ .(round(coef(model.1)[2], digits=5))),
+                                  bquote(.(alter) ~ "s:" ~ r^2 ~ "=" ~ .(round(summary(model.2)$r.sq, digits=3)) ~ "; slope" ~ "=" ~ .(round(coef(model.2)[2], digits=5)))),
+                                  lty=c(1,2), lwd=c(2,2), col=c("black", "red"))
+
+      panel.smooth.1 <- function (x, y, col = par("col"), bg = NA, pch = par("pch"),
         cex = 1, col.smooth = "black", span = 2/3, iter = 3, ...){
         points(x, y, pch = pch, col = col, bg = bg, cex = cex)
         ok <- is.finite(x) & is.finite(y)
         if (any(ok))
-            lines(stats::lowess(x[ok], y[ok], f = span, iter = iter), col = col.smooth, ...)
+        lines(stats::lowess(x[ok], y[ok], f = span, iter = iter), col = col.smooth, ...)
         }
 
-    plot(model.1, which = 1, col = "steelblue2", panel = panel.smooth.1, id.n = 0)
-    abline(h = 0, lty = 3, col = "black")
-    plot(model.1, which = 2, col = "steelblue2", id.n = 0)
-    qqline(rstandard(model.1), col = "black", lwd = 1, lty=3)
-    mtext(paste("Regression Diagnostic for ", current, "s", sep = ""), side = 3, line = 2, font = 2, col.main= "blue")
-    plot(model.1, which = 3, col = "steelblue2", panel = panel.smooth.1, id.n = 0)
-    plot(model.2, which = 1, col = "steelblue2", panel = panel.smooth, caption = NULL, col.lab="red", id.n = 0)
-    box(col = 'red')
-    axis(1, col = 'red', col.axis = 'red', col.ticks = 'red')
-    axis(2, col = 'red', col.axis = 'red', col.ticks = 'red')
-    abline(h = 0, lty = 3, col = "red")
-    mtext("Residuals vs Fitted", side = 3, line = 0.3, col= "red")
-    plot(model.2, which = 2, col = "steelblue2", panel = panel.smooth, caption = NULL, col.lab="red", id.n = 0)
-    qqline(rstandard(model.2), col = "red", lwd = 1, lty=3)
-    box(col = 'red')
-    axis(1, col = 'red', col.axis = 'red', col.ticks = 'red')
-    axis(2, col = 'red', col.axis = 'red', col.ticks = 'red')
-    mtext(paste("Regression Diagnostic for ", alter, "s", sep = ""), side = 3, line = 2, font = 2, col = "red")
-    mtext("Normal Q-Q", side = 3, line = 0.3, col= "red")
-    plot(model.2, which = 3, col = "steelblue2", panel = panel.smooth, caption = NULL, col.lab="red", id.n = 0)
-    mtext("Scale-Location", side = 3, line = 0.3, col= "red")
-    box(col = 'red')
-    axis(1, col = 'red', col.axis = 'red', col.ticks = 'red')
-    axis(2, col = 'red', col.axis = 'red', col.ticks = 'red')
+      plot(model.1, which = 1, col = "steelblue2", panel = panel.smooth.1, id.n = 0)
+      abline(h = 0, lty = 3, col = "black")
+      plot(model.1, which = 2, col = "steelblue2", id.n = 0)
+      qqline(rstandard(model.1), col = "black", lwd = 1, lty=3)
+      mtext(paste("Regression Diagnostic for ", current, "s", sep = ""), side = 3, line = 2, font = 2, col.main= "blue")
+      plot(model.1, which = 3, col = "steelblue2", panel = panel.smooth.1, id.n = 0)
+      plot(model.2, which = 1, col = "steelblue2", panel = panel.smooth, caption = NULL, col.lab="red", id.n = 0)
+      box(col = 'red')
+      axis(1, col = 'red', col.axis = 'red', col.ticks = 'red')
+      axis(2, col = 'red', col.axis = 'red', col.ticks = 'red')
+      abline(h = 0, lty = 3, col = "red")
+      mtext("Residuals vs Fitted", side = 3, line = 0.3, col= "red")
+      plot(model.2, which = 2, col = "steelblue2", panel = panel.smooth, caption = NULL, col.lab="red", id.n = 0)
+      qqline(rstandard(model.2), col = "red", lwd = 1, lty=3)
+      box(col = 'red')
+      axis(1, col = 'red', col.axis = 'red', col.ticks = 'red')
+      axis(2, col = 'red', col.axis = 'red', col.ticks = 'red')
+      mtext(paste("Regression Diagnostic for ", alter, "s", sep = ""), side = 3, line = 2, font = 2, col = "red")
+      mtext("Normal Q-Q", side = 3, line = 0.3, col= "red")
+      plot(model.2, which = 3, col = "steelblue2", panel = panel.smooth, caption = NULL, col.lab="red", id.n = 0)
+      mtext("Scale-Location", side = 3, line = 0.3, col= "red")
+      box(col = 'red')
+      axis(1, col = 'red', col.axis = 'red', col.ticks = 'red')
+      axis(2, col = 'red', col.axis = 'red', col.ticks = 'red')
 
-    rm(model.1)
-    rm(model.2)
-    rm(l.1)
-    rm(l.2)
+      rm(model.1)
+      rm(model.2)
+      }
     }
-  }
 
   rm(meas)
   rm(chamber.df)
@@ -175,4 +166,4 @@ QC.slope <- function(slope.data, clean.data,
   rm(m.df)
   rm(m1.df)
   rm(m2.df)
-}
+  }

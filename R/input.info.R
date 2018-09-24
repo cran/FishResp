@@ -10,7 +10,7 @@
 #'
 #' @param ID  string: ID of fish or another aquatic organism
 #' @param Mass  numeric: wet mass of an individual in grams (g)
-#' @param Volume  numeric: the volume of chambers in milliliters (mL)
+#' @param Volume  numeric: the volume of a chamber in milliliters (mL) or the whole respirometry loop (if measured)
 #' @param DO.unit  character: dissolved oxygen used in raw data should be measured in 'mg/L', 'mmol/L' or 'ml/L'. If other measurement units were used, convert them to 'mg/L', 'mmol/L' or 'ml/L' using the function \code{\link{convert.respirometry}} or \code{\link{convert.rMR}}.
 #'
 #'

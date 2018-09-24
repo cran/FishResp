@@ -14,9 +14,9 @@
 #' @param file  the name of an exported file with results of the analysis
 #' @param simplify  logical: if TRUE, the number of columns in the extracted data frame is reduced
 #' @param MS  logical: if TRUE, metabolic scope is calculated and attached to the exported dataset
-#' @param plot.MS.abs  logical: if TRUE, the graph of absolute metabolic scope is plotted
-#' @param plot.MS.mass  logical: if TRUE, the graph of mass-specific metabolic scope is plotted
-#' @param plot.MS.fact  logical: if TRUE, the graph of factorial metabolic scope is plotted
+#' @param plot.MS.abs  logical: if TRUE, the graph of absolute metabolic scope is plotted (x-axis shows measurement phases for MR.data.2)
+#' @param plot.MS.mass  logical: if TRUE, the graph of mass-specific metabolic scope is plotted (x-axis shows measurement phases for MR.data.2)
+#' @param plot.MS.fact  logical: if TRUE, the graph of factorial metabolic scope is plotted (x-axis shows measurement phases of for MR.data.2)
 #'
 #' @return If only one traits exists, the function exports a data frame with full or simplified structure. If both traits are used, the function returns and exports 'MR.data.1' and 'MR.data.2' with metabolic scope parameters (optionally).
 #'
@@ -120,12 +120,15 @@ export.MR <- function(MR.data.1, MR.data.2, file = "",
       final.data$MS.fact <- final.data[,26] / final.data[,15]
 
       a <- bwplot(MS.abs~final.data[,18]|Ind, data=final.data, as.table = T,
-                  ylab = paste("Absolute MS (", final.data$DO.unit[1], "/h)", sep = ""),
+                  xlab = "Measurement phase",
+                  ylab = bquote("Absolute MS (" ~ .(final.data$DO.unit[1]) ~ h^-1 ~ ")"),
                   main = "Absolute metabolic scope")
       b <- bwplot(MS.mass~final.data[,18]|Ind, data=final.data, as.table = T,
-                  ylab = paste("Mass-specific MS (", final.data$DO.unit[1], "/kg/h)", sep = ""),
+                  xlab = "Measurement phase",
+                  ylab = bquote("Mass-specific MS (" ~ .(final.data$DO.unit[1]) ~ kg^-1 ~ h^-1 ~ ")"),
                   main = "Mass-specific metabolic scope")
       d <- bwplot(MS.fact~final.data[,18]|Ind, data=final.data, as.table = T,
+                  xlab = "Measurement phase",
                   ylab = "Factorial MS (coefficient)",
                   main = "Factorial metabolic scope")
 

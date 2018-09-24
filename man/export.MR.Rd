@@ -21,11 +21,11 @@ export.MR(MR.data.1, MR.data.2, file = "",
 
 \item{MS}{logical: if TRUE, metabolic scope is calculated and attached to the exported dataset}
 
-\item{plot.MS.abs}{logical: if TRUE, the graph of absolute metabolic scope is plotted}
+\item{plot.MS.abs}{logical: if TRUE, the graph of absolute metabolic scope is plotted (x-axis shows measurement phases for MR.data.2)}
 
-\item{plot.MS.mass}{logical: if TRUE, the graph of mass-specific metabolic scope is plotted}
+\item{plot.MS.mass}{logical: if TRUE, the graph of mass-specific metabolic scope is plotted (x-axis shows measurement phases for MR.data.2)}
 
-\item{plot.MS.fact}{logical: if TRUE, the graph of factorial metabolic scope is plotted}
+\item{plot.MS.fact}{logical: if TRUE, the graph of factorial metabolic scope is plotted (x-axis shows measurement phases of for MR.data.2)}
 }
 \value{
 If only one traits exists, the function exports a data frame with full or simplified structure. If both traits are used, the function returns and exports 'MR.data.1' and 'MR.data.2' with metabolic scope parameters (optionally).

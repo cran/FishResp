@@ -5,21 +5,21 @@
 #' @usage
 #' import.test(file, info.data,
 #'             n.chamber = c(1,2,3,4,5,6,7,8),
-#'             logger = c("AutoResp", "FishResp", "Qbox-Aqua"),
+#'             logger = c("AutoResp", "FishResp", "QboxAqua"),
 #'             meas.to.wait = 0,
 #'             plot.temperature = TRUE,
 #'             plot.oxygen = TRUE)
 #'
-#' @param file  the name of a file  which the pre- or post-test data are to be read from
+#' @param file  the name of a file  which the pre- or post-test data are to be read from. Note, if the file contains more than one measurement phase (e.g. M1 and M2), only the first one (M1) will be imported in R.  
 #' @param info.data  a data frame obtained by using the function \code{\link{input.info}}
 #' @param n.chamber  integer: the number of chambers used in an experiment (including empty ones)
 #' @param logger  string: the name of a logger software used for intermittent-flow respirometry:
 #' \itemize{
 #'   \item 'AutoResp' if you use commercial software by 'Loligo Systems'
-#'   \item 'FishResp' if you use free software 'AquaResp' in combination with equipment produced by 'PreSens' or 'Pyroscience', please convert data to the 'FishResp' format using the functions \code{\link{presens.aquaresp}} or \code{\link{pyroscience.aquaresp}}, respectively. \cr If you do not use commercial software or AquaResp for running intermittent-flow respirometry, adjust raw data manually to the 'FishResp' format (see Details below).
-#'   \item 'Qbox-Aqua' if you use commercial software by 'Qubit Systems'
+#'   \item 'FishResp' if you use free software 'AquaResp' in combination with equipment produced by 'PreSens' or 'Pyroscience', please convert data to the 'FishResp' format using the functions \code{\link{presens.aquaresp}} or \code{\link{pyroscience.aquaresp}}, respectively. \cr If you do not use commercial software or 'AquaResp' for running intermittent-flow respirometry, adjust raw data manually to the 'FishResp' format (see Details below).
+#'   \item 'QboxAqua' if you use commercial software by 'Qubit Systems'
 #' }
-#' @param meas.to.wait  integer: the number of first rows for each measurement phase ('M') which should be reassigned to the wait phase (W). The parameter should be used when the wait phase ('W') is absent (e.g. in 'Qbox-Aqua' logger software) or not long enough to eliminate non-linear change in DO concentration over time from the measurement phase ('M') after shutting off water supply from the ambient water source.
+#' @param meas.to.wait  integer: the number of first rows for each measurement phase (M) which should be reassigned to the wait phase (W). The parameter should be used when the wait phase (W) is absent (e.g. in 'Q-box Aqua' logger software) or not long enough to eliminate non-linear change in DO concentration over time from the measurement phase (M) after shutting off water supply from the ambient water source.
 #' @param plot.temperature  logical: if TRUE then the graph of raw  temperature data is plotted
 #' @param plot.oxygen  logical: if TRUE then the graph of raw oxygen data is plotted
 #'
@@ -32,11 +32,10 @@
 #'   19/08/2016/18:47:23 \tab M1 \tab 24.49 \tab 7.76 \tab 24.56 \tab 7.72 \tab 24.49 \tab 7.78 \tab 24.56 \tab 7.73\cr
 #' } where the items are:
 #' \itemize{
-#' \item Time step-interval is one second: one row of data per second.
-#' \item Date&Time should be represented in one of the following formats: "dd/mm/yyyy/hh:mm:ss", "mm/dd/yyyy/hh:mm:ss", or "yyyy/mm/dd/hh:mm:ss".
-#' \item Phase should have at least two levels: M (measurement) and F (flush). The number of a period should be attached to the level of a phase: F1, M1, F2, M2 ...
+#' \item Date&Time should be represented in one of the following formats: "dd/mm/yyyy/hh:mm:ss", "mm/dd/yyyy/hh:mm:ss", or "yyyy/mm/dd/hh:mm:ss". Time step-interval is one second: one row of data per second.
+#' \item Phase should have at least two levels: M (measurement) and F (flush). The ordinal number of a phase should be attached to the level of a phase: F1, M1, F2, M2 ...
+#' \item Temp.1 contains values of water temperature in Celsius (\eqn{C^{o}}) for Chamber 1
 #' \item Ox.1 contains values of dissolved oxygen measured in 'mg/L', 'mmol/L' or 'ml/L' for Chamber 1. If other measurement units were used, convert them to 'mg/L', 'mmol/L' or 'ml/L' using the function \code{\link{convert.respirometry}} or \code{\link{convert.rMR}}.
-#' \item Temp.1 contains values of water temperature in Celsius (C) for Chamber 1
 #' \item ...
 #' }
 #'
@@ -74,7 +73,7 @@
 
 import.test <- function(file, info.data,
                         n.chamber = c(1,2,3,4,5,6,7,8),
-                        logger = c("AutoResp", "FishResp", "Qbox-Aqua"),
+                        logger = c("AutoResp", "FishResp", "QboxAqua"),
                         meas.to.wait = 0,
                         plot.temperature = TRUE,
                         plot.oxygen = TRUE){
@@ -281,9 +280,9 @@ import.test <- function(file, info.data,
   }
 
 
-  ### Qbox-Aqua format ###
+  ### QboxAqua format ###
 
-  else if (logger == "Qbox-Aqua"){
+  else if (logger == "QboxAqua"){
     test.data<-read.table(file, sep = ",", skip=2, header=F, strip.white=T)
     if (n.chamber == 1){
       test.data<-subset(test.data, select=c(V1, V9, V4, ncol(test.data)))
@@ -292,7 +291,7 @@ import.test <- function(file, info.data,
       aaa <- max(test.data$Ox.1, na.rm = TRUE)
       if(all(is.na(test.data$Ox.1))){test.data$Ox.1[is.na(test.data$Ox.1)] <- aaa}
 
-      ### Indexing measurement phases for Qbox-Aqua
+      ### Indexing measurement phases for QboxAqua
       test.data$Phase[test.data$Phase == "1"] <- "F"
       test.data$Phase[test.data$Phase == "0"] <- "M"
       bdrs <- which(c(FALSE, tail(test.data$Phase,-1) != head(test.data$Phase,-1)))
@@ -314,7 +313,7 @@ import.test <- function(file, info.data,
 
 
   else{
-    print("Please, choose the format of your data: AutoResp, FishResp or Qbox-Aqua")
+    print("Please, choose the format of your data: AutoResp, FishResp or QboxAqua")
   }
 
   rm(aaa)
@@ -345,7 +344,7 @@ import.test <- function(file, info.data,
     }
     else if(plot.temperature == TRUE){
       par(mfrow=c(1,1), ask = T)
-      plot(test.CH1$Temp~test.CH1$Time, main="Chamber 1", xlab = "Time (s)", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
+      plot(test.CH1$Temp~test.CH1$Time, main="Chamber 1", xlab = "Time (s)", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
     }
     else{
       "Please, choose: TRUE or FALSE"
@@ -389,8 +388,8 @@ import.test <- function(file, info.data,
     }
     else if(plot.temperature == TRUE){
       par(mfrow=c(2,1), ask = T)
-      plot(test.CH1$Temp~test.CH1$Time, main="Chamber 1", xlab = "Time (s)", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(test.CH2$Temp~test.CH2$Time, main="Chamber 2", xlab = "Time (s)", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
+      plot(test.CH1$Temp~test.CH1$Time, main="Chamber 1", xlab = "Time (s)", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(test.CH2$Temp~test.CH2$Time, main="Chamber 2", xlab = "Time (s)", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
     }
     else{
       "Please, choose: TRUE or FALSE"
@@ -444,9 +443,9 @@ import.test <- function(file, info.data,
     }
     else if(plot.temperature == TRUE){
       par(mfrow=c(3,1), ask = T)
-      plot(test.CH1$Temp~test.CH1$Time, main="Chamber 1", xlab = "Time (s)", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(test.CH2$Temp~test.CH2$Time, main="Chamber 2", xlab = "Time (s)", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(test.CH3$Temp~test.CH3$Time, main="Chamber 3", xlab = "Time (s)", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
+      plot(test.CH1$Temp~test.CH1$Time, main="Chamber 1", xlab = "Time (s)", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(test.CH2$Temp~test.CH2$Time, main="Chamber 2", xlab = "Time (s)", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(test.CH3$Temp~test.CH3$Time, main="Chamber 3", xlab = "Time (s)", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
     }
     else{
       "Please, choose: TRUE or FALSE"
@@ -511,10 +510,10 @@ import.test <- function(file, info.data,
     }
     else if(plot.temperature == TRUE){
       par(mfrow=c(4,1), ask = T)
-      plot(test.CH1$Temp~test.CH1$Time, main="Chamber 1", xlab = "Time (s)", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(test.CH2$Temp~test.CH2$Time, main="Chamber 2", xlab = "Time (s)", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(test.CH3$Temp~test.CH3$Time, main="Chamber 3", xlab = "Time (s)", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(test.CH4$Temp~test.CH4$Time, main="Chamber 4", xlab = "Time (s)", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
+      plot(test.CH1$Temp~test.CH1$Time, main="Chamber 1", xlab = "Time (s)", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(test.CH2$Temp~test.CH2$Time, main="Chamber 2", xlab = "Time (s)", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(test.CH3$Temp~test.CH3$Time, main="Chamber 3", xlab = "Time (s)", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(test.CH4$Temp~test.CH4$Time, main="Chamber 4", xlab = "Time (s)", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
     }
     else{
       "Please, choose: TRUE or FALSE"
@@ -589,11 +588,11 @@ import.test <- function(file, info.data,
     }
     else if(plot.temperature == TRUE){
       par(mfrow=c(4,1), ask = T)
-      plot(test.CH1$Temp~test.CH1$Time, main="Chamber 1", xlab = "Time (s)", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(test.CH2$Temp~test.CH2$Time, main="Chamber 2", xlab = "Time (s)", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(test.CH3$Temp~test.CH3$Time, main="Chamber 3", xlab = "Time (s)", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(test.CH4$Temp~test.CH4$Time, main="Chamber 4", xlab = "Time (s)", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(test.CH5$Temp~test.CH5$Time, main="Chamber 5", xlab = "Time (s)", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
+      plot(test.CH1$Temp~test.CH1$Time, main="Chamber 1", xlab = "Time (s)", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(test.CH2$Temp~test.CH2$Time, main="Chamber 2", xlab = "Time (s)", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(test.CH3$Temp~test.CH3$Time, main="Chamber 3", xlab = "Time (s)", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(test.CH4$Temp~test.CH4$Time, main="Chamber 4", xlab = "Time (s)", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(test.CH5$Temp~test.CH5$Time, main="Chamber 5", xlab = "Time (s)", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
     }
     else{
       "Please, choose: TRUE or FALSE"
@@ -678,12 +677,12 @@ import.test <- function(file, info.data,
     }
     else if(plot.temperature == TRUE){
       par(mfrow=c(4,1), ask = T)
-      plot(test.CH1$Temp~test.CH1$Time, main="Chamber 1", xlab = "Time (s)", ylab = paste("DO", info.data$DO.unit[1], sep = " "), col = "#0082FF", cex=0.8)
-      plot(test.CH2$Temp~test.CH2$Time, main="Chamber 2", xlab = "Time (s)", ylab = paste("DO", info.data$DO.unit[1], sep = " "), col = "#0082FF", cex=0.8)
-      plot(test.CH3$Temp~test.CH3$Time, main="Chamber 3", xlab = "Time (s)", ylab = paste("DO", info.data$DO.unit[1], sep = " "), col = "#0082FF", cex=0.8)
-      plot(test.CH4$Temp~test.CH4$Time, main="Chamber 4", xlab = "Time (s)", ylab = paste("DO", info.data$DO.unit[1], sep = " "), col = "#0082FF", cex=0.8)
-      plot(test.CH5$Temp~test.CH5$Time, main="Chamber 5", xlab = "Time (s)", ylab = paste("DO", info.data$DO.unit[1], sep = " "), col = "#0082FF", cex=0.8)
-      plot(test.CH6$Temp~test.CH6$Time, main="Chamber 6", xlab = "Time (s)", ylab = paste("DO", info.data$DO.unit[1], sep = " "), col = "#0082FF", cex=0.8)
+      plot(test.CH1$Temp~test.CH1$Time, main="Chamber 1", xlab = "Time (s)", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(test.CH2$Temp~test.CH2$Time, main="Chamber 2", xlab = "Time (s)", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(test.CH3$Temp~test.CH3$Time, main="Chamber 3", xlab = "Time (s)", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(test.CH4$Temp~test.CH4$Time, main="Chamber 4", xlab = "Time (s)", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(test.CH5$Temp~test.CH5$Time, main="Chamber 5", xlab = "Time (s)", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(test.CH6$Temp~test.CH6$Time, main="Chamber 6", xlab = "Time (s)", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
     }
     else{
       "Please, choose: TRUE or FALSE"
@@ -779,13 +778,13 @@ import.test <- function(file, info.data,
     }
     else if(plot.temperature == TRUE){
       par(mfrow=c(4,1), ask = T)
-      plot(test.CH1$Temp~test.CH1$Time, main="Chamber 1", xlab = "Time (s)", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(test.CH2$Temp~test.CH2$Time, main="Chamber 2", xlab = "Time (s)", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(test.CH3$Temp~test.CH3$Time, main="Chamber 3", xlab = "Time (s)", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(test.CH4$Temp~test.CH4$Time, main="Chamber 4", xlab = "Time (s)", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(test.CH5$Temp~test.CH5$Time, main="Chamber 5", xlab = "Time (s)", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(test.CH6$Temp~test.CH6$Time, main="Chamber 6", xlab = "Time (s)", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(test.CH7$Temp~test.CH7$Time, main="Chamber 7", xlab = "Time (s)", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
+      plot(test.CH1$Temp~test.CH1$Time, main="Chamber 1", xlab = "Time (s)", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(test.CH2$Temp~test.CH2$Time, main="Chamber 2", xlab = "Time (s)", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(test.CH3$Temp~test.CH3$Time, main="Chamber 3", xlab = "Time (s)", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(test.CH4$Temp~test.CH4$Time, main="Chamber 4", xlab = "Time (s)", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(test.CH5$Temp~test.CH5$Time, main="Chamber 5", xlab = "Time (s)", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(test.CH6$Temp~test.CH6$Time, main="Chamber 6", xlab = "Time (s)", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(test.CH7$Temp~test.CH7$Time, main="Chamber 7", xlab = "Time (s)", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
     }
     else{
       "Please, choose: TRUE or FALSE"
@@ -891,14 +890,14 @@ import.test <- function(file, info.data,
     }
     else if(plot.temperature == TRUE){
       par(mfrow=c(4,1), ask = T)
-      plot(test.CH1$Temp~test.CH1$Time, main="Chamber 1", xlab = "Time (s)", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(test.CH2$Temp~test.CH2$Time, main="Chamber 2", xlab = "Time (s)", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(test.CH3$Temp~test.CH3$Time, main="Chamber 3", xlab = "Time (s)", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(test.CH4$Temp~test.CH4$Time, main="Chamber 4", xlab = "Time (s)", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(test.CH5$Temp~test.CH5$Time, main="Chamber 5", xlab = "Time (s)", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(test.CH6$Temp~test.CH6$Time, main="Chamber 6", xlab = "Time (s)", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(test.CH7$Temp~test.CH7$Time, main="Chamber 7", xlab = "Time (s)", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(test.CH8$Temp~test.CH8$Time, main="Chamber 8", xlab = "Time (s)", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
+      plot(test.CH1$Temp~test.CH1$Time, main="Chamber 1", xlab = "Time (s)", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(test.CH2$Temp~test.CH2$Time, main="Chamber 2", xlab = "Time (s)", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(test.CH3$Temp~test.CH3$Time, main="Chamber 3", xlab = "Time (s)", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(test.CH4$Temp~test.CH4$Time, main="Chamber 4", xlab = "Time (s)", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(test.CH5$Temp~test.CH5$Time, main="Chamber 5", xlab = "Time (s)", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(test.CH6$Temp~test.CH6$Time, main="Chamber 6", xlab = "Time (s)", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(test.CH7$Temp~test.CH7$Time, main="Chamber 7", xlab = "Time (s)", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(test.CH8$Temp~test.CH8$Time, main="Chamber 8", xlab = "Time (s)", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
     }
     else{
       "Please, choose: TRUE or FALSE"

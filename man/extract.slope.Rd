@@ -22,17 +22,17 @@ extract.slope(clean.data,
  \item 'max' extracts highest absolute slopes, specify the number of extracted slopes (parameter: n.slope)
  \item 'lower.tail' extracts slopes from a lower tail of absolute slope distribution, specify percentage of a lower tail (parameter: percent)
  \item 'upper.tail' extracts slopes from an upper tail of absolute slope distribution, specify percentage of an upper tail (parameter: percent)
- \item 'calcSMR.mlnd' calculates the mean of the lowest normal distribution\cr (MLND) using parameter G (see Appendix S1 in Chabot et al, 2016)
- \item 'calcSMR.quant' calculates quantile value of slope distribution using parameter p (see Appendix S1 in Chabot et al, 2016)
+ \item 'calcSMR.mlnd' calculates the mean of the lowest normal distribution\cr (MLND) using the parameter G (see Appendix S1 in Chabot et al, 2016)
+ \item 'calcSMR.quant' calculates quantile value of slope distribution using the parameter p (see Appendix S1 in Chabot et al, 2016)
  \item 'calcSMR.low10' calculates the mean of the 10 lowest absolute slopes (see Appendix S1 in Chabot et al, 2016)
  \item 'calcSMR.low10pc' calculates the mean of the lowest 10% of absolute slopes, after the 5 from 10 lowest have been removed as outliers (see Herrmann & Enders, 2000; Appendix S1 in Chabot et al, 2016)
  }}
 
-\item{r2}{numeric: minimal coefficient of determination (r2) for extracted slopes. Coefficient of determination is used as a threshold of quality to be determined by the user (by default r2 = 0.95)}
+\item{r2}{numeric: minimal coefficient of determination (\eqn{r^{2}}) for extracted slopes. Coefficient of determination is used as a threshold of quality to be determined by the user (by default \eqn{r^{2}} = 0.95)}
 
 \item{length}{integer: length of a measurement period for slope calculations (in seconds; by default - full length)}
 
-\item{n.slope}{integer: the number of extracted slopes, only one slope is calculated for each measurement period (used in the methods "min" and "max"; by default - all slopes)}
+\item{n.slope}{integer: the number of extracted slopes, only one slope is calculated for each measurement phase (used in the methods "min" and "max"; by default - all slopes)}
 
 \item{percent}{integer: percentage of lower or upper tail (used in the methods "lower.tail" and "upper.tail", respectively; by default percent = 10)}
 
@@ -44,7 +44,7 @@ extract.slope(clean.data,
 The function returns a data frame with the information about extracted slopes. The data frame is used in the functions \code{\link{QC.slope}} and \code{\link{calculate.MR}}.
 }
 \description{
-The function extracts the slopes of the linear regression of corrected O2 concentration over time with defined parameters (see Arguments).
+The function extracts the slopes of the linear regression of corrected \eqn{O_{2}} concentration over time with defined parameters (see Arguments).
 }
 \examples{
 # if the data have been already loaded to R,
@@ -65,5 +65,10 @@ AMR.slope <- extract.slope(AMR.clean,
 
 }
 \references{
-{ Chabot, D., Steffensen, J. F., & Farrell, A. P. (2016). The determination of standard metabolic rate in fishes. Journal of Fish Biology, 88(1), 81-121.\cr Herrmann, J. P., & Enders, E. C. (2000). Effect of body size on the standard metabolism of horse mackerel. Journal of Fish Biology, 57(3), 746-760.}
+{
+\enumerate{
+  \item Chabot, D., Steffensen, J. F., & Farrell, A. P. (2016). The determination of standard metabolic rate in fishes. Journal of Fish Biology, 88(1), 81-121.
+  \item Herrmann, J. P., & Enders, E. C. (2000). Effect of body size on the standard metabolism of horse mackerel. Journal of Fish Biology, 57(3), 746-760.
+  }
+}
 }

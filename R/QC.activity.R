@@ -8,7 +8,7 @@
 #' @usage
 #' QC.activity(clean.data, compare = TRUE)
 #'
-#' @details QC.activity uses functions \code{\link{extract.slope}} and \code{\link{calculate.MR}} with default parameters (excluding r2 = 0) to plot a graph of animal activity
+#' @details QC.activity uses functions \code{\link{extract.slope}} and \code{\link{calculate.MR}} with default parameters (excluding \eqn{r^{2} = 0}) to plot a graph of animal activity
 #'
 #' @importFrom lattice xyplot strip.custom
 #' @importFrom grDevices dev.new
@@ -33,11 +33,12 @@ QC.activity <- function(clean.data, compare = TRUE){
   a <- nlevels(MR.data.all$Chamber.No)
 
   if(compare == TRUE){
-    MR.mass.with.BR <- MR.data.all$MR.abs.with.BR/MR.data.all$Mass*1000
+    BW = MR.data.all$Mass/1000
+    MR.mass.with.BR <- MR.data.all$MR.abs.with.BR/BW
     xyplot(MR.mass + MR.mass.with.BR ~ Date.Time, groups=Chamber.No, grid = TRUE,
            data=MR.data.all, main="Activity during the whole period of measurements",
            type=c("a", "p"), allow.multiple=T, layout=(c(1,2)),
-           xlab="Time", ylab = paste("Mass-specific metabolic rate (", clean.data$DO.unit[1], "/kg/h)", sep = ""),
+           xlab="Time", ylab = bquote("Mass-specific metabolic rate (" ~ .(clean.data$DO.unit[1]) ~ kg^-1 ~ h^-1 ~ ")"),
            strip = strip.custom(factor.levels = c("MO2 after correction for background respiration",
                                                     "MO2 before correction for background respiration")),
            auto.key=list(space="top", columns=4,
@@ -48,7 +49,7 @@ QC.activity <- function(clean.data, compare = TRUE){
     xyplot(MR.mass ~ Date.Time, groups=Chamber.No, grid = TRUE,
            data=MR.data.all, main="Activity during the whole period of measurements",
            type=c("a", "p", lwd = 2),
-           xlab="Time", ylab = paste("Mass-specific metabolic rate (", clean.data$DO.unit[1], "/kg/h)", sep = ""),
+           xlab="Time", ylab = bquote("Mass-specific metabolic rate (" ~ .(clean.data$DO.unit[1]) ~ kg^-1 ~ h^-1 ~ ")"),
            auto.key=list(space="top", columns=4, par.strip.text=list(cex=2),
                          title="Chambers", cex.title=1, between.columns = 0.5,
                          lines=TRUE, points = FALSE, cex = 0.8))

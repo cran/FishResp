@@ -12,7 +12,7 @@ calculate.MR(slope.data, density = 1000,
 \arguments{
 \item{slope.data}{a data frame obtained by using the function \code{\link{extract.slope}}}
 
-\item{density}{numeric: the density of an animal body (kg/m^3)}
+\item{density}{numeric: the density of an animal body (\eqn{kg/m^{3}})}
 
 \item{plot.BR}{logical: if TRUE, the graph of background respiration rate is plotted}
 
@@ -21,10 +21,10 @@ calculate.MR(slope.data, density = 1000,
 \item{plot.MR.mass}{logical: if TRUE, the graph of mass-specific metabolic rate is plotted}
 }
 \value{
-The function returns a data frame with calculated background respiration, absolute and mass-specific metabolic rates. The data frame might is used in the function \code{\link{export.MR}}.
+The function returns a data frame with calculated background respiration, absolute and mass-specific metabolic rates. The data frame is used in the function \code{\link{export.MR}}.
 }
 \description{
-The function is used to calculate and plot background respiration, absolute and mass-specific\cr metabolic rates.
+The function is used to calculate and plot background respiration, absolute and mass-specific metabolic rates.
 }
 \examples{
 # if the data have been already loaded to R,

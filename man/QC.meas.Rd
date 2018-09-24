@@ -16,11 +16,11 @@ QC.meas(clean.data,
 
 \item{QC}{string: the name of a visual QC test. Five options are available:
 \itemize{
-\item  "Temperature" a graph of temperature vs. time  ordered by chambers
-\item  "Total.O2.chambers" a graph of dissolved oxygen vs. time ordered by chambers
-\item  "Total.O2.phases" a graph of dissolved oxygen vs. time ordered by chambers and phases
-\item  "Corrected.O2.chambers" a graph of dissolved oxygen corrected for background respiration vs. time ordered by chambers
-\item  "Corrected.O2.phases" a graph of dissolved oxygen corrected for background respiration vs. time ordered by chambers and phases
+\item  "Temperature": a graph of temperature vs. time  ordered by chambers
+\item  "Total.O2.chambers": a graph of dissolved oxygen vs. time ordered by chambers
+\item  "Total.O2.phases": a graph of dissolved oxygen vs. time ordered by chambers and phases
+\item  "Corrected.O2.chambers": a graph of dissolved oxygen corrected for background respiration vs. time ordered by chambers
+\item  "Corrected.O2.phases": a graph of dissolved oxygen corrected for background respiration vs. time ordered by chambers and phases
  }}
 }
 \description{

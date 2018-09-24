@@ -4,17 +4,17 @@
 \name{info}
 \alias{info}
 \title{Info about Individuals and Chambers}
-\format{A data frame with 4 rows and 3 variables:
+\format{A data frame with 4 rows and 4 variables:
 \describe{
   \item{ID}{ID of an animal}
-  \item{Mass}{Wet mass of an animal (g)}
-  \item{Volume}{The volume of chambers (mL)}
+  \item{Mass}{wet mass of an animal (g)}
+  \item{Volume}{the volume of a chamber (mL)}
   \item{DO.unit}{the measure unit of DO concentration}
 }}
 \usage{
 info
 }
 \description{
-A dataset containing the information about individuals (three-spined sticklebacks) and chambers (Blazka-type, 250 mL) which were input manually in the function \code{\link{input.info}})
+A dataset contains the information about individuals (three-spined sticklebacks) and chambers (Blazka-type, 250 mL) which were input manually in the function \code{\link{input.info}})
 }
 \keyword{datasets}

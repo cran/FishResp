@@ -1,6 +1,6 @@
 #' Extraction of Slope(s)
 #'
-#' The function extracts the slopes of the linear regression of corrected O2 concentration over time with defined parameters (see Arguments).
+#' The function extracts the slopes of the linear regression of corrected \eqn{O_{2}} concentration over time with defined parameters (see Arguments).
 #'
 #' @usage
 #' extract.slope(clean.data,
@@ -19,14 +19,14 @@
 #'   \item 'max' extracts highest absolute slopes, specify the number of extracted slopes (parameter: n.slope)
 #'   \item 'lower.tail' extracts slopes from a lower tail of absolute slope distribution, specify percentage of a lower tail (parameter: percent)
 #'   \item 'upper.tail' extracts slopes from an upper tail of absolute slope distribution, specify percentage of an upper tail (parameter: percent)
-#'   \item 'calcSMR.mlnd' calculates the mean of the lowest normal distribution\cr (MLND) using parameter G (see Appendix S1 in Chabot et al, 2016)
-#'   \item 'calcSMR.quant' calculates quantile value of slope distribution using parameter p (see Appendix S1 in Chabot et al, 2016)
+#'   \item 'calcSMR.mlnd' calculates the mean of the lowest normal distribution\cr (MLND) using the parameter G (see Appendix S1 in Chabot et al, 2016)
+#'   \item 'calcSMR.quant' calculates quantile value of slope distribution using the parameter p (see Appendix S1 in Chabot et al, 2016)
 #'   \item 'calcSMR.low10' calculates the mean of the 10 lowest absolute slopes (see Appendix S1 in Chabot et al, 2016)
 #'   \item 'calcSMR.low10pc' calculates the mean of the lowest 10% of absolute slopes, after the 5 from 10 lowest have been removed as outliers (see Herrmann & Enders, 2000; Appendix S1 in Chabot et al, 2016)
 #'   }
-#' @param r2  numeric: minimal coefficient of determination (r2) for extracted slopes. Coefficient of determination is used as a threshold of quality to be determined by the user (by default r2 = 0.95)
+#' @param r2  numeric: minimal coefficient of determination (\eqn{r^{2}}) for extracted slopes. Coefficient of determination is used as a threshold of quality to be determined by the user (by default \eqn{r^{2}} = 0.95)
 #' @param length  integer: length of a measurement period for slope calculations (in seconds; by default - full length)
-#' @param n.slope  integer: the number of extracted slopes, only one slope is calculated for each measurement period (used in the methods "min" and "max"; by default - all slopes)
+#' @param n.slope  integer: the number of extracted slopes, only one slope is calculated for each measurement phase (used in the methods "min" and "max"; by default - all slopes)
 #' @param percent integer: percentage of lower or upper tail (used in the methods "lower.tail" and "upper.tail", respectively; by default percent = 10)
 #' @param p integer: p-value of quantile used in the method "calcSMR.quant" (by default p = 0.25)
 #' @param G integer: G value is used in the method "calcSMR.mlnd" (by default G = 1:4)
@@ -39,6 +39,13 @@
 #' @importFrom grDevices dev.new
 #' @importFrom stats coef lm predict.lm quantile time
 #' @importFrom utils head read.table tail write.table
+#'
+#' @references {
+#' \enumerate{
+#'   \item Chabot, D., Steffensen, J. F., & Farrell, A. P. (2016). The determination of standard metabolic rate in fishes. Journal of Fish Biology, 88(1), 81-121.
+#'   \item Herrmann, J. P., & Enders, E. C. (2000). Effect of body size on the standard metabolism of horse mackerel. Journal of Fish Biology, 57(3), 746-760.
+#'   }
+#' }
 #'
 #' @examples
 #' # if the data have been already loaded to R,
@@ -56,8 +63,6 @@
 #'                            method = "all",
 #'                            r2=0.95,
 #'                            length = 300)
-#'
-#' @references { Chabot, D., Steffensen, J. F., & Farrell, A. P. (2016). The determination of standard metabolic rate in fishes. Journal of Fish Biology, 88(1), 81-121.\cr Herrmann, J. P., & Enders, E. C. (2000). Effect of body size on the standard metabolism of horse mackerel. Journal of Fish Biology, 57(3), 746-760.}
 #'
 #' @export
 

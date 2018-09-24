@@ -4,29 +4,29 @@
 \name{SMR}
 \alias{SMR}
 \title{Standard Metabolic Rate: Final Data}
-\format{A data frame with 12 rows and 15 variables:
+\format{A data frame with 12 rows and 16 variables:
 \describe{
-  \item{Chamber.No}{The number of a chamber}
+  \item{Chamber.No}{the number of a chamber}
   \item{Ind}{ID of an animal}
   \item{Mass}{wet mass of an animal (g)}
   \item{Volume}{the volume of a chamber (mL)}
-  \item{Date.Time}{Date and Time of a period (mm/dd/yy hh:mm:ss)}
-  \item{Phase}{Phase and period of measurements (e.g. M1, F3)}
-  \item{Temp}{Average temperature over a period of measurements (C)}
-  \item{Slope.with.BR}{Slope of animal oxygen consumption with slope of\cr background respiration (mgO2/L/h)}
-  \item{Slope}{Slope of animal oxygen consumption without background respiration (mgO2/L/h)}
-  \item{SE}{Standard error of a slope of animal oxygen consumption without\cr background respiration (mgO2/L/h)}
-  \item{R2}{r2 of a slope of animal oxygen consumption without background respiration}
-  \item{MR.abs.with.BR}{Absolute SMR with background respiration (mgO2/h)}
-  \item{BR}{Percentage rate of background respiration}
-  \item{MR.abs}{Absolute SMR (mgO2/h)}
-  \item{MR.mass}{Mass-specific SMR (mgO2/kg/h)}
+  \item{Date.Time}{date and time of a measurement phase (yyyy/mm/dd hh:mm:ss)}
+  \item{Phase}{the type of phase and an ordinal number of measurements (e.g. M1)}
+  \item{Temp}{average temperature over the period of a measurement phase (\eqn{C^{o}})}
+  \item{Slope.with.BR}{slope of animal oxygen consumption with slope of background respiration (\eqn{mg O_{2}\;L^{-1} s^{-1}})}
+  \item{Slope}{slope of animal oxygen consumption without background respiration (\eqn{mg O_{2}\;L^{-1} s^{-1}})}
+  \item{SE}{standard error of a slope of animal oxygen consumption without background respiration (\eqn{mg O_{2}\;L^{-1} s^{-1}})}
+  \item{R2}{\eqn{r^{2}}  of a slope of animal oxygen consumption without background respiration}
+  \item{MR.abs.with.BR}{absolute SMR with background respiration (\eqn{mg O_{2}\;h^{-1}})}
+  \item{BR}{percentage rate of background respiration}
+  \item{MR.abs}{absolute SMR (\eqn{mg O_{2}\;h^{-1}})}
+  \item{MR.mass}{mass-specific SMR (\eqn{mg O_{2}\;kg^{-1} h^{-1}})}
   \item{DO.unit}{the measure unit of DO concentration}
 }}
 \usage{
 SMR
 }
 \description{
-A dataset containing background respiration, absolute and mass-specific standard metabolic rate data obtained by using the function \code{\link{calculate.MR}}
+A dataset contains background respiration, absolute and mass-specific standard metabolic rate data obtained by using the function \code{\link{calculate.MR}}
 }
 \keyword{datasets}

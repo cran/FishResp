@@ -5,7 +5,7 @@
 #' @usage
 #' import.meas(file, info.data,
 #'             n.chamber = c(1,2,3,4,5,6,7,8),
-#'             logger = c("AutoResp", "FishResp", "Qbox-Aqua"),
+#'             logger = c("AutoResp", "FishResp", "QboxAqua"),
 #'             date.format = c("DMY", "MDY", "YMD"),
 #'             start.measure = "00:00:00",
 #'             stop.measure = "23:59:59",
@@ -20,14 +20,14 @@
 #' @param logger  string: the name of a logger software used for intermittent-flow respirometry
 #' \itemize{
 #'   \item 'AutoResp' if you use commercial software by 'Loligo Systems'
-#'   \item 'FishResp' if you use free software 'AquaResp' in combination with equipment produced by 'PreSens' or 'Pyroscience', please convert data to the 'FishResp' format using the functions \code{\link{presens.aquaresp}} or \code{\link{pyroscience.aquaresp}}, respectively. \cr If you do not use commercial software or AquaResp for running intermittent-flow respirometry, adjust raw data manually to the 'FishResp' format (see Details below).
-#'   \item 'Qbox-Aqua' if you use commercial software by 'Qubit Systems'
+#'   \item 'FishResp' if you use free software 'AquaResp' in combination with equipment produced by 'PreSens' or 'Pyroscience', please convert data to the 'FishResp' format using the functions \code{\link{presens.aquaresp}} or \code{\link{pyroscience.aquaresp}}, respectively. \cr If you do not use commercial software or 'AquaResp' for running intermittent-flow respirometry, adjust raw data manually to the 'FishResp' format (see Details below).
+#'   \item 'QboxAqua' if you use commercial software by 'Qubit Systems'
 #' }
 #' @param date.format  string: date format (DMY, MDY or YMD)
 #' @param start.measure  chron: time when metabolic rate measurements are started
 #' @param stop.measure  chron: time when metabolic rate measurements are finished
-#' @param set.date.time  chron: this parameter is turned off by default and needed to be specified only if raw data were recorded by 'Qbox-Aqua' logger software. Specifically, input the date and time when .cmbl file was built in one of the following formats: "dd/mm/yyyy/hh:mm:ss", "mm/dd/yyyy/hh:mm:ss", or "yyyy/mm/dd/hh:mm:ss" (in accourdance to the chosen date.format parameter).
-#' @param meas.to.wait  integer: the number of first rows for each measurement phase ('M') which should be reassigned to the wait phase (W). The parameter should be used when the wait phase ('W') is absent (e.g. in 'Qbox-Aqua' logger software) or not long enough to eliminate non-linear change in DO concentration over time from the measurement phase ('M') after shutting off water supply from the ambient water source.
+#' @param set.date.time  chron: this parameter is turned off by default and needed to be specified only if raw data were recorded by 'Q-box Aqua' logger software. Specifically, input the date and time when .cmbl file was built in one of the following formats: "dd/mm/yyyy/hh:mm:ss", "mm/dd/yyyy/hh:mm:ss", or "yyyy/mm/dd/hh:mm:ss" (in accourdance to the chosen date.format parameter).
+#' @param meas.to.wait  integer: the number of first rows for each measurement phase (M) which should be reassigned to the wait phase (W). The parameter should be used when the wait phase (W) is absent (e.g. in 'Q-box Aqua' logger software) or not long enough to eliminate non-linear change in DO concentration over time from the measurement phase (M) after shutting off water supply from the ambient water source.
 #' @param plot.temperature  logical: if TRUE then the graph of raw temperature data is plotted
 #' @param plot.oxygen  logical: if TRUE then the graph of raw oxygen data is plotted
 #'
@@ -40,11 +40,10 @@
 #'   19/08/2016/18:47:23 \tab M1 \tab 24.49 \tab 7.76 \tab 24.56 \tab 7.72 \tab 24.49 \tab 7.78 \tab 24.56 \tab 7.73\cr
 #' } where the items are:
 #' \itemize{
-#' \item Time step-interval is one second: one row of data per second.
-#' \item Date&Time should be represented in one of the following formats: "dd/mm/yyyy/hh:mm:ss", "mm/dd/yyyy/hh:mm:ss", or "yyyy/mm/dd/hh:mm:ss".
-#' \item Phase should have at least two levels: M (measurement) and F (flush). The number of a period should be attached to the level of a phase: F1, M1, F2, M2 ...
+#' \item Date&Time should be represented in one of the following formats: "dd/mm/yyyy/hh:mm:ss", "mm/dd/yyyy/hh:mm:ss", or "yyyy/mm/dd/hh:mm:ss". Time step-interval is one second: one row of data per second.
+#' \item Phase should have at least two levels: M (measurement) and F (flush). The ordinal number of a phase should be attached to the level of a phase: F1, M1, F2, M2 ...
+#' \item Temp.1 contains values of water temperature in Celsius (\eqn{C^{o}}) for Chamber 1
 #' \item Ox.1 contains values of dissolved oxygen measured in 'mg/L', 'mmol/L' or 'ml/L' for Chamber 1. If other measurement units were used, convert them to 'mg/L', 'mmol/L' or 'ml/L' using the function \code{\link{convert.respirometry}} or \code{\link{convert.rMR}}.
-#' \item Temp.1 contains values of water temperature in Celsius (C) for Chamber 1
 #' \item ...
 #' }
 #'
@@ -70,8 +69,8 @@
 #'                        logger = "AutoResp",
 #'                        n.chamber = 4,
 #'                        date.format = "DMY",
-#'                        start.measure = "20:00:00",
-#'                        stop.measure = "08:00:00",
+#'                        start.measure = "22:00:00",
+#'                        stop.measure = "06:00:00",
 #'                        plot.temperature = TRUE,
 #'                        plot.oxygen = TRUE)
 #' }
@@ -84,17 +83,17 @@
 #'                        plot.temperature = TRUE,
 #'                        plot.oxygen = TRUE)
 #'
-#' # an example for importting raw data recorded by Qbox-Aqua
-#' qbox.path = system.file("extdata/qbox-aqua/qbox-aqua.csv", package = "FishResp")
+#' # an example for importing raw data recorded by 'Q-box Aqua'
+#' qbox.path = system.file("extdata/qboxaqua/qboxaqua.csv", package = "FishResp")
 #' RMR.raw <- import.meas(file = qbox.path,
 #'                         info.data = info,
-#'                         logger = "Qbox-Aqua",
+#'                         logger = "QboxAqua",
 #'                         n.chamber = 1,
 #'                         date.format = "DMY",
-#'                         start.measure = "20:00:00",
-#'                         stop.measure = "08:00:00",
+#'                         start.measure = "23:30:00",
+#'                         stop.measure = "01:00:00",
 #'                         set.date.time = "23/02/2014/23:30:22",
-#'                         meas.to.wait = 100,
+#'                         meas.to.wait = 200,
 #'                         plot.temperature = TRUE,
 #'                         plot.oxygen = TRUE)
 #'
@@ -102,7 +101,7 @@
 
 import.meas <- function(file, info.data,
                         n.chamber = c(1,2,3,4,5,6,7,8),
-                        logger = c("AutoResp", "FishResp", "Qbox-Aqua"),
+                        logger = c("AutoResp", "FishResp", "QboxAqua"),
                         date.format = c("DMY", "MDY", "YMD"),
                         start.measure = "00:00:00",
                         stop.measure = "23:59:59",
@@ -310,9 +309,9 @@ import.meas <- function(file, info.data,
     }
   }
 
-  ### Qbox-Aqua format ###
+  ### QboxAqua format ###
 
-  else if (logger == "Qbox-Aqua"){
+  else if (logger == "QboxAqua"){
     MR.data.all<-read.table(file, sep = ",", skip=2, header=F, strip.white=T)
     if (n.chamber == 1){
       MR.data.all<-subset(MR.data.all, select=c(V1, V9, V4, ncol(MR.data.all)))
@@ -321,7 +320,7 @@ import.meas <- function(file, info.data,
       aaa <- max(MR.data.all$Ox.1, na.rm = TRUE)
       if(all(is.na(MR.data.all$Ox.1))){MR.data.all$Ox.1[is.na(MR.data.all$Ox.1)] <- aaa}
 
-      ### Indexing measurement phases for Qbox-Aqua
+      ### Indexing measurement phases for QboxAqua
       MR.data.all$Phase[MR.data.all$Phase == "1"] <- "F"
       MR.data.all$Phase[MR.data.all$Phase == "0"] <- "M"
       bdrs <- which(c(FALSE, tail(MR.data.all$Phase,-1) != head(MR.data.all$Phase,-1)))
@@ -343,7 +342,7 @@ import.meas <- function(file, info.data,
 
 
   else{
-    print("Please, choose the format of your data: AutoResp, FishResp or Qbox-Aqua")
+    print("Please, choose the format of your data: AutoResp, FishResp or QboxAqua")
   }
 
   rm(aaa)
@@ -361,7 +360,7 @@ import.meas <- function(file, info.data,
   if(PM.1 || PM.2 || PM.3 || PM.4 == TRUE){
 
     if(any(date.format == "DMY")){
-      if(logger == "Qbox-Aqua"){
+      if(logger == "QboxAqua"){
         crdt<-strptime(as.character(set.date.time), "%d/%m/%Y/ %I:%M:%S %p")
         crdt <- rep(crdt, length(MR.data.all$Date.Time))
         crdt$sec <- crdt$sec + MR.data.all$Date.Time
@@ -379,7 +378,7 @@ import.meas <- function(file, info.data,
       dts<-dates(strftime(MR.data.all$Date.Time, "%d/%m/%y"), format="d/m/y")
     }
     else if(any(date.format == "MDY")){
-      if(logger == "Qbox-Aqua"){
+      if(logger == "QboxAqua"){
         crdt<-strptime(as.character(set.date.time), "%m/%d/%Y/ %I:%M:%S %p")
         crdt <- rep(crdt, length(MR.data.all$Date.Time))
         crdt$sec <- crdt$sec + MR.data.all$Date.Time
@@ -397,7 +396,7 @@ import.meas <- function(file, info.data,
       dts<-dates(strftime(MR.data.all$Date.Time, "%m/%d/%y"), format="m/d/y")
     }
     else if(any(date.format == "YMD")){
-      if(logger == "Qbox-Aqua"){
+      if(logger == "QboxAqua"){
         crdt<-strptime(as.character(set.date.time), "%Y/%m/%d/ %I:%M:%S %p")
         crdt <- rep(crdt, length(MR.data.all$Date.Time))
         crdt$sec <- crdt$sec + MR.data.all$Date.Time
@@ -420,7 +419,7 @@ import.meas <- function(file, info.data,
   }
   else{
     if(any(date.format == "DMY")){
-      if(logger == "Qbox-Aqua"){
+      if(logger == "QboxAqua"){
         crdt<-strptime(as.character(set.date.time), "%d/%m/%Y/%H:%M:%S")
         crdt <- rep(crdt, length(MR.data.all$Date.Time))
         crdt$sec <- crdt$sec + MR.data.all$Date.Time
@@ -438,7 +437,7 @@ import.meas <- function(file, info.data,
       dts<-dates(strftime(MR.data.all$Date.Time, "%d/%m/%y"), format="d/m/y")
     }
     else if(any(date.format == "MDY")){
-      if(logger == "Qbox-Aqua"){
+      if(logger == "QboxAqua"){
         crdt<-strptime(as.character(set.date.time), "%m/%d/%Y/%H:%M:%S")
         crdt <- rep(crdt, length(MR.data.all$Date.Time))
         crdt$sec <- crdt$sec + MR.data.all$Date.Time
@@ -456,7 +455,7 @@ import.meas <- function(file, info.data,
       dts<-dates(strftime(MR.data.all$Date.Time, "%m/%d/%y"), format="m/d/y")
     }
     else if(any(date.format == "YMD")){
-      if(logger == "Qbox-Aqua"){
+      if(logger == "QboxAqua"){
         crdt<-strptime(as.character(set.date.time), "%Y/%m/%d/%H:%M:%S")
         crdt <- rep(crdt, length(MR.data.all$Date.Time))
         crdt$sec <- crdt$sec + MR.data.all$Date.Time
@@ -632,63 +631,63 @@ import.meas <- function(file, info.data,
   if (plot.temperature == T){
     if(n.chamber == 1){
       par(mfrow=c(1,1), ask = T)
-      plot(temp.df$Temp.1~temp.df$Date.Time, main="Chamber 1", xlab = "Date and Time", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
+      plot(temp.df$Temp.1~temp.df$Date.Time, main="Chamber 1", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
     }
     else if(n.chamber == 2){
       par(mfrow=c(2,1), ask = T)
-      plot(temp.df$Temp.1~temp.df$Date.Time, main="Chamber 1", xlab = "Date and Time", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.2~temp.df$Date.Time, main="Chamber 2", xlab = "Date and Time", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
+      plot(temp.df$Temp.1~temp.df$Date.Time, main="Chamber 1", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(temp.df$Temp.2~temp.df$Date.Time, main="Chamber 2", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
     }
     else if(n.chamber == 3){
       par(mfrow=c(3,1), ask = T)
-      plot(temp.df$Temp.1~temp.df$Date.Time, main="Chamber 1", xlab = "Date and Time", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.2~temp.df$Date.Time, main="Chamber 2", xlab = "Date and Time", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.3~temp.df$Date.Time, main="Chamber 3", xlab = "Date and Time", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
+      plot(temp.df$Temp.1~temp.df$Date.Time, main="Chamber 1", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(temp.df$Temp.2~temp.df$Date.Time, main="Chamber 2", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(temp.df$Temp.3~temp.df$Date.Time, main="Chamber 3", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
     }
     else if(n.chamber == 4){
       par(mfrow=c(4,1), ask = T)
-      plot(temp.df$Temp.1~temp.df$Date.Time, main="Chamber 1", xlab = "Date and Time", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.2~temp.df$Date.Time, main="Chamber 2", xlab = "Date and Time", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.3~temp.df$Date.Time, main="Chamber 3", xlab = "Date and Time", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.4~temp.df$Date.Time, main="Chamber 4", xlab = "Date and Time", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
+      plot(temp.df$Temp.1~temp.df$Date.Time, main="Chamber 1", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(temp.df$Temp.2~temp.df$Date.Time, main="Chamber 2", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(temp.df$Temp.3~temp.df$Date.Time, main="Chamber 3", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(temp.df$Temp.4~temp.df$Date.Time, main="Chamber 4", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
     }
     else if(n.chamber == 5){
       par(mfrow=c(4,1), ask = T)
-      plot(temp.df$Temp.1~temp.df$Date.Time, main="Chamber 1", xlab = "Date and Time", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.2~temp.df$Date.Time, main="Chamber 2", xlab = "Date and Time", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.3~temp.df$Date.Time, main="Chamber 3", xlab = "Date and Time", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.4~temp.df$Date.Time, main="Chamber 4", xlab = "Date and Time", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.5~temp.df$Date.Time, main="Chamber 5", xlab = "Date and Time", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
+      plot(temp.df$Temp.1~temp.df$Date.Time, main="Chamber 1", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(temp.df$Temp.2~temp.df$Date.Time, main="Chamber 2", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(temp.df$Temp.3~temp.df$Date.Time, main="Chamber 3", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(temp.df$Temp.4~temp.df$Date.Time, main="Chamber 4", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(temp.df$Temp.5~temp.df$Date.Time, main="Chamber 5", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
     }
     else if(n.chamber == 6){
       par(mfrow=c(4,1), ask = T)
-      plot(temp.df$Temp.1~temp.df$Date.Time, main="Chamber 1", xlab = "Date and Time", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.2~temp.df$Date.Time, main="Chamber 2", xlab = "Date and Time", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.3~temp.df$Date.Time, main="Chamber 3", xlab = "Date and Time", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.4~temp.df$Date.Time, main="Chamber 4", xlab = "Date and Time", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.5~temp.df$Date.Time, main="Chamber 5", xlab = "Date and Time", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.6~temp.df$Date.Time, main="Chamber 6", xlab = "Date and Time", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
+      plot(temp.df$Temp.1~temp.df$Date.Time, main="Chamber 1", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(temp.df$Temp.2~temp.df$Date.Time, main="Chamber 2", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(temp.df$Temp.3~temp.df$Date.Time, main="Chamber 3", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(temp.df$Temp.4~temp.df$Date.Time, main="Chamber 4", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(temp.df$Temp.5~temp.df$Date.Time, main="Chamber 5", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(temp.df$Temp.6~temp.df$Date.Time, main="Chamber 6", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
     }
     else if(n.chamber == 7){
       par(mfrow=c(4,1), ask = T)
-      plot(temp.df$Temp.1~temp.df$Date.Time, main="Chamber 1", xlab = "Date and Time", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.2~temp.df$Date.Time, main="Chamber 2", xlab = "Date and Time", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.3~temp.df$Date.Time, main="Chamber 3", xlab = "Date and Time", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.4~temp.df$Date.Time, main="Chamber 4", xlab = "Date and Time", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.5~temp.df$Date.Time, main="Chamber 5", xlab = "Date and Time", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.6~temp.df$Date.Time, main="Chamber 6", xlab = "Date and Time", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.7~temp.df$Date.Time, main="Chamber 7", xlab = "Date and Time", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
+      plot(temp.df$Temp.1~temp.df$Date.Time, main="Chamber 1", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(temp.df$Temp.2~temp.df$Date.Time, main="Chamber 2", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(temp.df$Temp.3~temp.df$Date.Time, main="Chamber 3", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(temp.df$Temp.4~temp.df$Date.Time, main="Chamber 4", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(temp.df$Temp.5~temp.df$Date.Time, main="Chamber 5", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(temp.df$Temp.6~temp.df$Date.Time, main="Chamber 6", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(temp.df$Temp.7~temp.df$Date.Time, main="Chamber 7", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
     }
     else if(n.chamber == 8){
       par(mfrow=c(4,1), ask = T)
-      plot(temp.df$Temp.1~temp.df$Date.Time, main="Chamber 1", xlab = "Date and Time", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.2~temp.df$Date.Time, main="Chamber 2", xlab = "Date and Time", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.3~temp.df$Date.Time, main="Chamber 3", xlab = "Date and Time", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.4~temp.df$Date.Time, main="Chamber 4", xlab = "Date and Time", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.5~temp.df$Date.Time, main="Chamber 5", xlab = "Date and Time", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.6~temp.df$Date.Time, main="Chamber 6", xlab = "Date and Time", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.7~temp.df$Date.Time, main="Chamber 7", xlab = "Date and Time", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.8~temp.df$Date.Time, main="Chamber 8", xlab = "Date and Time", ylab =  "Temperature (C)", col = "#0082FF", cex=0.8)
+      plot(temp.df$Temp.1~temp.df$Date.Time, main="Chamber 1", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(temp.df$Temp.2~temp.df$Date.Time, main="Chamber 2", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(temp.df$Temp.3~temp.df$Date.Time, main="Chamber 3", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(temp.df$Temp.4~temp.df$Date.Time, main="Chamber 4", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(temp.df$Temp.5~temp.df$Date.Time, main="Chamber 5", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(temp.df$Temp.6~temp.df$Date.Time, main="Chamber 6", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(temp.df$Temp.7~temp.df$Date.Time, main="Chamber 7", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
+      plot(temp.df$Temp.8~temp.df$Date.Time, main="Chamber 8", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
     }
     else{
     }

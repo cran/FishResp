@@ -11,18 +11,18 @@
 #'   \item{Mass}{wet mass of an animal (g)}
 #'   \item{Volume}{the volume of a chamber (mL)}
 #'   \item{DO.unit}{the measure unit of DO concentration}
-#'   \item{SMR_Temp}{Average temperature over a period of SMR measurements (C)}
-#'   \item{SMR_R2}{r2 of a slope of animal oxygen consumption without background respiration}
+#'   \item{SMR_Temp}{Average temperature over a period of a measurement phase (\eqn{C^{o}})}
+#'   \item{SMR_R2}{\eqn{r^{2} = 0} of a slope of animal oxygen consumption without background respiration}
 #'   \item{SMR_BR}{Percentage rate of background respiration}
-#'   \item{SMR_MR.abs}{Absolute SMR (mgO2/h)}
-#'   \item{SMR_MR.mass}{Mass-specific SMR (mgO2/kg/h)}
-#'   \item{AMR_Temp}{Average temperature over a period of AMR measurements (C)}
-#'   \item{AMR_R2}{r2 of a slope of animal oxygen consumption without background respiration}
+#'   \item{SMR_MR.abs}{Absolute SMR (\eqn{mg O_{2}\;h^{-1}})}
+#'   \item{SMR_MR.mass}{Mass-specific SMR (\eqn{mg O_{2}\;kg^{-1} h^{-1}})}
+#'   \item{AMR_Temp}{Average temperature over a period of a measurement phase (\eqn{C^{o}})}
+#'   \item{AMR_R2}{\eqn{r^{2} = 0} of a slope of animal oxygen consumption without background respiration}
 #'   \item{AMR_BR}{Percentage rate of background respiration}
-#'   \item{AMR_MR.abs}{Absolute AMR (mgO2/h)}
-#'   \item{AMR_MR.mass}{Mass-specific AMR (mgO2/kg/h)}
-#'   \item{MS.abs}{Absolute metabolic scope: the difference between absolute AMR and SMR (mgO2/h)}
-#'   \item{MS.mass}{Mass-specific metabolic scope: the difference between mass-specific AMR and  SMR (mgO2/kg/h)}
+#'   \item{AMR_MR.abs}{Absolute AMR (\eqn{mg O_{2}\;h^{-1}})}
+#'   \item{AMR_MR.mass}{Mass-specific AMR (\eqn{mg O_{2}\;kg^{-1} h^{-1}})}
+#'   \item{MS.abs}{Absolute metabolic scope: the difference between absolute AMR and SMR (\eqn{mg O_{2}\;h^{-1}})}
+#'   \item{MS.mass}{Mass-specific metabolic scope: the difference between mass-specific AMR and SMR (\eqn{mg O_{2}\;kg^{-1} h^{-1}})}
 #'   \item{MS.fact}{Factorial metabolic scope: the ratio between AMR and SMR}
 #' }
 "results"
