@@ -104,7 +104,8 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     #--------------------------------------------------------------------------------------------------------------------------------------------------#
 
     if(method == "pre.test"){
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH1"))
+      temp.lm<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH1"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH1, type="response", se.fit=F))
       any(x>0)
       temp.CH1$BR<-x
@@ -113,7 +114,8 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     }
 
     else if(method == "post.test"){
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH1"))
+      temp.lm<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH1"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH1, type="response", se.fit=F))
       any(x>0)
       temp.CH1$BR<-x
@@ -125,7 +127,8 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       prepost.data<-pre.data
       prepost.data$delta.O2 <- (pre.data$delta.O2 + post.data$delta.O2)/2
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(prepost.data, Chamber.No=="CH1"))
+      temp.lm<-lm(delta.O2~Time, data=subset(prepost.data, Chamber.No=="CH1"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH1, type="response", se.fit=F))
       any(x>0)
       temp.CH1$BR<-x
@@ -143,10 +146,11 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH1"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH1"))
-        pro <- (1-i/(M.total+1))*temp.lm1$coefficients + i/(M.total+1)*temp.lm2$coefficients
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH1"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH1"))
+        pro <- (1-i/(M.total+1))*temp.lm1$coefficients[2] + i/(M.total+1)*temp.lm2$coefficients[2]
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH1[temp.CH1$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -168,11 +172,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
 
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH1"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH1"))
-        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
-        pro = temp.lm1$coefficients * exp.coef^i
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH1"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH1"))
+        exp.coef<-sign(temp.lm2$coefficients[2]/temp.lm1$coefficients[2]) * abs(temp.lm2$coefficients[2]/temp.lm1$coefficients[2])^(1/(M.total+1))
+        pro = temp.lm1$coefficients[2] * exp.coef^i
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH1[temp.CH1$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -264,14 +269,16 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     #--------------------------------------------------------------------------------------------------------------------------------------------------#
 
     if(method == "pre.test"){
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH1"))
+      temp.lm<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH1"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH1, type="response", se.fit=F))
       any(x>0)
       temp.CH1$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH2"))
+      temp.lm<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH2"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH2, type="response", se.fit=F))
       any(x>0)
       temp.CH2$BR<-x
@@ -280,14 +287,16 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     }
 
     else if(method == "post.test"){
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH1"))
+      temp.lm<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH1"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH1, type="response", se.fit=F))
       any(x>0)
       temp.CH1$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH2"))
+      temp.lm<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH2"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH2, type="response", se.fit=F))
       any(x>0)
       temp.CH2$BR<-x
@@ -299,14 +308,16 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       prepost.data<-pre.data
       prepost.data$delta.O2 <- (pre.data$delta.O2 + post.data$delta.O2)/2
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(prepost.data, Chamber.No=="CH1"))
+      temp.lm<-lm(delta.O2~Time, data=subset(prepost.data, Chamber.No=="CH1"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH1, type="response", se.fit=F))
       any(x>0)
       temp.CH1$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(prepost.data, Chamber.No=="CH2"))
+      temp.lm<-lm(delta.O2~Time, data=subset(prepost.data, Chamber.No=="CH2"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH2, type="response", se.fit=F))
       any(x>0)
       temp.CH2$BR<-x
@@ -324,10 +335,11 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH1"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH1"))
-        pro <- (1-i/(M.total+1))*temp.lm1$coefficients + i/(M.total+1)*temp.lm2$coefficients
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH1"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH1"))
+        pro <- (1-i/(M.total+1))*temp.lm1$coefficients[2] + i/(M.total+1)*temp.lm2$coefficients[2]
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH1[temp.CH1$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -344,10 +356,11 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH2"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH2"))
-        pro <- (1-i/(M.total+1))*temp.lm1$coefficients + i/(M.total+1)*temp.lm2$coefficients
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH2"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH2"))
+        pro <- (1-i/(M.total+1))*temp.lm1$coefficients[2] + i/(M.total+1)*temp.lm2$coefficients[2]
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH2[temp.CH2$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -369,11 +382,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
 
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH1"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH1"))
-        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
-        pro = temp.lm1$coefficients * exp.coef^i
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH1"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH1"))
+        exp.coef<-sign(temp.lm2$coefficients[2]/temp.lm1$coefficients[2]) * abs(temp.lm2$coefficients[2]/temp.lm1$coefficients[2])^(1/(M.total+1))
+        pro = temp.lm1$coefficients[2] * exp.coef^i
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH1[temp.CH1$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -392,11 +406,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
 
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH2"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH2"))
-        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
-        pro = temp.lm1$coefficients * exp.coef^i
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH2"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH2"))
+        exp.coef<-sign(temp.lm2$coefficients[2]/temp.lm1$coefficients[2]) * abs(temp.lm2$coefficients[2]/temp.lm1$coefficients[2])^(1/(M.total+1))
+        pro = temp.lm1$coefficients[2] * exp.coef^i
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH2[temp.CH2$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -535,21 +550,24 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     #--------------------------------------------------------------------------------------------------------------------------------------------------#
 
     if(method == "pre.test"){
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH1"))
+      temp.lm<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH1"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH1, type="response", se.fit=F))
       any(x>0)
       temp.CH1$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH2"))
+      temp.lm<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH2"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH2, type="response", se.fit=F))
       any(x>0)
       temp.CH2$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH3"))
+      temp.lm<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH3"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH3, type="response", se.fit=F))
       any(x>0)
       temp.CH3$BR<-x
@@ -558,21 +576,24 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     }
 
     else if(method == "post.test"){
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH1"))
+      temp.lm<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH1"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH1, type="response", se.fit=F))
       any(x>0)
       temp.CH1$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH2"))
+      temp.lm<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH2"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH2, type="response", se.fit=F))
       any(x>0)
       temp.CH2$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH3"))
+      temp.lm<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH3"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH3, type="response", se.fit=F))
       any(x>0)
       temp.CH3$BR<-x
@@ -584,21 +605,24 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       prepost.data<-pre.data
       prepost.data$delta.O2 <- (pre.data$delta.O2 + post.data$delta.O2)/2
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(prepost.data, Chamber.No=="CH1"))
+      temp.lm<-lm(delta.O2~Time, data=subset(prepost.data, Chamber.No=="CH1"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH1, type="response", se.fit=F))
       any(x>0)
       temp.CH1$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(prepost.data, Chamber.No=="CH2"))
+      temp.lm<-lm(delta.O2~Time, data=subset(prepost.data, Chamber.No=="CH2"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH2, type="response", se.fit=F))
       any(x>0)
       temp.CH2$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(prepost.data, Chamber.No=="CH3"))
+      temp.lm<-lm(delta.O2~Time, data=subset(prepost.data, Chamber.No=="CH3"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH3, type="response", se.fit=F))
       any(x>0)
       temp.CH3$BR<-x
@@ -616,10 +640,11 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH1"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH1"))
-        pro <- (1-i/(M.total+1))*temp.lm1$coefficients + i/(M.total+1)*temp.lm2$coefficients
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH1"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH1"))
+        pro <- (1-i/(M.total+1))*temp.lm1$coefficients[2] + i/(M.total+1)*temp.lm2$coefficients[2]
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH1[temp.CH1$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -636,10 +661,11 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH2"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH2"))
-        pro <- (1-i/(M.total+1))*temp.lm1$coefficients + i/(M.total+1)*temp.lm2$coefficients
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH2"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH2"))
+        pro <- (1-i/(M.total+1))*temp.lm1$coefficients[2] + i/(M.total+1)*temp.lm2$coefficients[2]
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH2[temp.CH2$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -656,10 +682,11 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH3"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH3"))
-        pro <- (1-i/(M.total+1))*temp.lm1$coefficients + i/(M.total+1)*temp.lm2$coefficients
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH3"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH3"))
+        pro <- (1-i/(M.total+1))*temp.lm1$coefficients[2] + i/(M.total+1)*temp.lm2$coefficients[2]
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH3[temp.CH3$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -681,11 +708,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
 
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH1"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH1"))
-        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
-        pro = temp.lm1$coefficients * exp.coef^i
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH1"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH1"))
+        exp.coef<-sign(temp.lm2$coefficients[2]/temp.lm1$coefficients[2]) * abs(temp.lm2$coefficients[2]/temp.lm1$coefficients[2])^(1/(M.total+1))
+        pro = temp.lm1$coefficients[2] * exp.coef^i
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH1[temp.CH1$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -704,11 +732,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
 
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH2"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH2"))
-        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
-        pro = temp.lm1$coefficients * exp.coef^i
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH2"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH2"))
+        exp.coef<-sign(temp.lm2$coefficients[2]/temp.lm1$coefficients[2]) * abs(temp.lm2$coefficients[2]/temp.lm1$coefficients[2])^(1/(M.total+1))
+        pro = temp.lm1$coefficients[2] * exp.coef^i
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH2[temp.CH2$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -727,11 +756,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
 
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH3"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH3"))
-        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
-        pro = temp.lm1$coefficients * exp.coef^i
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH3"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH3"))
+        exp.coef<-sign(temp.lm2$coefficients[2]/temp.lm1$coefficients[2]) * abs(temp.lm2$coefficients[2]/temp.lm1$coefficients[2])^(1/(M.total+1))
+        pro = temp.lm1$coefficients[2] * exp.coef^i
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH3[temp.CH3$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -906,28 +936,32 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     #--------------------------------------------------------------------------------------------------------------------------------------------------#
 
     if(method == "pre.test"){
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH1"))
+      temp.lm<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH1"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH1, type="response", se.fit=F))
       any(x>0)
       temp.CH1$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH2"))
+      temp.lm<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH2"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH2, type="response", se.fit=F))
       any(x>0)
       temp.CH2$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH3"))
+      temp.lm<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH3"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH3, type="response", se.fit=F))
       any(x>0)
       temp.CH3$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH4"))
+      temp.lm<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH4"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH4, type="response", se.fit=F))
       any(x>0)
       temp.CH4$BR<-x
@@ -936,28 +970,32 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     }
 
     else if(method == "post.test"){
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH1"))
+      temp.lm<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH1"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH1, type="response", se.fit=F))
       any(x>0)
       temp.CH1$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH2"))
+      temp.lm<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH2"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH2, type="response", se.fit=F))
       any(x>0)
       temp.CH2$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH3"))
+      temp.lm<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH3"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH3, type="response", se.fit=F))
       any(x>0)
       temp.CH3$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH4"))
+      temp.lm<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH4"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH4, type="response", se.fit=F))
       any(x>0)
       temp.CH4$BR<-x
@@ -969,28 +1007,32 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       prepost.data<-pre.data
       prepost.data$delta.O2 <- (pre.data$delta.O2 + post.data$delta.O2)/2
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(prepost.data, Chamber.No=="CH1"))
+      temp.lm<-lm(delta.O2~Time, data=subset(prepost.data, Chamber.No=="CH1"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH1, type="response", se.fit=F))
       any(x>0)
       temp.CH1$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(prepost.data, Chamber.No=="CH2"))
+      temp.lm<-lm(delta.O2~Time, data=subset(prepost.data, Chamber.No=="CH2"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH2, type="response", se.fit=F))
       any(x>0)
       temp.CH2$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(prepost.data, Chamber.No=="CH3"))
+      temp.lm<-lm(delta.O2~Time, data=subset(prepost.data, Chamber.No=="CH3"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH3, type="response", se.fit=F))
       any(x>0)
       temp.CH3$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(prepost.data, Chamber.No=="CH4"))
+      temp.lm<-lm(delta.O2~Time, data=subset(prepost.data, Chamber.No=="CH4"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH4, type="response", se.fit=F))
       any(x>0)
       temp.CH4$BR<-x
@@ -1008,10 +1050,11 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH1"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH1"))
-        pro <- (1-i/(M.total+1))*temp.lm1$coefficients + i/(M.total+1)*temp.lm2$coefficients
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH1"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH1"))
+        pro <- (1-i/(M.total+1))*temp.lm1$coefficients[2] + i/(M.total+1)*temp.lm2$coefficients[2]
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH1[temp.CH1$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -1028,10 +1071,11 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH2"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH2"))
-        pro <- (1-i/(M.total+1))*temp.lm1$coefficients + i/(M.total+1)*temp.lm2$coefficients
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH2"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH2"))
+        pro <- (1-i/(M.total+1))*temp.lm1$coefficients[2] + i/(M.total+1)*temp.lm2$coefficients[2]
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH2[temp.CH2$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -1048,10 +1092,11 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH3"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH3"))
-        pro <- (1-i/(M.total+1))*temp.lm1$coefficients + i/(M.total+1)*temp.lm2$coefficients
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH3"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH3"))
+        pro <- (1-i/(M.total+1))*temp.lm1$coefficients[2] + i/(M.total+1)*temp.lm2$coefficients[2]
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH3[temp.CH3$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -1068,10 +1113,11 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH4"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH4"))
-        pro <- (1-i/(M.total+1))*temp.lm1$coefficients + i/(M.total+1)*temp.lm2$coefficients
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH4"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH4"))
+        pro <- (1-i/(M.total+1))*temp.lm1$coefficients[2] + i/(M.total+1)*temp.lm2$coefficients[2]
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH4[temp.CH4$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -1093,11 +1139,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
 
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH1"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH1"))
-        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
-        pro = temp.lm1$coefficients * exp.coef^i
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH1"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH1"))
+        exp.coef<-sign(temp.lm2$coefficients[2]/temp.lm1$coefficients[2]) * abs(temp.lm2$coefficients[2]/temp.lm1$coefficients[2])^(1/(M.total+1))
+        pro = temp.lm1$coefficients[2] * exp.coef^i
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH1[temp.CH1$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -1116,11 +1163,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
 
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH2"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH2"))
-        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
-        pro = temp.lm1$coefficients * exp.coef^i
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH2"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH2"))
+        exp.coef<-sign(temp.lm2$coefficients[2]/temp.lm1$coefficients[2]) * abs(temp.lm2$coefficients[2]/temp.lm1$coefficients[2])^(1/(M.total+1))
+        pro = temp.lm1$coefficients[2] * exp.coef^i
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH2[temp.CH2$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -1139,11 +1187,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
 
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH3"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH3"))
-        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
-        pro = temp.lm1$coefficients * exp.coef^i
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH3"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH3"))
+        exp.coef<-sign(temp.lm2$coefficients[2]/temp.lm1$coefficients[2]) * abs(temp.lm2$coefficients[2]/temp.lm1$coefficients[2])^(1/(M.total+1))
+        pro = temp.lm1$coefficients[2] * exp.coef^i
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH3[temp.CH3$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -1162,11 +1211,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
 
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH4"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH4"))
-        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
-        pro = temp.lm1$coefficients * exp.coef^i
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH4"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH4"))
+        exp.coef<-sign(temp.lm2$coefficients[2]/temp.lm1$coefficients[2]) * abs(temp.lm2$coefficients[2]/temp.lm1$coefficients[2])^(1/(M.total+1))
+        pro = temp.lm1$coefficients[2] * exp.coef^i
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH4[temp.CH4$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -1380,35 +1430,40 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     #--------------------------------------------------------------------------------------------------------------------------------------------------#
 
     if(method == "pre.test"){
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH1"))
+      temp.lm<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH1"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH1, type="response", se.fit=F))
       any(x>0)
       temp.CH1$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH2"))
+      temp.lm<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH2"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH2, type="response", se.fit=F))
       any(x>0)
       temp.CH2$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH3"))
+      temp.lm<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH3"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH3, type="response", se.fit=F))
       any(x>0)
       temp.CH3$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH4"))
+      temp.lm<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH4"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH4, type="response", se.fit=F))
       any(x>0)
       temp.CH4$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH5"))
+      temp.lm<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH5"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH5, type="response", se.fit=F))
       any(x>0)
       temp.CH5$BR<-x
@@ -1417,35 +1472,40 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     }
 
     else if(method == "post.test"){
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH1"))
+      temp.lm<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH1"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH1, type="response", se.fit=F))
       any(x>0)
       temp.CH1$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH2"))
+      temp.lm<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH2"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH2, type="response", se.fit=F))
       any(x>0)
       temp.CH2$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH3"))
+      temp.lm<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH3"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH3, type="response", se.fit=F))
       any(x>0)
       temp.CH3$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH4"))
+      temp.lm<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH4"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH4, type="response", se.fit=F))
       any(x>0)
       temp.CH4$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH5"))
+      temp.lm<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH5"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH5, type="response", se.fit=F))
       any(x>0)
       temp.CH5$BR<-x
@@ -1457,35 +1517,40 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       prepost.data<-pre.data
       prepost.data$delta.O2 <- (pre.data$delta.O2 + post.data$delta.O2)/2
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(prepost.data, Chamber.No=="CH1"))
+      temp.lm<-lm(delta.O2~Time, data=subset(prepost.data, Chamber.No=="CH1"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH1, type="response", se.fit=F))
       any(x>0)
       temp.CH1$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(prepost.data, Chamber.No=="CH2"))
+      temp.lm<-lm(delta.O2~Time, data=subset(prepost.data, Chamber.No=="CH2"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH2, type="response", se.fit=F))
       any(x>0)
       temp.CH2$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(prepost.data, Chamber.No=="CH3"))
+      temp.lm<-lm(delta.O2~Time, data=subset(prepost.data, Chamber.No=="CH3"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH3, type="response", se.fit=F))
       any(x>0)
       temp.CH3$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(prepost.data, Chamber.No=="CH4"))
+      temp.lm<-lm(delta.O2~Time, data=subset(prepost.data, Chamber.No=="CH4"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH4, type="response", se.fit=F))
       any(x>0)
       temp.CH4$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(prepost.data, Chamber.No=="CH5"))
+      temp.lm<-lm(delta.O2~Time, data=subset(prepost.data, Chamber.No=="CH5"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH5, type="response", se.fit=F))
       any(x>0)
       temp.CH5$BR<-x
@@ -1503,10 +1568,11 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH1"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH1"))
-        pro <- (1-i/(M.total+1))*temp.lm1$coefficients + i/(M.total+1)*temp.lm2$coefficients
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH1"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH1"))
+        pro <- (1-i/(M.total+1))*temp.lm1$coefficients[2] + i/(M.total+1)*temp.lm2$coefficients[2]
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH1[temp.CH1$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -1523,10 +1589,11 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH2"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH2"))
-        pro <- (1-i/(M.total+1))*temp.lm1$coefficients + i/(M.total+1)*temp.lm2$coefficients
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH2"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH2"))
+        pro <- (1-i/(M.total+1))*temp.lm1$coefficients[2] + i/(M.total+1)*temp.lm2$coefficients[2]
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH2[temp.CH2$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -1543,10 +1610,11 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH3"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH3"))
-        pro <- (1-i/(M.total+1))*temp.lm1$coefficients + i/(M.total+1)*temp.lm2$coefficients
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH3"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH3"))
+        pro <- (1-i/(M.total+1))*temp.lm1$coefficients[2] + i/(M.total+1)*temp.lm2$coefficients[2]
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH3[temp.CH3$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -1563,10 +1631,11 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH4"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH4"))
-        pro <- (1-i/(M.total+1))*temp.lm1$coefficients + i/(M.total+1)*temp.lm2$coefficients
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH4"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH4"))
+        pro <- (1-i/(M.total+1))*temp.lm1$coefficients[2] + i/(M.total+1)*temp.lm2$coefficients[2]
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH4[temp.CH4$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -1583,10 +1652,11 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH5"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH5"))
-        pro <- (1-i/(M.total+1))*temp.lm1$coefficients + i/(M.total+1)*temp.lm2$coefficients
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH5"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH5"))
+        pro <- (1-i/(M.total+1))*temp.lm1$coefficients[2] + i/(M.total+1)*temp.lm2$coefficients[2]
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH5[temp.CH5$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -1608,11 +1678,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
 
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH1"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH1"))
-        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
-        pro = temp.lm1$coefficients * exp.coef^i
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH1"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH1"))
+        exp.coef<-sign(temp.lm2$coefficients[2]/temp.lm1$coefficients[2]) * abs(temp.lm2$coefficients[2]/temp.lm1$coefficients[2])^(1/(M.total+1))
+        pro = temp.lm1$coefficients[2] * exp.coef^i
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH1[temp.CH1$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -1631,11 +1702,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
 
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH2"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH2"))
-        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
-        pro = temp.lm1$coefficients * exp.coef^i
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH2"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH2"))
+        exp.coef<-sign(temp.lm2$coefficients[2]/temp.lm1$coefficients[2]) * abs(temp.lm2$coefficients[2]/temp.lm1$coefficients[2])^(1/(M.total+1))
+        pro = temp.lm1$coefficients[2] * exp.coef^i
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH2[temp.CH2$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -1654,11 +1726,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
 
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH3"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH3"))
-        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
-        pro = temp.lm1$coefficients * exp.coef^i
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH3"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH3"))
+        exp.coef<-sign(temp.lm2$coefficients[2]/temp.lm1$coefficients[2]) * abs(temp.lm2$coefficients[2]/temp.lm1$coefficients[2])^(1/(M.total+1))
+        pro = temp.lm1$coefficients[2] * exp.coef^i
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH3[temp.CH3$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -1677,11 +1750,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
 
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH4"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH4"))
-        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
-        pro = temp.lm1$coefficients * exp.coef^i
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH4"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH4"))
+        exp.coef<-sign(temp.lm2$coefficients[2]/temp.lm1$coefficients[2]) * abs(temp.lm2$coefficients[2]/temp.lm1$coefficients[2])^(1/(M.total+1))
+        pro = temp.lm1$coefficients[2] * exp.coef^i
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH4[temp.CH4$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -1700,11 +1774,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
 
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH5"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH5"))
-        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
-        pro = temp.lm1$coefficients * exp.coef^i
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH5"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH5"))
+        exp.coef<-sign(temp.lm2$coefficients[2]/temp.lm1$coefficients[2]) * abs(temp.lm2$coefficients[2]/temp.lm1$coefficients[2])^(1/(M.total+1))
+        pro = temp.lm1$coefficients[2] * exp.coef^i
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH5[temp.CH5$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -1958,42 +2033,48 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     #--------------------------------------------------------------------------------------------------------------------------------------------------#
 
     if(method == "pre.test"){
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH1"))
+      temp.lm<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH1"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH1, type="response", se.fit=F))
       any(x>0)
       temp.CH1$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH2"))
+      temp.lm<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH2"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH2, type="response", se.fit=F))
       any(x>0)
       temp.CH2$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH3"))
+      temp.lm<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH3"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH3, type="response", se.fit=F))
       any(x>0)
       temp.CH3$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH4"))
+      temp.lm<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH4"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH4, type="response", se.fit=F))
       any(x>0)
       temp.CH4$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH5"))
+      temp.lm<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH5"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH5, type="response", se.fit=F))
       any(x>0)
       temp.CH5$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH6"))
+      temp.lm<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH6"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH6, type="response", se.fit=F))
       any(x>0)
       temp.CH6$BR<-x
@@ -2002,42 +2083,48 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     }
 
     else if(method == "post.test"){
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH1"))
+      temp.lm<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH1"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH1, type="response", se.fit=F))
       any(x>0)
       temp.CH1$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH2"))
+      temp.lm<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH2"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH2, type="response", se.fit=F))
       any(x>0)
       temp.CH2$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH3"))
+      temp.lm<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH3"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH3, type="response", se.fit=F))
       any(x>0)
       temp.CH3$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH4"))
+      temp.lm<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH4"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH4, type="response", se.fit=F))
       any(x>0)
       temp.CH4$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH5"))
+      temp.lm<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH5"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH5, type="response", se.fit=F))
       any(x>0)
       temp.CH5$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH6"))
+      temp.lm<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH6"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH6, type="response", se.fit=F))
       any(x>0)
       temp.CH6$BR<-x
@@ -2049,42 +2136,48 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       prepost.data<-pre.data
       prepost.data$delta.O2 <- (pre.data$delta.O2 + post.data$delta.O2)/2
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(prepost.data, Chamber.No=="CH1"))
+      temp.lm<-lm(delta.O2~Time, data=subset(prepost.data, Chamber.No=="CH1"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH1, type="response", se.fit=F))
       any(x>0)
       temp.CH1$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(prepost.data, Chamber.No=="CH2"))
+      temp.lm<-lm(delta.O2~Time, data=subset(prepost.data, Chamber.No=="CH2"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH2, type="response", se.fit=F))
       any(x>0)
       temp.CH2$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(prepost.data, Chamber.No=="CH3"))
+      temp.lm<-lm(delta.O2~Time, data=subset(prepost.data, Chamber.No=="CH3"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH3, type="response", se.fit=F))
       any(x>0)
       temp.CH3$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(prepost.data, Chamber.No=="CH4"))
+      temp.lm<-lm(delta.O2~Time, data=subset(prepost.data, Chamber.No=="CH4"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH4, type="response", se.fit=F))
       any(x>0)
       temp.CH4$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(prepost.data, Chamber.No=="CH5"))
+      temp.lm<-lm(delta.O2~Time, data=subset(prepost.data, Chamber.No=="CH5"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH5, type="response", se.fit=F))
       any(x>0)
       temp.CH5$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(prepost.data, Chamber.No=="CH6"))
+      temp.lm<-lm(delta.O2~Time, data=subset(prepost.data, Chamber.No=="CH6"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH6, type="response", se.fit=F))
       any(x>0)
       temp.CH6$BR<-x
@@ -2102,10 +2195,11 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH1"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH1"))
-        pro <- (1-i/(M.total+1))*temp.lm1$coefficients + i/(M.total+1)*temp.lm2$coefficients
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH1"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH1"))
+        pro <- (1-i/(M.total+1))*temp.lm1$coefficients[2] + i/(M.total+1)*temp.lm2$coefficients[2]
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH1[temp.CH1$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -2122,10 +2216,11 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH2"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH2"))
-        pro <- (1-i/(M.total+1))*temp.lm1$coefficients + i/(M.total+1)*temp.lm2$coefficients
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH2"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH2"))
+        pro <- (1-i/(M.total+1))*temp.lm1$coefficients[2] + i/(M.total+1)*temp.lm2$coefficients[2]
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH2[temp.CH2$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -2142,10 +2237,11 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH3"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH3"))
-        pro <- (1-i/(M.total+1))*temp.lm1$coefficients + i/(M.total+1)*temp.lm2$coefficients
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH3"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH3"))
+        pro <- (1-i/(M.total+1))*temp.lm1$coefficients[2] + i/(M.total+1)*temp.lm2$coefficients[2]
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH3[temp.CH3$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -2162,10 +2258,11 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH4"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH4"))
-        pro <- (1-i/(M.total+1))*temp.lm1$coefficients + i/(M.total+1)*temp.lm2$coefficients
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH4"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH4"))
+        pro <- (1-i/(M.total+1))*temp.lm1$coefficients[2] + i/(M.total+1)*temp.lm2$coefficients[2]
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH4[temp.CH4$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -2182,10 +2279,11 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH5"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH5"))
-        pro <- (1-i/(M.total+1))*temp.lm1$coefficients + i/(M.total+1)*temp.lm2$coefficients
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH5"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH5"))
+        pro <- (1-i/(M.total+1))*temp.lm1$coefficients[2] + i/(M.total+1)*temp.lm2$coefficients[2]
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH5[temp.CH5$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -2202,10 +2300,11 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH6"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH6"))
-        pro <- (1-i/(M.total+1))*temp.lm1$coefficients + i/(M.total+1)*temp.lm2$coefficients
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH6"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH6"))
+        pro <- (1-i/(M.total+1))*temp.lm1$coefficients[2] + i/(M.total+1)*temp.lm2$coefficients[2]
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH6[temp.CH6$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -2227,11 +2326,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
 
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH1"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH1"))
-        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
-        pro = temp.lm1$coefficients * exp.coef^i
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH1"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH1"))
+        exp.coef<-sign(temp.lm2$coefficients[2]/temp.lm1$coefficients[2]) * abs(temp.lm2$coefficients[2]/temp.lm1$coefficients[2])^(1/(M.total+1))
+        pro = temp.lm1$coefficients[2] * exp.coef^i
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH1[temp.CH1$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -2250,11 +2350,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
 
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH2"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH2"))
-        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
-        pro = temp.lm1$coefficients * exp.coef^i
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH2"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH2"))
+        exp.coef<-sign(temp.lm2$coefficients[2]/temp.lm1$coefficients[2]) * abs(temp.lm2$coefficients[2]/temp.lm1$coefficients[2])^(1/(M.total+1))
+        pro = temp.lm1$coefficients[2] * exp.coef^i
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH2[temp.CH2$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -2273,11 +2374,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
 
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH3"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH3"))
-        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
-        pro = temp.lm1$coefficients * exp.coef^i
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH3"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH3"))
+        exp.coef<-sign(temp.lm2$coefficients[2]/temp.lm1$coefficients[2]) * abs(temp.lm2$coefficients[2]/temp.lm1$coefficients[2])^(1/(M.total+1))
+        pro = temp.lm1$coefficients[2] * exp.coef^i
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH3[temp.CH3$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -2296,11 +2398,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
 
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH4"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH4"))
-        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
-        pro = temp.lm1$coefficients * exp.coef^i
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH4"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH4"))
+        exp.coef<-sign(temp.lm2$coefficients[2]/temp.lm1$coefficients[2]) * abs(temp.lm2$coefficients[2]/temp.lm1$coefficients[2])^(1/(M.total+1))
+        pro = temp.lm1$coefficients[2] * exp.coef^i
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH4[temp.CH4$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -2319,11 +2422,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
 
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH5"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH5"))
-        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
-        pro = temp.lm1$coefficients * exp.coef^i
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH5"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH5"))
+        exp.coef<-sign(temp.lm2$coefficients[2]/temp.lm1$coefficients[2]) * abs(temp.lm2$coefficients[2]/temp.lm1$coefficients[2])^(1/(M.total+1))
+        pro = temp.lm1$coefficients[2] * exp.coef^i
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH5[temp.CH5$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -2342,11 +2446,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
 
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH6"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH6"))
-        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
-        pro = temp.lm1$coefficients * exp.coef^i
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH6"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH6"))
+        exp.coef<-sign(temp.lm2$coefficients[2]/temp.lm1$coefficients[2]) * abs(temp.lm2$coefficients[2]/temp.lm1$coefficients[2])^(1/(M.total+1))
+        pro = temp.lm1$coefficients[2] * exp.coef^i
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH6[temp.CH6$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -2642,49 +2747,56 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     #--------------------------------------------------------------------------------------------------------------------------------------------------#
 
     if(method == "pre.test"){
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH1"))
+      temp.lm<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH1"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH1, type="response", se.fit=F))
       any(x>0)
       temp.CH1$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH2"))
+      temp.lm<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH2"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH2, type="response", se.fit=F))
       any(x>0)
       temp.CH2$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH3"))
+      temp.lm<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH3"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH3, type="response", se.fit=F))
       any(x>0)
       temp.CH3$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH4"))
+      temp.lm<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH4"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH4, type="response", se.fit=F))
       any(x>0)
       temp.CH4$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH5"))
+      temp.lm<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH5"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH5, type="response", se.fit=F))
       any(x>0)
       temp.CH5$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH6"))
+      temp.lm<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH6"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH6, type="response", se.fit=F))
       any(x>0)
       temp.CH6$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH7"))
+      temp.lm<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH7"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH7, type="response", se.fit=F))
       any(x>0)
       temp.CH7$BR<-x
@@ -2693,49 +2805,56 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     }
 
     else if(method == "post.test"){
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH1"))
+      temp.lm<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH1"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH1, type="response", se.fit=F))
       any(x>0)
       temp.CH1$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH2"))
+      temp.lm<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH2"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH2, type="response", se.fit=F))
       any(x>0)
       temp.CH2$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH3"))
+      temp.lm<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH3"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH3, type="response", se.fit=F))
       any(x>0)
       temp.CH3$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH4"))
+      temp.lm<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH4"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH4, type="response", se.fit=F))
       any(x>0)
       temp.CH4$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH5"))
+      temp.lm<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH5"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH5, type="response", se.fit=F))
       any(x>0)
       temp.CH5$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH6"))
+      temp.lm<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH6"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH6, type="response", se.fit=F))
       any(x>0)
       temp.CH6$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH7"))
+      temp.lm<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH7"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH7, type="response", se.fit=F))
       any(x>0)
       temp.CH7$BR<-x
@@ -2747,49 +2866,56 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       prepost.data<-pre.data
       prepost.data$delta.O2 <- (pre.data$delta.O2 + post.data$delta.O2)/2
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(prepost.data, Chamber.No=="CH1"))
+      temp.lm<-lm(delta.O2~Time, data=subset(prepost.data, Chamber.No=="CH1"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH1, type="response", se.fit=F))
       any(x>0)
       temp.CH1$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(prepost.data, Chamber.No=="CH2"))
+      temp.lm<-lm(delta.O2~Time, data=subset(prepost.data, Chamber.No=="CH2"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH2, type="response", se.fit=F))
       any(x>0)
       temp.CH2$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(prepost.data, Chamber.No=="CH3"))
+      temp.lm<-lm(delta.O2~Time, data=subset(prepost.data, Chamber.No=="CH3"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH3, type="response", se.fit=F))
       any(x>0)
       temp.CH3$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(prepost.data, Chamber.No=="CH4"))
+      temp.lm<-lm(delta.O2~Time, data=subset(prepost.data, Chamber.No=="CH4"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH4, type="response", se.fit=F))
       any(x>0)
       temp.CH4$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(prepost.data, Chamber.No=="CH5"))
+      temp.lm<-lm(delta.O2~Time, data=subset(prepost.data, Chamber.No=="CH5"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH5, type="response", se.fit=F))
       any(x>0)
       temp.CH5$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(prepost.data, Chamber.No=="CH6"))
+      temp.lm<-lm(delta.O2~Time, data=subset(prepost.data, Chamber.No=="CH6"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH6, type="response", se.fit=F))
       any(x>0)
       temp.CH6$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(prepost.data, Chamber.No=="CH7"))
+      temp.lm<-lm(delta.O2~Time, data=subset(prepost.data, Chamber.No=="CH7"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH7, type="response", se.fit=F))
       any(x>0)
       temp.CH7$BR<-x
@@ -2807,10 +2933,11 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH1"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH1"))
-        pro <- (1-i/(M.total+1))*temp.lm1$coefficients + i/(M.total+1)*temp.lm2$coefficients
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH1"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH1"))
+        pro <- (1-i/(M.total+1))*temp.lm1$coefficients[2] + i/(M.total+1)*temp.lm2$coefficients[2]
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH1[temp.CH1$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -2827,10 +2954,11 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH2"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH2"))
-        pro <- (1-i/(M.total+1))*temp.lm1$coefficients + i/(M.total+1)*temp.lm2$coefficients
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH2"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH2"))
+        pro <- (1-i/(M.total+1))*temp.lm1$coefficients[2] + i/(M.total+1)*temp.lm2$coefficients[2]
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH2[temp.CH2$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -2847,10 +2975,11 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH3"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH3"))
-        pro <- (1-i/(M.total+1))*temp.lm1$coefficients + i/(M.total+1)*temp.lm2$coefficients
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH3"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH3"))
+        pro <- (1-i/(M.total+1))*temp.lm1$coefficients[2] + i/(M.total+1)*temp.lm2$coefficients[2]
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH3[temp.CH3$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -2867,10 +2996,11 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH4"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH4"))
-        pro <- (1-i/(M.total+1))*temp.lm1$coefficients + i/(M.total+1)*temp.lm2$coefficients
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH4"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH4"))
+        pro <- (1-i/(M.total+1))*temp.lm1$coefficients[2] + i/(M.total+1)*temp.lm2$coefficients[2]
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH4[temp.CH4$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -2887,10 +3017,11 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH5"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH5"))
-        pro <- (1-i/(M.total+1))*temp.lm1$coefficients + i/(M.total+1)*temp.lm2$coefficients
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH5"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH5"))
+        pro <- (1-i/(M.total+1))*temp.lm1$coefficients[2] + i/(M.total+1)*temp.lm2$coefficients[2]
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH5[temp.CH5$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -2907,10 +3038,11 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH6"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH6"))
-        pro <- (1-i/(M.total+1))*temp.lm1$coefficients + i/(M.total+1)*temp.lm2$coefficients
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH6"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH6"))
+        pro <- (1-i/(M.total+1))*temp.lm1$coefficients[2] + i/(M.total+1)*temp.lm2$coefficients[2]
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH6[temp.CH6$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -2927,10 +3059,11 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH7"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH7"))
-        pro <- (1-i/(M.total+1))*temp.lm1$coefficients + i/(M.total+1)*temp.lm2$coefficients
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH7"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH7"))
+        pro <- (1-i/(M.total+1))*temp.lm1$coefficients[2] + i/(M.total+1)*temp.lm2$coefficients[2]
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH7[temp.CH7$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -2952,11 +3085,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
 
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH1"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH1"))
-        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
-        pro = temp.lm1$coefficients * exp.coef^i
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH1"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH1"))
+        exp.coef<-sign(temp.lm2$coefficients[2]/temp.lm1$coefficients[2]) * abs(temp.lm2$coefficients[2]/temp.lm1$coefficients[2])^(1/(M.total+1))
+        pro = temp.lm1$coefficients[2] * exp.coef^i
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH1[temp.CH1$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -2975,11 +3109,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
 
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH2"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH2"))
-        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
-        pro = temp.lm1$coefficients * exp.coef^i
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH2"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH2"))
+        exp.coef<-sign(temp.lm2$coefficients[2]/temp.lm1$coefficients[2]) * abs(temp.lm2$coefficients[2]/temp.lm1$coefficients[2])^(1/(M.total+1))
+        pro = temp.lm1$coefficients[2] * exp.coef^i
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH2[temp.CH2$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -2998,11 +3133,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
 
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH3"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH3"))
-        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
-        pro = temp.lm1$coefficients * exp.coef^i
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH3"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH3"))
+        exp.coef<-sign(temp.lm2$coefficients[2]/temp.lm1$coefficients[2]) * abs(temp.lm2$coefficients[2]/temp.lm1$coefficients[2])^(1/(M.total+1))
+        pro = temp.lm1$coefficients[2] * exp.coef^i
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH3[temp.CH3$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -3021,11 +3157,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
 
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH4"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH4"))
-        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
-        pro = temp.lm1$coefficients * exp.coef^i
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH4"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH4"))
+        exp.coef<-sign(temp.lm2$coefficients[2]/temp.lm1$coefficients[2]) * abs(temp.lm2$coefficients[2]/temp.lm1$coefficients[2])^(1/(M.total+1))
+        pro = temp.lm1$coefficients[2] * exp.coef^i
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH4[temp.CH4$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -3044,11 +3181,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
 
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH5"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH5"))
-        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
-        pro = temp.lm1$coefficients * exp.coef^i
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH5"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH5"))
+        exp.coef<-sign(temp.lm2$coefficients[2]/temp.lm1$coefficients[2]) * abs(temp.lm2$coefficients[2]/temp.lm1$coefficients[2])^(1/(M.total+1))
+        pro = temp.lm1$coefficients[2] * exp.coef^i
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH5[temp.CH5$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -3067,11 +3205,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
 
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH6"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH6"))
-        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
-        pro = temp.lm1$coefficients * exp.coef^i
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH6"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH6"))
+        exp.coef<-sign(temp.lm2$coefficients[2]/temp.lm1$coefficients[2]) * abs(temp.lm2$coefficients[2]/temp.lm1$coefficients[2])^(1/(M.total+1))
+        pro = temp.lm1$coefficients[2] * exp.coef^i
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH6[temp.CH6$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -3089,11 +3228,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
 
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH7"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH7"))
-        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
-        pro = temp.lm1$coefficients * exp.coef^i
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH7"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH7"))
+        exp.coef<-sign(temp.lm2$coefficients[2]/temp.lm1$coefficients[2]) * abs(temp.lm2$coefficients[2]/temp.lm1$coefficients[2])^(1/(M.total+1))
+        pro = temp.lm1$coefficients[2] * exp.coef^i
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH7[temp.CH7$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -3432,56 +3572,64 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     #--------------------------------------------------------------------------------------------------------------------------------------------------#
 
     if(method == "pre.test"){
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH1"))
+      temp.lm<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH1"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH1, type="response", se.fit=F))
       any(x>0)
       temp.CH1$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH2"))
+      temp.lm<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH2"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH2, type="response", se.fit=F))
       any(x>0)
       temp.CH2$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH3"))
+      temp.lm<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH3"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH3, type="response", se.fit=F))
       any(x>0)
       temp.CH3$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH4"))
+      temp.lm<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH4"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH4, type="response", se.fit=F))
       any(x>0)
       temp.CH4$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH5"))
+      temp.lm<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH5"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH5, type="response", se.fit=F))
       any(x>0)
       temp.CH5$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH6"))
+      temp.lm<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH6"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH6, type="response", se.fit=F))
       any(x>0)
       temp.CH6$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH7"))
+      temp.lm<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH7"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH7, type="response", se.fit=F))
       any(x>0)
       temp.CH7$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH8"))
+      temp.lm<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH8"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH8, type="response", se.fit=F))
       any(x>0)
       temp.CH8$BR<-x
@@ -3490,56 +3638,64 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
     }
 
     else if(method == "post.test"){
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH1"))
+      temp.lm<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH1"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH1, type="response", se.fit=F))
       any(x>0)
       temp.CH1$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH2"))
+      temp.lm<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH2"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH2, type="response", se.fit=F))
       any(x>0)
       temp.CH2$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH3"))
+      temp.lm<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH3"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH3, type="response", se.fit=F))
       any(x>0)
       temp.CH3$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH4"))
+      temp.lm<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH4"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH4, type="response", se.fit=F))
       any(x>0)
       temp.CH4$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH5"))
+      temp.lm<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH5"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH5, type="response", se.fit=F))
       any(x>0)
       temp.CH5$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH6"))
+      temp.lm<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH6"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH6, type="response", se.fit=F))
       any(x>0)
       temp.CH6$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH7"))
+      temp.lm<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH7"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH7, type="response", se.fit=F))
       any(x>0)
       temp.CH7$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH8"))
+      temp.lm<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH8"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH8, type="response", se.fit=F))
       any(x>0)
       temp.CH8$BR<-x
@@ -3551,56 +3707,64 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       prepost.data<-pre.data
       prepost.data$delta.O2 <- (pre.data$delta.O2 + post.data$delta.O2)/2
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(prepost.data, Chamber.No=="CH1"))
+      temp.lm<-lm(delta.O2~Time, data=subset(prepost.data, Chamber.No=="CH1"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH1, type="response", se.fit=F))
       any(x>0)
       temp.CH1$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(prepost.data, Chamber.No=="CH2"))
+      temp.lm<-lm(delta.O2~Time, data=subset(prepost.data, Chamber.No=="CH2"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH2, type="response", se.fit=F))
       any(x>0)
       temp.CH2$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(prepost.data, Chamber.No=="CH3"))
+      temp.lm<-lm(delta.O2~Time, data=subset(prepost.data, Chamber.No=="CH3"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH3, type="response", se.fit=F))
       any(x>0)
       temp.CH3$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(prepost.data, Chamber.No=="CH4"))
+      temp.lm<-lm(delta.O2~Time, data=subset(prepost.data, Chamber.No=="CH4"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH4, type="response", se.fit=F))
       any(x>0)
       temp.CH4$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(prepost.data, Chamber.No=="CH5"))
+      temp.lm<-lm(delta.O2~Time, data=subset(prepost.data, Chamber.No=="CH5"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH5, type="response", se.fit=F))
       any(x>0)
       temp.CH5$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(prepost.data, Chamber.No=="CH6"))
+      temp.lm<-lm(delta.O2~Time, data=subset(prepost.data, Chamber.No=="CH6"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH6, type="response", se.fit=F))
       any(x>0)
       temp.CH6$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(prepost.data, Chamber.No=="CH7"))
+      temp.lm<-lm(delta.O2~Time, data=subset(prepost.data, Chamber.No=="CH7"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH7, type="response", se.fit=F))
       any(x>0)
       temp.CH7$BR<-x
       rm(x)
       rm(temp.lm)
 
-      temp.lm<-lm(delta.O2~-1+Time, data=subset(prepost.data, Chamber.No=="CH8"))
+      temp.lm<-lm(delta.O2~Time, data=subset(prepost.data, Chamber.No=="CH8"))
+      temp.lm$coefficients[1] <- 0
       x<-as.vector(predict.lm(temp.lm, temp.CH8, type="response", se.fit=F))
       any(x>0)
       temp.CH8$BR<-x
@@ -3619,10 +3783,11 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH1"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH1"))
-        pro <- (1-i/(M.total+1))*temp.lm1$coefficients + i/(M.total+1)*temp.lm2$coefficients
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH1"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH1"))
+        pro <- (1-i/(M.total+1))*temp.lm1$coefficients[2] + i/(M.total+1)*temp.lm2$coefficients[2]
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH1[temp.CH1$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -3639,10 +3804,11 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH2"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH2"))
-        pro <- (1-i/(M.total+1))*temp.lm1$coefficients + i/(M.total+1)*temp.lm2$coefficients
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH2"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH2"))
+        pro <- (1-i/(M.total+1))*temp.lm1$coefficients[2] + i/(M.total+1)*temp.lm2$coefficients[2]
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH2[temp.CH2$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -3659,10 +3825,11 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH3"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH3"))
-        pro <- (1-i/(M.total+1))*temp.lm1$coefficients + i/(M.total+1)*temp.lm2$coefficients
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH3"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH3"))
+        pro <- (1-i/(M.total+1))*temp.lm1$coefficients[2] + i/(M.total+1)*temp.lm2$coefficients[2]
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH3[temp.CH3$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -3679,10 +3846,11 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH4"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH4"))
-        pro <- (1-i/(M.total+1))*temp.lm1$coefficients + i/(M.total+1)*temp.lm2$coefficients
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH4"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH4"))
+        pro <- (1-i/(M.total+1))*temp.lm1$coefficients[2] + i/(M.total+1)*temp.lm2$coefficients[2]
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH4[temp.CH4$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -3699,10 +3867,11 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH5"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH5"))
-        pro <- (1-i/(M.total+1))*temp.lm1$coefficients + i/(M.total+1)*temp.lm2$coefficients
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH5"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH5"))
+        pro <- (1-i/(M.total+1))*temp.lm1$coefficients[2] + i/(M.total+1)*temp.lm2$coefficients[2]
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH5[temp.CH5$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -3719,10 +3888,11 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH6"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH6"))
-        pro <- (1-i/(M.total+1))*temp.lm1$coefficients + i/(M.total+1)*temp.lm2$coefficients
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH6"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH6"))
+        pro <- (1-i/(M.total+1))*temp.lm1$coefficients[2] + i/(M.total+1)*temp.lm2$coefficients[2]
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH6[temp.CH6$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -3739,10 +3909,11 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH7"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH7"))
-        pro <- (1-i/(M.total+1))*temp.lm1$coefficients + i/(M.total+1)*temp.lm2$coefficients
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH7"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH7"))
+        pro <- (1-i/(M.total+1))*temp.lm1$coefficients[2] + i/(M.total+1)*temp.lm2$coefficients[2]
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH7[temp.CH7$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -3759,10 +3930,11 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
       }
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH8"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH8"))
-        pro <- (1-i/(M.total+1))*temp.lm1$coefficients + i/(M.total+1)*temp.lm2$coefficients
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH8"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH8"))
+        pro <- (1-i/(M.total+1))*temp.lm1$coefficients[2] + i/(M.total+1)*temp.lm2$coefficients[2]
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH8[temp.CH8$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -3785,11 +3957,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
 
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH1"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH1"))
-        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
-        pro = temp.lm1$coefficients * exp.coef^i
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH1"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH1"))
+        exp.coef<-sign(temp.lm2$coefficients[2]/temp.lm1$coefficients[2]) * abs(temp.lm2$coefficients[2]/temp.lm1$coefficients[2])^(1/(M.total+1))
+        pro = temp.lm1$coefficients[2] * exp.coef^i
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH1[temp.CH1$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -3808,11 +3981,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
 
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH2"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH2"))
-        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
-        pro = temp.lm1$coefficients * exp.coef^i
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH2"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH2"))
+        exp.coef<-sign(temp.lm2$coefficients[2]/temp.lm1$coefficients[2]) * abs(temp.lm2$coefficients[2]/temp.lm1$coefficients[2])^(1/(M.total+1))
+        pro = temp.lm1$coefficients[2] * exp.coef^i
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH2[temp.CH2$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -3831,11 +4005,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
 
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH3"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH3"))
-        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
-        pro = temp.lm1$coefficients * exp.coef^i
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH3"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH3"))
+        exp.coef<-sign(temp.lm2$coefficients[2]/temp.lm1$coefficients[2]) * abs(temp.lm2$coefficients[2]/temp.lm1$coefficients[2])^(1/(M.total+1))
+        pro = temp.lm1$coefficients[2] * exp.coef^i
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH3[temp.CH3$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -3854,11 +4029,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
 
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH4"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH4"))
-        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
-        pro = temp.lm1$coefficients * exp.coef^i
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH4"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH4"))
+        exp.coef<-sign(temp.lm2$coefficients[2]/temp.lm1$coefficients[2]) * abs(temp.lm2$coefficients[2]/temp.lm1$coefficients[2])^(1/(M.total+1))
+        pro = temp.lm1$coefficients[2] * exp.coef^i
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH4[temp.CH4$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -3877,11 +4053,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
 
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH5"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH5"))
-        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
-        pro = temp.lm1$coefficients * exp.coef^i
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH5"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH5"))
+        exp.coef<-sign(temp.lm2$coefficients[2]/temp.lm1$coefficients[2]) * abs(temp.lm2$coefficients[2]/temp.lm1$coefficients[2])^(1/(M.total+1))
+        pro = temp.lm1$coefficients[2] * exp.coef^i
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH5[temp.CH5$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -3900,11 +4077,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
 
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH6"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH6"))
-        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
-        pro = temp.lm1$coefficients * exp.coef^i
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH6"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH6"))
+        exp.coef<-sign(temp.lm2$coefficients[2]/temp.lm1$coefficients[2]) * abs(temp.lm2$coefficients[2]/temp.lm1$coefficients[2])^(1/(M.total+1))
+        pro = temp.lm1$coefficients[2] * exp.coef^i
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH6[temp.CH6$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -3922,11 +4100,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
 
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH7"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH7"))
-        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
-        pro = temp.lm1$coefficients * exp.coef^i
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH7"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH7"))
+        exp.coef<-sign(temp.lm2$coefficients[2]/temp.lm1$coefficients[2]) * abs(temp.lm2$coefficients[2]/temp.lm1$coefficients[2])^(1/(M.total+1))
+        pro = temp.lm1$coefficients[2] * exp.coef^i
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH7[temp.CH7$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)
@@ -3945,11 +4124,12 @@ correct.meas <- function (info.data, pre.data, post.data, meas.data,
 
       y<-NULL
       for (i in b){
-        temp.lm1<-lm(delta.O2~-1+Time, data=subset(pre.data, Chamber.No=="CH8"))
-        temp.lm2<-lm(delta.O2~-1+Time, data=subset(post.data, Chamber.No=="CH8"))
-        exp.coef<-sign(temp.lm2$coefficients/temp.lm1$coefficients) * abs(temp.lm2$coefficients/temp.lm1$coefficients)^(1/(M.total+1))
-        pro = temp.lm1$coefficients * exp.coef^i
-        temp.lm1$coefficients[1] <- pro
+        temp.lm1<-lm(delta.O2~Time, data=subset(pre.data, Chamber.No=="CH8"))
+        temp.lm2<-lm(delta.O2~Time, data=subset(post.data, Chamber.No=="CH8"))
+        exp.coef<-sign(temp.lm2$coefficients[2]/temp.lm1$coefficients[2]) * abs(temp.lm2$coefficients[2]/temp.lm1$coefficients[2])^(1/(M.total+1))
+        pro = temp.lm1$coefficients[2] * exp.coef^i
+        temp.lm1$coefficients[1] <- 0
+        temp.lm1$coefficients[2] <- pro
         lm.M <- assign(paste("lm.M", i, sep=""),temp.lm1)
         x<-as.vector(predict.lm(lm.M, temp.CH8[temp.CH8$Phase==paste("M", i, sep=""),], type="response", se.fit=F))
         y<-append(y, x)

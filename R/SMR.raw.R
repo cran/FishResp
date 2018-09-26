@@ -4,7 +4,7 @@
 #' @title Standard Metabolic Rate: Raw Data
 #' @description The dataset containing raw data of standard metabolic rate measurements obtained by using the function \code{\link{import.meas}})
 #' @usage SMR.raw
-#' @format A data frame with 28800 rows and 16 variables:
+#' @format A data frame with 19200 rows and 16 variables:
 #' \describe{
 #'   \item{Date.Time}{date and time (yyyy/mm/dd hh:mm:ss)}
 #'   \item{Phase}{the type of phase and an ordinal number of measurements (e.g. M1, F3)}

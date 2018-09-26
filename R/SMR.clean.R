@@ -4,7 +4,7 @@
 #' @title Standard Metabolic Rate: Corrected Raw Data
 #' @description A dataset contains raw data of standard metabolic rate measurements corrected for background respiration using the function \code{\link{correct.meas}}
 #' @usage SMR.clean
-#' @format A data frame with 115200 rows and 17 variables:
+#' @format A data frame with 76800 rows and 17 variables:
 #' \describe{
 #'   \item{Date.Time}{date and time (yyyy/mm/dd hh:mm:ss)}
 #'   \item{Date}{date (yyyy/mm/dd)}

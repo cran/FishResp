@@ -4,7 +4,7 @@
 \name{SMR.clean}
 \alias{SMR.clean}
 \title{Standard Metabolic Rate: Corrected Raw Data}
-\format{A data frame with 115200 rows and 17 variables:
+\format{A data frame with 76800 rows and 17 variables:
 \describe{
   \item{Date.Time}{date and time (yyyy/mm/dd hh:mm:ss)}
   \item{Date}{date (yyyy/mm/dd)}

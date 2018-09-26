@@ -10,7 +10,7 @@
 #'             plot.temperature = TRUE,
 #'             plot.oxygen = TRUE)
 #'
-#' @param file  the name of a file  which the pre- or post-test data are to be read from. Note, if the file contains more than one measurement phase (e.g. M1 and M2), only the first one (M1) will be imported in R.  
+#' @param file  the name of a file  which the pre- or post-test data are to be read from. Note, if the file contains more than one measurement phase (e.g. M1 and M2), only the first one (M1) will be imported in R.
 #' @param info.data  a data frame obtained by using the function \code{\link{input.info}}
 #' @param n.chamber  integer: the number of chambers used in an experiment (including empty ones)
 #' @param logger  string: the name of a logger software used for intermittent-flow respirometry:
@@ -334,7 +334,7 @@ import.test <- function(file, info.data,
     test.CH1$Chamber.No<-as.factor(rep("CH1", dim(test.CH1)[1]))
     test.CH1$Test<-as.factor(rep("test", dim(test.CH1)[1]))
     test.CH1$Time<-1:dim(test.CH1)[1]
-    test.CH1$Init.O2<-rep(mean(test.CH1$O2[1:5]), dim(test.CH1)[1])
+    test.CH1$Init.O2<-rep(mean(test.CH1$O2[1]), dim(test.CH1)[1])
     test.CH1<-subset(test.CH1, select=c(Chamber.No, Test, Time, Init.O2, Temp, O2))
 
     test.data<-rbind(test.CH1)
@@ -370,7 +370,7 @@ import.test <- function(file, info.data,
     test.CH1$Chamber.No<-as.factor(rep("CH1", dim(test.CH1)[1]))
     test.CH1$Test<-as.factor(rep("test", dim(test.CH1)[1]))
     test.CH1$Time<-1:dim(test.CH1)[1]
-    test.CH1$Init.O2<-rep(mean(test.CH1$O2[1:5]), dim(test.CH1)[1])
+    test.CH1$Init.O2<-rep(mean(test.CH1$O2[1]), dim(test.CH1)[1])
     test.CH1<-subset(test.CH1, select=c(Chamber.No, Test, Time, Init.O2, Temp, O2))
 
     test.CH2<-subset(test.data, select=c(Temp.2, Ox.2))
@@ -379,7 +379,7 @@ import.test <- function(file, info.data,
     test.CH2$Chamber.No<-as.factor(rep("CH2", dim(test.CH2)[1]))
     test.CH2$Test<-as.factor(rep("test", dim(test.CH2)[1]))
     test.CH2$Time<-1:dim(test.CH2)[1]
-    test.CH2$Init.O2<-rep(mean(test.CH2$O2[1:5]), dim(test.CH2)[1])
+    test.CH2$Init.O2<-rep(mean(test.CH2$O2[1]), dim(test.CH2)[1])
     test.CH2<-subset(test.CH2, select=c(Chamber.No, Test, Time, Init.O2, Temp, O2))
     test.data<-rbind(test.CH1, test.CH2)
     test.data$delta.O2<-test.data$O2 - test.data$Init.O2
@@ -416,7 +416,7 @@ import.test <- function(file, info.data,
     test.CH1$Chamber.No<-as.factor(rep("CH1", dim(test.CH1)[1]))
     test.CH1$Test<-as.factor(rep("test", dim(test.CH1)[1]))
     test.CH1$Time<-1:dim(test.CH1)[1]
-    test.CH1$Init.O2<-rep(mean(test.CH1$O2[1:5]), dim(test.CH1)[1])
+    test.CH1$Init.O2<-rep(mean(test.CH1$O2[1]), dim(test.CH1)[1])
     test.CH1<-subset(test.CH1, select=c(Chamber.No, Test, Time, Init.O2, Temp, O2))
 
     test.CH2<-subset(test.data, select=c(Temp.2, Ox.2))
@@ -425,7 +425,7 @@ import.test <- function(file, info.data,
     test.CH2$Chamber.No<-as.factor(rep("CH2", dim(test.CH2)[1]))
     test.CH2$Test<-as.factor(rep("test", dim(test.CH2)[1]))
     test.CH2$Time<-1:dim(test.CH2)[1]
-    test.CH2$Init.O2<-rep(mean(test.CH2$O2[1:5]), dim(test.CH2)[1])
+    test.CH2$Init.O2<-rep(mean(test.CH2$O2[1]), dim(test.CH2)[1])
     test.CH2<-subset(test.CH2, select=c(Chamber.No, Test, Time, Init.O2, Temp, O2))
 
     test.CH3<-subset(test.data, select=c(Temp.3, Ox.3))
@@ -434,7 +434,7 @@ import.test <- function(file, info.data,
     test.CH3$Chamber.No<-as.factor(rep("CH3", dim(test.CH3)[1]))
     test.CH3$Test<-as.factor(rep("test", dim(test.CH3)[1]))
     test.CH3$Time<-1:dim(test.CH3)[1]
-    test.CH3$Init.O2<-rep(mean(test.CH3$O2[1:5]), dim(test.CH3)[1])
+    test.CH3$Init.O2<-rep(mean(test.CH3$O2[1]), dim(test.CH3)[1])
     test.CH3<-subset(test.CH3, select=c(Chamber.No, Test, Time, Init.O2, Temp, O2))
     test.data<-rbind(test.CH1, test.CH2, test.CH3)
     test.data$delta.O2<-test.data$O2 - test.data$Init.O2
@@ -473,7 +473,7 @@ import.test <- function(file, info.data,
     test.CH1$Chamber.No<-as.factor(rep("CH1", dim(test.CH1)[1]))
     test.CH1$Test<-as.factor(rep("test", dim(test.CH1)[1]))
     test.CH1$Time<-1:dim(test.CH1)[1]
-    test.CH1$Init.O2<-rep(mean(test.CH1$O2[1:5]), dim(test.CH1)[1])
+    test.CH1$Init.O2<-rep(mean(test.CH1$O2[1]), dim(test.CH1)[1])
     test.CH1<-subset(test.CH1, select=c(Chamber.No, Test, Time, Init.O2, Temp, O2))
 
     test.CH2<-subset(test.data, select=c(Temp.2, Ox.2))
@@ -482,7 +482,7 @@ import.test <- function(file, info.data,
     test.CH2$Chamber.No<-as.factor(rep("CH2", dim(test.CH2)[1]))
     test.CH2$Test<-as.factor(rep("test", dim(test.CH2)[1]))
     test.CH2$Time<-1:dim(test.CH2)[1]
-    test.CH2$Init.O2<-rep(mean(test.CH2$O2[1:5]), dim(test.CH2)[1])
+    test.CH2$Init.O2<-rep(mean(test.CH2$O2[1]), dim(test.CH2)[1])
     test.CH2<-subset(test.CH2, select=c(Chamber.No, Test, Time, Init.O2, Temp, O2))
 
     test.CH3<-subset(test.data, select=c(Temp.3, Ox.3))
@@ -491,7 +491,7 @@ import.test <- function(file, info.data,
     test.CH3$Chamber.No<-as.factor(rep("CH3", dim(test.CH3)[1]))
     test.CH3$Test<-as.factor(rep("test", dim(test.CH3)[1]))
     test.CH3$Time<-1:dim(test.CH3)[1]
-    test.CH3$Init.O2<-rep(mean(test.CH3$O2[1:5]), dim(test.CH3)[1])
+    test.CH3$Init.O2<-rep(mean(test.CH3$O2[1]), dim(test.CH3)[1])
     test.CH3<-subset(test.CH3, select=c(Chamber.No, Test, Time, Init.O2, Temp, O2))
 
     test.CH4<-subset(test.data, select=c(Temp.4, Ox.4))
@@ -500,7 +500,7 @@ import.test <- function(file, info.data,
     test.CH4$Chamber.No<-as.factor(rep("CH4", dim(test.CH4)[1]))
     test.CH4$Test<-as.factor(rep("test", dim(test.CH4)[1]))
     test.CH4$Time<-1:dim(test.CH4)[1]
-    test.CH4$Init.O2<-rep(mean(test.CH4$O2[1:5]), dim(test.CH4)[1])
+    test.CH4$Init.O2<-rep(mean(test.CH4$O2[1]), dim(test.CH4)[1])
     test.CH4<-subset(test.CH4, select=c(Chamber.No, Test, Time, Init.O2, Temp, O2))
 
     test.data<-rbind(test.CH1, test.CH2, test.CH3, test.CH4)
@@ -542,7 +542,7 @@ import.test <- function(file, info.data,
     test.CH1$Chamber.No<-as.factor(rep("CH1", dim(test.CH1)[1]))
     test.CH1$Test<-as.factor(rep("test", dim(test.CH1)[1]))
     test.CH1$Time<-1:dim(test.CH1)[1]
-    test.CH1$Init.O2<-rep(mean(test.CH1$O2[1:5]), dim(test.CH1)[1])
+    test.CH1$Init.O2<-rep(mean(test.CH1$O2[1]), dim(test.CH1)[1])
     test.CH1<-subset(test.CH1, select=c(Chamber.No, Test, Time, Init.O2, Temp, O2))
 
     test.CH2<-subset(test.data, select=c(Temp.2, Ox.2))
@@ -551,7 +551,7 @@ import.test <- function(file, info.data,
     test.CH2$Chamber.No<-as.factor(rep("CH2", dim(test.CH2)[1]))
     test.CH2$Test<-as.factor(rep("test", dim(test.CH2)[1]))
     test.CH2$Time<-1:dim(test.CH2)[1]
-    test.CH2$Init.O2<-rep(mean(test.CH2$O2[1:5]), dim(test.CH2)[1])
+    test.CH2$Init.O2<-rep(mean(test.CH2$O2[1]), dim(test.CH2)[1])
     test.CH2<-subset(test.CH2, select=c(Chamber.No, Test, Time, Init.O2, Temp, O2))
 
     test.CH3<-subset(test.data, select=c(Temp.3, Ox.3))
@@ -560,7 +560,7 @@ import.test <- function(file, info.data,
     test.CH3$Chamber.No<-as.factor(rep("CH3", dim(test.CH3)[1]))
     test.CH3$Test<-as.factor(rep("test", dim(test.CH3)[1]))
     test.CH3$Time<-1:dim(test.CH3)[1]
-    test.CH3$Init.O2<-rep(mean(test.CH3$O2[1:5]), dim(test.CH3)[1])
+    test.CH3$Init.O2<-rep(mean(test.CH3$O2[1]), dim(test.CH3)[1])
     test.CH3<-subset(test.CH3, select=c(Chamber.No, Test, Time, Init.O2, Temp, O2))
 
     test.CH4<-subset(test.data, select=c(Temp.4, Ox.4))
@@ -569,7 +569,7 @@ import.test <- function(file, info.data,
     test.CH4$Chamber.No<-as.factor(rep("CH4", dim(test.CH4)[1]))
     test.CH4$Test<-as.factor(rep("test", dim(test.CH4)[1]))
     test.CH4$Time<-1:dim(test.CH4)[1]
-    test.CH4$Init.O2<-rep(mean(test.CH4$O2[1:5]), dim(test.CH4)[1])
+    test.CH4$Init.O2<-rep(mean(test.CH4$O2[1]), dim(test.CH4)[1])
     test.CH4<-subset(test.CH4, select=c(Chamber.No, Test, Time, Init.O2, Temp, O2))
 
     test.CH5<-subset(test.data, select=c(Temp.5, Ox.5))
@@ -578,7 +578,7 @@ import.test <- function(file, info.data,
     test.CH5$Chamber.No<-as.factor(rep("CH5", dim(test.CH5)[1]))
     test.CH5$Test<-as.factor(rep("test", dim(test.CH5)[1]))
     test.CH5$Time<-1:dim(test.CH5)[1]
-    test.CH5$Init.O2<-rep(mean(test.CH5$O2[1:5]), dim(test.CH5)[1])
+    test.CH5$Init.O2<-rep(mean(test.CH5$O2[1]), dim(test.CH5)[1])
     test.CH5<-subset(test.CH5, select=c(Chamber.No, Test, Time, Init.O2, Temp, O2))
 
     test.data<-rbind(test.CH1, test.CH2, test.CH3, test.CH4, test.CH5)
@@ -622,7 +622,7 @@ import.test <- function(file, info.data,
     test.CH1$Chamber.No<-as.factor(rep("CH1", dim(test.CH1)[1]))
     test.CH1$Test<-as.factor(rep("test", dim(test.CH1)[1]))
     test.CH1$Time<-1:dim(test.CH1)[1]
-    test.CH1$Init.O2<-rep(mean(test.CH1$O2[1:5]), dim(test.CH1)[1])
+    test.CH1$Init.O2<-rep(mean(test.CH1$O2[1]), dim(test.CH1)[1])
     test.CH1<-subset(test.CH1, select=c(Chamber.No, Test, Time, Init.O2, Temp, O2))
 
     test.CH2<-subset(test.data, select=c(Temp.2, Ox.2))
@@ -631,7 +631,7 @@ import.test <- function(file, info.data,
     test.CH2$Chamber.No<-as.factor(rep("CH2", dim(test.CH2)[1]))
     test.CH2$Test<-as.factor(rep("test", dim(test.CH2)[1]))
     test.CH2$Time<-1:dim(test.CH2)[1]
-    test.CH2$Init.O2<-rep(mean(test.CH2$O2[1:5]), dim(test.CH2)[1])
+    test.CH2$Init.O2<-rep(mean(test.CH2$O2[1]), dim(test.CH2)[1])
     test.CH2<-subset(test.CH2, select=c(Chamber.No, Test, Time, Init.O2, Temp, O2))
 
     test.CH3<-subset(test.data, select=c(Temp.3, Ox.3))
@@ -640,7 +640,7 @@ import.test <- function(file, info.data,
     test.CH3$Chamber.No<-as.factor(rep("CH3", dim(test.CH3)[1]))
     test.CH3$Test<-as.factor(rep("test", dim(test.CH3)[1]))
     test.CH3$Time<-1:dim(test.CH3)[1]
-    test.CH3$Init.O2<-rep(mean(test.CH3$O2[1:5]), dim(test.CH3)[1])
+    test.CH3$Init.O2<-rep(mean(test.CH3$O2[1]), dim(test.CH3)[1])
     test.CH3<-subset(test.CH3, select=c(Chamber.No, Test, Time, Init.O2, Temp, O2))
 
     test.CH4<-subset(test.data, select=c(Temp.4, Ox.4))
@@ -649,7 +649,7 @@ import.test <- function(file, info.data,
     test.CH4$Chamber.No<-as.factor(rep("CH4", dim(test.CH4)[1]))
     test.CH4$Test<-as.factor(rep("test", dim(test.CH4)[1]))
     test.CH4$Time<-1:dim(test.CH4)[1]
-    test.CH4$Init.O2<-rep(mean(test.CH4$O2[1:5]), dim(test.CH4)[1])
+    test.CH4$Init.O2<-rep(mean(test.CH4$O2[1]), dim(test.CH4)[1])
     test.CH4<-subset(test.CH4, select=c(Chamber.No, Test, Time, Init.O2, Temp, O2))
 
     test.CH5<-subset(test.data, select=c(Temp.5, Ox.5))
@@ -658,7 +658,7 @@ import.test <- function(file, info.data,
     test.CH5$Chamber.No<-as.factor(rep("CH5", dim(test.CH5)[1]))
     test.CH5$Test<-as.factor(rep("test", dim(test.CH5)[1]))
     test.CH5$Time<-1:dim(test.CH5)[1]
-    test.CH5$Init.O2<-rep(mean(test.CH5$O2[1:5]), dim(test.CH5)[1])
+    test.CH5$Init.O2<-rep(mean(test.CH5$O2[1]), dim(test.CH5)[1])
     test.CH5<-subset(test.CH5, select=c(Chamber.No, Test, Time, Init.O2, Temp, O2))
 
     test.CH6<-subset(test.data, select=c(Temp.6, Ox.6))
@@ -667,7 +667,7 @@ import.test <- function(file, info.data,
     test.CH6$Chamber.No<-as.factor(rep("CH6", dim(test.CH6)[1]))
     test.CH6$Test<-as.factor(rep("test", dim(test.CH6)[1]))
     test.CH6$Time<-1:dim(test.CH6)[1]
-    test.CH6$Init.O2<-rep(mean(test.CH6$O2[1:5]), dim(test.CH6)[1])
+    test.CH6$Init.O2<-rep(mean(test.CH6$O2[1]), dim(test.CH6)[1])
     test.CH6<-subset(test.CH6, select=c(Chamber.No, Test, Time, Init.O2, Temp, O2))
 
     test.data<-rbind(test.CH1, test.CH2, test.CH3, test.CH4, test.CH5, test.CH6)
@@ -714,7 +714,7 @@ import.test <- function(file, info.data,
     test.CH1$Chamber.No<-as.factor(rep("CH1", dim(test.CH1)[1]))
     test.CH1$Test<-as.factor(rep("test", dim(test.CH1)[1]))
     test.CH1$Time<-1:dim(test.CH1)[1]
-    test.CH1$Init.O2<-rep(mean(test.CH1$O2[1:5]), dim(test.CH1)[1])
+    test.CH1$Init.O2<-rep(mean(test.CH1$O2[1]), dim(test.CH1)[1])
     test.CH1<-subset(test.CH1, select=c(Chamber.No, Test, Time, Init.O2, Temp, O2))
 
     test.CH2<-subset(test.data, select=c(Temp.2, Ox.2))
@@ -723,7 +723,7 @@ import.test <- function(file, info.data,
     test.CH2$Chamber.No<-as.factor(rep("CH2", dim(test.CH2)[1]))
     test.CH2$Test<-as.factor(rep("test", dim(test.CH2)[1]))
     test.CH2$Time<-1:dim(test.CH2)[1]
-    test.CH2$Init.O2<-rep(mean(test.CH2$O2[1:5]), dim(test.CH2)[1])
+    test.CH2$Init.O2<-rep(mean(test.CH2$O2[1]), dim(test.CH2)[1])
     test.CH2<-subset(test.CH2, select=c(Chamber.No, Test, Time, Init.O2, Temp, O2))
 
     test.CH3<-subset(test.data, select=c(Temp.3, Ox.3))
@@ -732,7 +732,7 @@ import.test <- function(file, info.data,
     test.CH3$Chamber.No<-as.factor(rep("CH3", dim(test.CH3)[1]))
     test.CH3$Test<-as.factor(rep("test", dim(test.CH3)[1]))
     test.CH3$Time<-1:dim(test.CH3)[1]
-    test.CH3$Init.O2<-rep(mean(test.CH3$O2[1:5]), dim(test.CH3)[1])
+    test.CH3$Init.O2<-rep(mean(test.CH3$O2[1]), dim(test.CH3)[1])
     test.CH3<-subset(test.CH3, select=c(Chamber.No, Test, Time, Init.O2, Temp, O2))
 
     test.CH4<-subset(test.data, select=c(Temp.4, Ox.4))
@@ -741,7 +741,7 @@ import.test <- function(file, info.data,
     test.CH4$Chamber.No<-as.factor(rep("CH4", dim(test.CH4)[1]))
     test.CH4$Test<-as.factor(rep("test", dim(test.CH4)[1]))
     test.CH4$Time<-1:dim(test.CH4)[1]
-    test.CH4$Init.O2<-rep(mean(test.CH4$O2[1:5]), dim(test.CH4)[1])
+    test.CH4$Init.O2<-rep(mean(test.CH4$O2[1]), dim(test.CH4)[1])
     test.CH4<-subset(test.CH4, select=c(Chamber.No, Test, Time, Init.O2, Temp, O2))
 
     test.CH5<-subset(test.data, select=c(Temp.5, Ox.5))
@@ -750,7 +750,7 @@ import.test <- function(file, info.data,
     test.CH5$Chamber.No<-as.factor(rep("CH5", dim(test.CH5)[1]))
     test.CH5$Test<-as.factor(rep("test", dim(test.CH5)[1]))
     test.CH5$Time<-1:dim(test.CH5)[1]
-    test.CH5$Init.O2<-rep(mean(test.CH5$O2[1:5]), dim(test.CH5)[1])
+    test.CH5$Init.O2<-rep(mean(test.CH5$O2[1]), dim(test.CH5)[1])
     test.CH5<-subset(test.CH5, select=c(Chamber.No, Test, Time, Init.O2, Temp, O2))
 
     test.CH6<-subset(test.data, select=c(Temp.6, Ox.6))
@@ -759,7 +759,7 @@ import.test <- function(file, info.data,
     test.CH6$Chamber.No<-as.factor(rep("CH6", dim(test.CH6)[1]))
     test.CH6$Test<-as.factor(rep("test", dim(test.CH6)[1]))
     test.CH6$Time<-1:dim(test.CH6)[1]
-    test.CH6$Init.O2<-rep(mean(test.CH6$O2[1:5]), dim(test.CH6)[1])
+    test.CH6$Init.O2<-rep(mean(test.CH6$O2[1]), dim(test.CH6)[1])
     test.CH6<-subset(test.CH6, select=c(Chamber.No, Test, Time, Init.O2, Temp, O2))
 
     test.CH7<-subset(test.data, select=c(Temp.7, Ox.7))
@@ -768,7 +768,7 @@ import.test <- function(file, info.data,
     test.CH7$Chamber.No<-as.factor(rep("CH7", dim(test.CH7)[1]))
     test.CH7$Test<-as.factor(rep("test", dim(test.CH7)[1]))
     test.CH7$Time<-1:dim(test.CH7)[1]
-    test.CH7$Init.O2<-rep(mean(test.CH7$O2[1:5]), dim(test.CH7)[1])
+    test.CH7$Init.O2<-rep(mean(test.CH7$O2[1]), dim(test.CH7)[1])
     test.CH7<-subset(test.CH7, select=c(Chamber.No, Test, Time, Init.O2, Temp, O2))
 
     test.data<-rbind(test.CH1, test.CH2, test.CH3, test.CH4, test.CH5, test.CH6, test.CH7)
@@ -817,7 +817,7 @@ import.test <- function(file, info.data,
     test.CH1$Chamber.No<-as.factor(rep("CH1", dim(test.CH1)[1]))
     test.CH1$Test<-as.factor(rep("test", dim(test.CH1)[1]))
     test.CH1$Time<-1:dim(test.CH1)[1]
-    test.CH1$Init.O2<-rep(mean(test.CH1$O2[1:5]), dim(test.CH1)[1])
+    test.CH1$Init.O2<-rep(mean(test.CH1$O2[1]), dim(test.CH1)[1])
     test.CH1<-subset(test.CH1, select=c(Chamber.No, Test, Time, Init.O2, Temp, O2))
 
     test.CH2<-subset(test.data, select=c(Temp.2, Ox.2))
@@ -826,7 +826,7 @@ import.test <- function(file, info.data,
     test.CH2$Chamber.No<-as.factor(rep("CH2", dim(test.CH2)[1]))
     test.CH2$Test<-as.factor(rep("test", dim(test.CH2)[1]))
     test.CH2$Time<-1:dim(test.CH2)[1]
-    test.CH2$Init.O2<-rep(mean(test.CH2$O2[1:5]), dim(test.CH2)[1])
+    test.CH2$Init.O2<-rep(mean(test.CH2$O2[1]), dim(test.CH2)[1])
     test.CH2<-subset(test.CH2, select=c(Chamber.No, Test, Time, Init.O2, Temp, O2))
 
     test.CH3<-subset(test.data, select=c(Temp.3, Ox.3))
@@ -835,7 +835,7 @@ import.test <- function(file, info.data,
     test.CH3$Chamber.No<-as.factor(rep("CH3", dim(test.CH3)[1]))
     test.CH3$Test<-as.factor(rep("test", dim(test.CH3)[1]))
     test.CH3$Time<-1:dim(test.CH3)[1]
-    test.CH3$Init.O2<-rep(mean(test.CH3$O2[1:5]), dim(test.CH3)[1])
+    test.CH3$Init.O2<-rep(mean(test.CH3$O2[1]), dim(test.CH3)[1])
     test.CH3<-subset(test.CH3, select=c(Chamber.No, Test, Time, Init.O2, Temp, O2))
 
     test.CH4<-subset(test.data, select=c(Temp.4, Ox.4))
@@ -844,7 +844,7 @@ import.test <- function(file, info.data,
     test.CH4$Chamber.No<-as.factor(rep("CH4", dim(test.CH4)[1]))
     test.CH4$Test<-as.factor(rep("test", dim(test.CH4)[1]))
     test.CH4$Time<-1:dim(test.CH4)[1]
-    test.CH4$Init.O2<-rep(mean(test.CH4$O2[1:5]), dim(test.CH4)[1])
+    test.CH4$Init.O2<-rep(mean(test.CH4$O2[1]), dim(test.CH4)[1])
     test.CH4<-subset(test.CH4, select=c(Chamber.No, Test, Time, Init.O2, Temp, O2))
 
     test.CH5<-subset(test.data, select=c(Temp.5, Ox.5))
@@ -853,7 +853,7 @@ import.test <- function(file, info.data,
     test.CH5$Chamber.No<-as.factor(rep("CH5", dim(test.CH5)[1]))
     test.CH5$Test<-as.factor(rep("test", dim(test.CH5)[1]))
     test.CH5$Time<-1:dim(test.CH5)[1]
-    test.CH5$Init.O2<-rep(mean(test.CH5$O2[1:5]), dim(test.CH5)[1])
+    test.CH5$Init.O2<-rep(mean(test.CH5$O2[1]), dim(test.CH5)[1])
     test.CH5<-subset(test.CH5, select=c(Chamber.No, Test, Time, Init.O2, Temp, O2))
 
     test.CH6<-subset(test.data, select=c(Temp.6, Ox.6))
@@ -862,7 +862,7 @@ import.test <- function(file, info.data,
     test.CH6$Chamber.No<-as.factor(rep("CH6", dim(test.CH6)[1]))
     test.CH6$Test<-as.factor(rep("test", dim(test.CH6)[1]))
     test.CH6$Time<-1:dim(test.CH6)[1]
-    test.CH6$Init.O2<-rep(mean(test.CH6$O2[1:5]), dim(test.CH6)[1])
+    test.CH6$Init.O2<-rep(mean(test.CH6$O2[1]), dim(test.CH6)[1])
     test.CH6<-subset(test.CH6, select=c(Chamber.No, Test, Time, Init.O2, Temp, O2))
 
     test.CH7<-subset(test.data, select=c(Temp.7, Ox.7))
@@ -871,7 +871,7 @@ import.test <- function(file, info.data,
     test.CH7$Chamber.No<-as.factor(rep("CH7", dim(test.CH7)[1]))
     test.CH7$Test<-as.factor(rep("test", dim(test.CH7)[1]))
     test.CH7$Time<-1:dim(test.CH7)[1]
-    test.CH7$Init.O2<-rep(mean(test.CH7$O2[1:5]), dim(test.CH7)[1])
+    test.CH7$Init.O2<-rep(mean(test.CH7$O2[1]), dim(test.CH7)[1])
     test.CH7<-subset(test.CH7, select=c(Chamber.No, Test, Time, Init.O2, Temp, O2))
 
     test.CH8<-subset(test.data, select=c(Temp.8, Ox.8))
@@ -880,7 +880,7 @@ import.test <- function(file, info.data,
     test.CH8$Chamber.No<-as.factor(rep("CH8", dim(test.CH8)[1]))
     test.CH8$Test<-as.factor(rep("test", dim(test.CH8)[1]))
     test.CH8$Time<-1:dim(test.CH8)[1]
-    test.CH8$Init.O2<-rep(mean(test.CH8$O2[1:5]), dim(test.CH8)[1])
+    test.CH8$Init.O2<-rep(mean(test.CH8$O2[1]), dim(test.CH8)[1])
     test.CH8<-subset(test.CH8, select=c(Chamber.No, Test, Time, Init.O2, Temp, O2))
 
     test.data<-rbind(test.CH1, test.CH2, test.CH3, test.CH4, test.CH5, test.CH6, test.CH7, test.CH8)
