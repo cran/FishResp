@@ -27,6 +27,7 @@
 
 QC.activity <- function(clean.data, compare = TRUE){
   Chamber.No<-NULL
+  clean.data[is.na(clean.data)] <- 0
   slope.data.all<-extract.slope(clean.data, r2=0, method = "all")
   MR.data.all<-calculate.MR(slope.data.all, density = 1000,
                             plot.BR = FALSE, plot.MR.abs = FALSE, plot.MR.mass = FALSE)
@@ -43,7 +44,8 @@ QC.activity <- function(clean.data, compare = TRUE){
                                                     "MO2 before correction for background respiration")),
            auto.key=list(space="top", columns=4,
                            title="Chambers", cex.title=1, between.columns = 0.5,
-                           lines=TRUE, points = FALSE, cex = 0.8))
+                           lines=TRUE, points = FALSE, cex = 0.8),
+           par.settings = list(superpose.line = list(col = c("#0080ff", "#ff00ff", "darkgreen", "#ff0000", "orange", "#00ff00", "brown" , "#03c4a1"))))
     }
   else{
     xyplot(MR.mass ~ Date.Time, groups=Chamber.No, grid = TRUE,
@@ -52,6 +54,7 @@ QC.activity <- function(clean.data, compare = TRUE){
            xlab="Time", ylab = bquote("Mass-specific metabolic rate (" ~ .(clean.data$DO.unit[1]) ~ kg^-1 ~ h^-1 ~ ")"),
            auto.key=list(space="top", columns=4, par.strip.text=list(cex=2),
                          title="Chambers", cex.title=1, between.columns = 0.5,
-                         lines=TRUE, points = FALSE, cex = 0.8))
+                         lines=TRUE, points = FALSE, cex = 0.8),
+           par.settings = list(superpose.line = list(col = c("#0080ff", "#ff00ff", "darkgreen", "#ff0000", "orange", "#00ff00", "brown" , "#03c4a1"))))
   }
 }

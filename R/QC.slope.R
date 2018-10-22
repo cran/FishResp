@@ -46,6 +46,7 @@ QC.slope <- function(slope.data, clean.data,
   ### Plotting Raw Data -- subsetting those values with the minimal oxygen consumption (i.e. lowest resting metabolic rate)
   #--------------------------------------------------------------------------------------------------------------------------------------------------#
   Chamber.No <- Phase <- m1.df <- m2.df <- Time <- NULL
+  clean.data[is.na(clean.data)] <- 0
   chlevels<-levels(slope.data$Chamber.No)
   extracted.data<-data.frame(Date.Time=chron(), Date=chron(), Real.Time=times(), Time=integer(), Phase=factor(), Start.Meas=times(), End.Meas=times(),
                              Chamber.No=factor(), Ind=factor(), Mass=numeric(), Volume=numeric(), Init.O2=numeric(), Temp=numeric(), O2=numeric(), BOD=numeric(), O2.correct=numeric())
@@ -67,8 +68,7 @@ QC.slope <- function(slope.data, clean.data,
   rm(m)
   rm(out.df)
 
-  pop.ch <- names(which.max(table(slope.data$Chamber.No)))
-  a <-length(slope.data$Chamber.No[slope.data$Chamber.No == as.character(pop.ch)])
+  a <-length(slope.data$Chamber.No[slope.data$Chamber.No == chamber])
 
   if (a <= 3){
     par(mfrow = c(a, 1))

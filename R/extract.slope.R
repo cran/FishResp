@@ -69,6 +69,7 @@
 extract.slope <- function(clean.data, method = c("all", "min", "max", "lower.tail", "upper.tail",
                                                  "calcSMR.mlnd", "calcSMR.quant", "calcSMR.low10", "calcSMR.low10pc"),
                           r2=0.95, length = 9999, n.slope = 1000, percent = 10, p = 0.25, G = 1:4){
+  clean.data[is.na(clean.data)] <- 0
   Chamber.No <- Phase <- out.df <- R2 <- NULL
   MR.est.all<-data.frame(Chamber.No=factor(), Ind=factor(), Mass=numeric(), Volume=numeric(), Date.Time = chron(), Phase=factor(),
                          Temp=numeric(), Slope.with.BR=numeric(), Slope=numeric(), SE=numeric(), R2=numeric())

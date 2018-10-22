@@ -52,6 +52,7 @@ export.MR <- function(MR.data.1, MR.data.2, file = "",
     }
     else{
       MR.data.1 <- MR.data.1[,c(1,2,3,4,16,5,6,7,8,9,10,11,12,13,14,15)]
+      }
       if(grepl("\\.txt", file) == TRUE){
         write.table(MR.data.1, file, sep = "\t",  row.names = FALSE)
       }
@@ -61,7 +62,6 @@ export.MR <- function(MR.data.1, MR.data.2, file = "",
       else{
         print("Please, check: the file should be in .txt or .csv format")
      }
-   }
     return(MR.data.1)
   }
 
