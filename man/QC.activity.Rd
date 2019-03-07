@@ -4,12 +4,14 @@
 \alias{QC.activity}
 \title{Quality Control of Animal Activity}
 \usage{
-QC.activity(clean.data, compare = TRUE)
+QC.activity(clean.data, compare = TRUE, output = FALSE)
 }
 \arguments{
 \item{clean.data}{a data frame obtained by using the function \code{\link{correct.meas}}}
 
 \item{compare}{logical: if TRUE then two graphs are plotted to compare mass-specific metabolic rate before and after correction for background respiration}
+
+\item{output}{logical: if TRUE then the functions return output or print it}
 }
 \description{
 Graphical quality control tests for animal activity in chambers over the period of measurements defined in the function \code{\link{correct.meas}}. The function is used for determination of time period for calculation of standard or resting metabolic rate. Note, that mass-specific metabolic rate is calculated for each period of measurements (not raw data).

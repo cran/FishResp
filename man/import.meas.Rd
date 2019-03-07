@@ -84,7 +84,7 @@ SMR.raw <- import.meas(file = SMR.path,
                        stop.measure = "06:00:00",
                        plot.temperature = TRUE,
                        plot.oxygen = TRUE)
-}
+
 AMR.path = system.file("extdata/stickleback/AMR_raw.txt.xz", package = "FishResp")
 AMR.raw <- import.meas(file = AMR.path,
                        info.data = info,
@@ -107,5 +107,5 @@ RMR.raw <- import.meas(file = qbox.path,
                         meas.to.wait = 200,
                         plot.temperature = TRUE,
                         plot.oxygen = TRUE)
-
+}
 }

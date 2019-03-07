@@ -1,11 +1,11 @@
-19925085bc07031c1ef1cdad189ea1eb *DESCRIPTION
-fc53fdfbe369dd47fb7e6099a297235c *NAMESPACE
+11ae7a02444fe053c475d2fd9bce2d0c *DESCRIPTION
+7c7b1554af2f129193fa059b7bc7c4d6 *NAMESPACE
 9686769cd975f99243169f298671d574 *R/AMR.R
 5c86d2ebe3b51d2d8a9a274e7d82bfe7 *R/AMR.clean.R
 70da558967ef3e0949673b323d41c102 *R/AMR.raw.R
 b061c373cd291e65e16d08b8e0a0a737 *R/AMR.slope.R
-6ee458123f96dd3173749663ddb451ca *R/FishResp.R
-d6f2e737525c00b1cbe131a06db65a1c *R/QC.activity.R
+2881113abd0fb8b33641bbfe6ea9e345 *R/FishResp.R
+fa344cbb63e18949a9499ce5fcf2c485 *R/QC.activity.R
 85ec9dcf93b1cc791d06e1cd9f56b302 *R/QC.meas.R
 7f37bc0e9d1b2a4baf023038f9e71311 *R/QC.slope.R
 4fc50f26ac39df52ed66fe30ea78bfe1 *R/SMR.R
@@ -18,7 +18,7 @@ a081b533d4bc8412f7cb9a47c2005361 *R/SMR.raw.R
 aefc430d80ed442c2ba867843dfb888e *R/correct.meas.R
 73bbc37251d2ec16ec8148362df01bdf *R/export.MR.R
 759985a6d1f55c33bbcd38a2213b92d5 *R/extract.slope.R
-5d3fc1142ba3e8232ea7f45702f226f3 *R/import.meas.R
+ffdbb4a7679988f1a9a60caa58666442 *R/import.meas.R
 e2ed23a3a6849816eb55d68edc12e575 *R/import.test.R
 d1a938dd1098bcef9e94f79a462c5947 *R/info.R
 93084be231dc7bbce49b748e63fd7643 *R/input.info.R
@@ -28,6 +28,7 @@ d1a938dd1098bcef9e94f79a462c5947 *R/info.R
 bacdea7db96b7123a20b372c9a8e67fa *R/pyroscience.aquaresp.R
 e26555b698a3046f6d7d965ecec6c6a3 *R/results.R
 84f603ecd4fba88ae56381ac41dc19fe *R/rm.data.R
+815d5c9846c005bff7b5e46764dcd114 *R/startup.R
 032eccb958a409ed035895efa7e38001 *data/AMR.RData
 29c363302df7f85ec42545031630a1db *data/AMR.clean.RData
 24baee2aa2a17e0cf5cf894632850627 *data/AMR.raw.RData
@@ -36,11 +37,11 @@ e26555b698a3046f6d7d965ecec6c6a3 *R/results.R
 9544d0d5e5fabda00a44f787505dce8c *data/SMR.clean.RData
 6f36cd07509294527d99f6ce6c147b8f *data/SMR.raw.RData
 d8494cbabd0a37e343c66eba5835c7c6 *data/SMR.slope.RData
-96bae56f73d0fe30c378b74507298aac *data/datalist
 69908911f5faa8c358852cb66bbed01b *data/info.RData
 1a184c66abbf71e903dd2202775f6b42 *data/post.RData
 dbd28bed90ec7abac97dd3f5a420dfc1 *data/pre.RData
 99638cb9d827c8352b7345d9622c9f14 *data/results.RData
+0b5a7de39bfffba8c7b2494a20e68038 *inst/CITATION
 6173eca7d2851c5995a90dd22f61df6c *inst/extdata/guppy/SMR_raw.txt.xz
 6a23650deb32897edbf6d10a505b04ae *inst/extdata/guppy/post_raw.txt.xz
 a84971c2c86df41acad5de4992f5b9f3 *inst/extdata/guppy/pre_raw.txt.xz
@@ -60,8 +61,8 @@ e1b0692645dbf59a5a98b2301d7f8a22 *inst/extdata/stickleback/post_raw.txt.xz
 0261fb2ebd84f27927ac1d3b391622f6 *man/AMR.clean.Rd
 578df07577880f435cf48dada2c70d9f *man/AMR.raw.Rd
 63ea9420875f5fb8a74f786dc6bddf97 *man/AMR.slope.Rd
-73a59bb3b50409b774bebbd3fe2d4cd2 *man/FishResp.Rd
-35e0b193ed60965e0cffa8972e64b41b *man/QC.activity.Rd
+3015c7d5f19fa4fdb5a9e38698ab7b02 *man/FishResp.Rd
+239e3cceab70a4204780efc8894c9bed *man/QC.activity.Rd
 55c97de13c00d3aefb565d95f8372191 *man/QC.meas.Rd
 9060dc4d6fb5976b3964bf35c8ce3286 *man/QC.slope.Rd
 48856ee2c9c08298d99d57907a269f92 *man/SMR.Rd
@@ -74,7 +75,7 @@ e1b0692645dbf59a5a98b2301d7f8a22 *inst/extdata/stickleback/post_raw.txt.xz
 3f1b22197946a6bb51d6aa002e98bf97 *man/correct.meas.Rd
 99a0b7ad67efad595aa950d6b1428fa7 *man/export.MR.Rd
 5798ee42efed24eed86784d821818c8d *man/extract.slope.Rd
-bf7f68ff81c8bd173110602c74200119 *man/import.meas.Rd
+538a51ca7dc190c3a2b6f4a887cae70a *man/import.meas.Rd
 c0ef53cfa17a174e656938e97726483c *man/import.test.Rd
 cf505bf0bb517f1ae66cb276c40b0799 *man/info.Rd
 682499dcc48513dbc9de3ee261b700b5 *man/input.info.Rd

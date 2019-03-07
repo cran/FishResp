@@ -4,9 +4,9 @@
 #'
 #' @param clean.data  a data frame obtained by using the function \code{\link{correct.meas}}
 #' @param compare  logical: if TRUE then two graphs are plotted to compare mass-specific metabolic rate before and after correction for background respiration
-#'
+#' @param output  logical: if TRUE then the functions return output or print it
 #' @usage
-#' QC.activity(clean.data, compare = TRUE)
+#' QC.activity(clean.data, compare = TRUE, output = FALSE)
 #'
 #' @details QC.activity uses functions \code{\link{extract.slope}} and \code{\link{calculate.MR}} with default parameters (excluding \eqn{r^{2} = 0}) to plot a graph of animal activity
 #'
@@ -25,7 +25,7 @@
 #'
 #' @export
 
-QC.activity <- function(clean.data, compare = TRUE){
+QC.activity <- function(clean.data, compare = TRUE, output = FALSE){
   Chamber.No<-NULL
   clean.data[is.na(clean.data)] <- 0
   slope.data.all<-extract.slope(clean.data, r2=0, method = "all")
@@ -36,7 +36,7 @@ QC.activity <- function(clean.data, compare = TRUE){
   if(compare == TRUE){
     BW = MR.data.all$Mass/1000
     MR.mass.with.BR <- MR.data.all$MR.abs.with.BR/BW
-    xyplot(MR.mass + MR.mass.with.BR ~ Date.Time, groups=Chamber.No, grid = TRUE,
+    a <- xyplot(MR.mass + MR.mass.with.BR ~ Date.Time, groups=Chamber.No, grid = TRUE,
            data=MR.data.all, main="Activity during the whole period of measurements",
            type=c("a", "p"), allow.multiple=T, layout=(c(1,2)),
            xlab="Time", ylab = bquote("Mass-specific metabolic rate (" ~ .(clean.data$DO.unit[1]) ~ kg^-1 ~ h^-1 ~ ")"),
@@ -46,9 +46,10 @@ QC.activity <- function(clean.data, compare = TRUE){
                            title="Chambers", cex.title=1, between.columns = 0.5,
                            lines=TRUE, points = FALSE, cex = 0.8),
            par.settings = list(superpose.line = list(col = c("#0080ff", "#ff00ff", "darkgreen", "#ff0000", "orange", "#00ff00", "brown" , "#03c4a1"))))
+    plot(a)
     }
   else{
-    xyplot(MR.mass ~ Date.Time, groups=Chamber.No, grid = TRUE,
+    b <- xyplot(MR.mass ~ Date.Time, groups=Chamber.No, grid = TRUE,
            data=MR.data.all, main="Activity during the whole period of measurements",
            type=c("a", "p", lwd = 2),
            xlab="Time", ylab = bquote("Mass-specific metabolic rate (" ~ .(clean.data$DO.unit[1]) ~ kg^-1 ~ h^-1 ~ ")"),
@@ -56,5 +57,9 @@ QC.activity <- function(clean.data, compare = TRUE){
                          title="Chambers", cex.title=1, between.columns = 0.5,
                          lines=TRUE, points = FALSE, cex = 0.8),
            par.settings = list(superpose.line = list(col = c("#0080ff", "#ff00ff", "darkgreen", "#ff0000", "orange", "#00ff00", "brown" , "#03c4a1"))))
+    plot(b)
+  }
+  if(output == TRUE){
+    return(MR.data.all)
   }
 }

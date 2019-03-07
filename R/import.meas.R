@@ -73,7 +73,7 @@
 #'                        stop.measure = "06:00:00",
 #'                        plot.temperature = TRUE,
 #'                        plot.oxygen = TRUE)
-#' }
+#'
 #' AMR.path = system.file("extdata/stickleback/AMR_raw.txt.xz", package = "FishResp")
 #' AMR.raw <- import.meas(file = AMR.path,
 #'                        info.data = info,
@@ -96,7 +96,7 @@
 #'                         meas.to.wait = 200,
 #'                         plot.temperature = TRUE,
 #'                         plot.oxygen = TRUE)
-#'
+#' }
 #' @export
 
 import.meas <- function(file, info.data,
