@@ -1,6 +1,6 @@
 #' Convert Respirometry Data from PreSens and AquaResp Software to the FishResp Format
 #'
-#' The function is used to convert raw data from 'OxyView' (\href{https://www.presens.de}{PreSens}) and a summary file from 'AquaResp' (\href{www.aquaresp.com}{free software}) to 'FishResp' format. This function should be applied before usage of the functions \code{\link{import.test}} and \code{\link{import.meas}}. The output is a file containing raw respirometry data in the 'FishResp' format (see Details in \code{\link{import.test}} to read more information about the 'FishResp' format)
+#' The function is used to convert raw data from 'OxyView' (\href{https://www.presens.de}{PreSens}) and a summary file from 'AquaResp' (\href{https://www.aquaresp.com}{free software}) to 'FishResp' format. This function should be applied before usage of the functions \code{\link{import.test}} and \code{\link{import.meas}}. The output is a file containing raw respirometry data in the 'FishResp' format (see Details in \code{\link{import.test}} to read more information about the 'FishResp' format)
 #'
 #' @usage
 #' presens.aquaresp(presens.file,
@@ -11,7 +11,7 @@
 #'                  wait.phase = NA, measure.phase = NA)
 #'
 #' @param presens.file  the name of a file which contains raw data obtained from the 'OxyView' software (\href{https://www.presens.de}{PreSens})
-#' @param aquaresp.file  the name of a file which contains summary data obtained from the 'AquaResp' software (\href{www.aquaresp.com}{free software})
+#' @param aquaresp.file  the name of a file which contains summary data obtained from the 'AquaResp' software (\href{https://www.aquaresp.com}{free software})
 #' @param fishresp.file  the name of an exported file containing raw data in the 'FishResp' format
 #' @param n.chamber  integer: the number of chambers used in an experiment (including empty ones)
 #' @param date.format  string: date format (DMY, MDY or YMD) used in raw data obtained from the 'OxyView' software
@@ -24,6 +24,7 @@
 #'
 #' @examples
 #'
+#' \dontrun{
 #' presens.path.1 = system.file("extdata/presens/presens-ch1.txt",
 #'                  package = "FishResp")
 #' presens.path.2 = system.file("extdata/presens/presens-ch2.txt",
@@ -43,7 +44,7 @@
 #'                  n.chamber = 4,
 #'                  wait.phase = 60,
 #'                  measure.phase = 240)
-#'
+#' }
 #' @export
 
 presens.aquaresp <- function(presens.file,
@@ -67,6 +68,7 @@ presens.aquaresp <- function(presens.file,
     presens.data.ch1 <- as.data.frame(presens.data.ch1, stringsAsFactors = F)
     presens.data.ch1 <- subset(presens.data.ch1, select=c(V1, V2, V7, V4))
     colnames(presens.data.ch1)<-c("Date", "Time", "Temp.1", "Ox.1")
+    for(i in 3:ncol(presens.data.ch1)){presens.data.ch1[,i] = as.numeric(gsub(',','.', presens.data.ch1[,i]))}
     rownames(presens.data.ch1) <- seq(length=nrow(presens.data.ch1))
     presens.data.ch1$Temp.1 <- as.numeric(as.character(presens.data.ch1$Temp.1))
     presens.data.ch1$Ox.1 <- as.numeric(as.character(presens.data.ch1$Ox.1))
@@ -86,6 +88,7 @@ presens.aquaresp <- function(presens.file,
     presens.data.ch1 <- as.data.frame(presens.data.ch1, stringsAsFactors = F)
     presens.data.ch1 <- subset(presens.data.ch1, select=c(V1, V2, V7, V4))
     colnames(presens.data.ch1)<-c("Date", "Time", "Temp.1", "Ox.1")
+    for(i in 3:ncol(presens.data.ch1)){presens.data.ch1[,i] = as.numeric(gsub(',','.', presens.data.ch1[,i]))}
     rownames(presens.data.ch1) <- seq(length=nrow(presens.data.ch1))
     presens.data.ch1$Temp.1 <- as.numeric(as.character(presens.data.ch1$Temp.1))
     presens.data.ch1$Ox.1 <- as.numeric(as.character(presens.data.ch1$Ox.1))
@@ -103,6 +106,7 @@ presens.aquaresp <- function(presens.file,
     presens.data.ch2 <- as.data.frame(presens.data.ch2, stringsAsFactors = F)
     presens.data.ch2 <- subset(presens.data.ch2, select=c(V1, V2, V7, V4))
     colnames(presens.data.ch2)<-c("Date", "Time", "Temp.2", "Ox.2")
+    for(i in 3:ncol(presens.data.ch2)){presens.data.ch2[,i] = as.numeric(gsub(',','.', presens.data.ch2[,i]))}
     rownames(presens.data.ch2) <- seq(length=nrow(presens.data.ch2))
     presens.data.ch2$Temp.2 <- as.numeric(as.character(presens.data.ch2$Temp.2))
     presens.data.ch2$Ox.2 <- as.numeric(as.character(presens.data.ch2$Ox.2))
@@ -124,6 +128,7 @@ presens.aquaresp <- function(presens.file,
     presens.data.ch1 <- as.data.frame(presens.data.ch1, stringsAsFactors = F)
     presens.data.ch1 <- subset(presens.data.ch1, select=c(V1, V2, V7, V4))
     colnames(presens.data.ch1)<-c("Date", "Time", "Temp.1", "Ox.1")
+    for(i in 3:ncol(presens.data.ch1)){presens.data.ch1[,i] = as.numeric(gsub(',','.', presens.data.ch1[,i]))}
     rownames(presens.data.ch1) <- seq(length=nrow(presens.data.ch1))
     presens.data.ch1$Temp.1 <- as.numeric(as.character(presens.data.ch1$Temp.1))
     presens.data.ch1$Ox.1 <- as.numeric(as.character(presens.data.ch1$Ox.1))
@@ -141,6 +146,7 @@ presens.aquaresp <- function(presens.file,
     presens.data.ch2 <- as.data.frame(presens.data.ch2, stringsAsFactors = F)
     presens.data.ch2 <- subset(presens.data.ch2, select=c(V1, V2, V7, V4))
     colnames(presens.data.ch2)<-c("Date", "Time", "Temp.2", "Ox.2")
+    for(i in 3:ncol(presens.data.ch2)){presens.data.ch2[,i] = as.numeric(gsub(',','.', presens.data.ch2[,i]))}
     rownames(presens.data.ch2) <- seq(length=nrow(presens.data.ch2))
     presens.data.ch2$Temp.2 <- as.numeric(as.character(presens.data.ch2$Temp.2))
     presens.data.ch2$Ox.2 <- as.numeric(as.character(presens.data.ch2$Ox.2))
@@ -158,6 +164,7 @@ presens.aquaresp <- function(presens.file,
     presens.data.ch3 <- as.data.frame(presens.data.ch3, stringsAsFactors = F)
     presens.data.ch3 <- subset(presens.data.ch3, select=c(V1, V2, V7, V4))
     colnames(presens.data.ch3)<-c("Date", "Time", "Temp.3", "Ox.3")
+    for(i in 3:ncol(presens.data.ch3)){presens.data.ch3[,i] = as.numeric(gsub(',','.', presens.data.ch3[,i]))}
     rownames(presens.data.ch3) <- seq(length=nrow(presens.data.ch3))
     presens.data.ch3$Temp.3 <- as.numeric(as.character(presens.data.ch3$Temp.3))
     presens.data.ch3$Ox.3 <- as.numeric(as.character(presens.data.ch3$Ox.3))
@@ -180,6 +187,7 @@ presens.aquaresp <- function(presens.file,
     presens.data.ch1 <- as.data.frame(presens.data.ch1, stringsAsFactors = F)
     presens.data.ch1 <- subset(presens.data.ch1, select=c(V1, V2, V7, V4))
     colnames(presens.data.ch1)<-c("Date", "Time", "Temp.1", "Ox.1")
+    for(i in 3:ncol(presens.data.ch1)){presens.data.ch1[,i] = as.numeric(gsub(',','.', presens.data.ch1[,i]))}
     rownames(presens.data.ch1) <- seq(length=nrow(presens.data.ch1))
     presens.data.ch1$Temp.1 <- as.numeric(as.character(presens.data.ch1$Temp.1))
     presens.data.ch1$Ox.1 <- as.numeric(as.character(presens.data.ch1$Ox.1))
@@ -197,6 +205,7 @@ presens.aquaresp <- function(presens.file,
     presens.data.ch2 <- as.data.frame(presens.data.ch2, stringsAsFactors = F)
     presens.data.ch2 <- subset(presens.data.ch2, select=c(V1, V2, V7, V4))
     colnames(presens.data.ch2)<-c("Date", "Time", "Temp.2", "Ox.2")
+    for(i in 3:ncol(presens.data.ch2)){presens.data.ch2[,i] = as.numeric(gsub(',','.', presens.data.ch2[,i]))}
     rownames(presens.data.ch2) <- seq(length=nrow(presens.data.ch2))
     presens.data.ch2$Temp.2 <- as.numeric(as.character(presens.data.ch2$Temp.2))
     presens.data.ch2$Ox.2 <- as.numeric(as.character(presens.data.ch2$Ox.2))
@@ -214,6 +223,7 @@ presens.aquaresp <- function(presens.file,
     presens.data.ch3 <- as.data.frame(presens.data.ch3, stringsAsFactors = F)
     presens.data.ch3 <- subset(presens.data.ch3, select=c(V1, V2, V7, V4))
     colnames(presens.data.ch3)<-c("Date", "Time", "Temp.3", "Ox.3")
+    for(i in 3:ncol(presens.data.ch3)){presens.data.ch3[,i] = as.numeric(gsub(',','.', presens.data.ch3[,i]))}
     rownames(presens.data.ch3) <- seq(length=nrow(presens.data.ch3))
     presens.data.ch3$Temp.3 <- as.numeric(as.character(presens.data.ch3$Temp.3))
     presens.data.ch3$Ox.3 <- as.numeric(as.character(presens.data.ch3$Ox.3))
@@ -231,6 +241,7 @@ presens.aquaresp <- function(presens.file,
     presens.data.ch4 <- as.data.frame(presens.data.ch4, stringsAsFactors = F)
     presens.data.ch4 <- subset(presens.data.ch4, select=c(V1, V2, V7, V4))
     colnames(presens.data.ch4)<-c("Date", "Time", "Temp.4", "Ox.4")
+    for(i in 3:ncol(presens.data.ch4)){presens.data.ch4[,i] = as.numeric(gsub(',','.', presens.data.ch4[,i]))}
     rownames(presens.data.ch4) <- seq(length=nrow(presens.data.ch4))
     presens.data.ch4$Temp.4 <- as.numeric(as.character(presens.data.ch4$Temp.4))
     presens.data.ch4$Ox.4 <- as.numeric(as.character(presens.data.ch4$Ox.4))

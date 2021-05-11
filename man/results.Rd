@@ -4,7 +4,8 @@
 \name{results}
 \alias{results}
 \title{Results of Analysis: SMR, AMR and MS}
-\format{A data frame with 36 rows and 18 variables:
+\format{
+A data frame with 36 rows and 18 variables:
 \describe{
   \item{Chamber.No}{The number of a chamber}
   \item{Ind}{ID of an animal}
@@ -24,7 +25,8 @@
   \item{MS.abs}{Absolute metabolic scope: the difference between absolute AMR and SMR (\eqn{mg O_{2}\;h^{-1}})}
   \item{MS.mass}{Mass-specific metabolic scope: the difference between mass-specific AMR and SMR (\eqn{mg O_{2}\;kg^{-1} h^{-1}})}
   \item{MS.fact}{Factorial metabolic scope: the ratio between AMR and SMR}
-}}
+}
+}
 \usage{
 results
 }

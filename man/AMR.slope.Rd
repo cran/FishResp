@@ -4,7 +4,8 @@
 \name{AMR.slope}
 \alias{AMR.slope}
 \title{Active Metabolic Rate: Extracted Slope(s)}
-\format{A data frame with 12 rows and 12 variables:
+\format{
+A data frame with 12 rows and 12 variables:
 \describe{
   \item{Chamber.No}{the number of a chamber}
   \item{Ind}{ID of an animal}
@@ -18,7 +19,8 @@
   \item{SE}{standard error of a slope of animal oxygen consumption without background respiration (\eqn{mg O_{2}\;L^{-1} s^{-1}})}
   \item{R2}{\eqn{r^{2}} of a slope of animal oxygen consumption without background respiration}
   \item{DO.unit}{the measure unit of DO concentration}
-}}
+}
+}
 \usage{
 AMR.slope
 }

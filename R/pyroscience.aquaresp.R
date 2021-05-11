@@ -1,6 +1,6 @@
 #' Convert Respirometry Data from PyroScience and AquaResp Software to the FishResp Format
 #'
-#' The function is used to convert raw data from 'Pyro Oxygen Logger' (\href{https://www.pyro-science.com}{PyroScience}) and a summary file from 'AquaResp' (\href{www.aquaresp.com}{free software}) to 'FishResp' format. This function should be applied before usage of the functions \code{\link{import.test}} and \code{\link{import.meas}}. The output is a file containing raw respirometry data in the 'FishResp' format (see Details in \code{\link{import.test}} to read more information about the 'FishResp' format)
+#' The function is used to convert raw data from 'Pyro Oxygen Logger' (\href{https://www.pyroscience.com/}{PyroScience}) and a summary file from 'AquaResp' (\href{https://www.aquaresp.com}{free software}) to 'FishResp' format. This function should be applied before usage of the functions \code{\link{import.test}} and \code{\link{import.meas}}. The output is a file containing raw respirometry data in the 'FishResp' format (see Details in \code{\link{import.test}} to read more information about the 'FishResp' format)
 #'
 #' @usage
 #' pyroscience.aquaresp(pyroscience.file,
@@ -10,8 +10,8 @@
 #'                      date.format = c("DMY", "MDY", "YMD"),
 #'                      wait.phase = NA, measure.phase = NA)
 #'
-#' @param pyroscience.file  the name of a file which contains raw data obtained from the 'Pyro Oxygen Logger' software (\href{https://www.pyro-science.com}{PyroScience})
-#' @param aquaresp.file  the name of a file which contains summary data obtained from the 'AquaResp' software (\href{www.aquaresp.com}{free software})
+#' @param pyroscience.file  the name of a file which contains raw data obtained from the 'Pyro Oxygen Logger' software (\href{https://www.pyroscience.com/}{PyroScience})
+#' @param aquaresp.file  the name of a file which contains summary data obtained from the 'AquaResp' software (\href{https://www.aquaresp.com}{free software})
 #' @param fishresp.file  the name of an exported file containing raw data in the 'FishResp' format
 #' @param n.chamber  integer: the number of chambers used in an experiment (including empty ones)
 #' @param date.format  string: date format (DMY, MDY or YMD) used in raw data obtained from the 'Pyro Oxygen Logger' software
@@ -23,7 +23,7 @@
 #' @importFrom utils read.table write.table
 #'
 #' @examples
-#'
+#' \dontrun{
 #' pyroscience.path = system.file("extdata/pyroscience/pyroscience.txt",
 #'                  package = "FishResp")
 #' aquaresp.path = system.file("extdata/pyroscience/pyroscience-aquaresp.txt",
@@ -36,7 +36,7 @@
 #'                      n.chamber = 1,
 #'                      wait.phase = 120,
 #'                      measure.phase = 600)
-#'
+#' }
 #' @export
 
 pyroscience.aquaresp <- function(pyroscience.file,
@@ -52,7 +52,8 @@ pyroscience.aquaresp <- function(pyroscience.file,
   if (n.chamber == 1){
     pyroscience.data <- read.table(pyroscience.file, sep = "\t", skip=14, header=F, strip.white=T)
     pyroscience.data <- subset(pyroscience.data, select=c(V1, V2, V9, V5))
-    names(pyroscience.data)<-c("Date", "Time", "Temp.1", "Ox.1")
+    colnames(pyroscience.data)<-c("Date", "Time", "Temp.1", "Ox.1")
+    for(i in 3:ncol(pyroscience.data)){pyroscience.data[,i] = as.numeric(gsub(',','.', pyroscience.data[,i]))}
     pyroscience.data$Date.Time <- paste(pyroscience.data$Date, pyroscience.data$Time, sep="/")
     pyroscience.data$Phase <- "F"
     pyroscience.data[pyroscience.data == "---"] <- NA
@@ -63,6 +64,7 @@ pyroscience.aquaresp <- function(pyroscience.file,
     pyroscience.data <- read.table(pyroscience.file, sep = "\t", skip=16, header=F, strip.white=T)
     pyroscience.data <- subset(pyroscience.data, select=c(V1, V2, V9, V5, V10, V6))
     colnames(pyroscience.data)<-c("Date", "Time", "Temp.1", "Ox.1", "Temp.2", "Ox.2")
+    for(i in 3:ncol(pyroscience.data)){pyroscience.data[,i] = as.numeric(gsub(',','.', pyroscience.data[,i]))}
     pyroscience.data$Date.Time <- paste(pyroscience.data$Date, pyroscience.data$Time, sep="/")
     pyroscience.data$Phase <- "F"
     pyroscience.data[pyroscience.data == "---"] <- NA
@@ -73,6 +75,7 @@ pyroscience.aquaresp <- function(pyroscience.file,
     pyroscience.data <- read.table(pyroscience.file, sep = "\t", skip=18, header=F, strip.white=T)
     pyroscience.data <- subset(pyroscience.data, select=c(V1, V2, V9, V5, V10, V6, V11, V7))
     colnames(pyroscience.data)<-c("Date", "Time", "Temp.1", "Ox.1", "Temp.2", "Ox.2", "Temp.3", "Ox.3")
+    for(i in 3:ncol(pyroscience.data)){pyroscience.data[,i] = as.numeric(gsub(',','.', pyroscience.data[,i]))}
     pyroscience.data$Date.Time <- paste(pyroscience.data$Date, pyroscience.data$Time, sep="/")
     pyroscience.data$Phase <- "F"
     pyroscience.data[pyroscience.data == "---"] <- NA
@@ -83,6 +86,7 @@ pyroscience.aquaresp <- function(pyroscience.file,
     pyroscience.data <- read.table(pyroscience.file, sep = "\t", skip=20, header=F, strip.white=T)
     pyroscience.data <- subset(pyroscience.data, select=c(V1, V2, V9, V5, V10, V6, V11, V7, V12, V8))
     colnames(pyroscience.data)<-c("Date", "Time", "Temp.1", "Ox.1", "Temp.2", "Ox.2", "Temp.3", "Ox.3", "Temp.4", "Ox.4")
+    for(i in 3:ncol(pyroscience.data)){pyroscience.data[,i] = as.numeric(gsub(',','.', pyroscience.data[,i]))}
     pyroscience.data$Date.Time <- paste(pyroscience.data$Date, pyroscience.data$Time, sep="/")
     pyroscience.data$Phase <- "F"
     pyroscience.data[pyroscience.data == "---"] <- NA

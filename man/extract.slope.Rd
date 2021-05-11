@@ -9,7 +9,7 @@ extract.slope(clean.data,
                          "lower.tail", "upper.tail",
                          "calcSMR.mlnd", "calcSMR.quant",
                          "calcSMR.low10", "calcSMR.low10pc"),
-              r2=0.95, length = 9999, n.slope = 1000,
+              r2=0.95, length = 999999, n.slope = 1000,
               percent = 10, p = 0.25, G = 1:4)
 }
 \arguments{

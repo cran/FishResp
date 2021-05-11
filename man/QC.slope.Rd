@@ -7,7 +7,7 @@
 QC.slope(slope.data, clean.data,
          chamber = c("CH1", "CH2", "CH3", "CH4",
                      "CH5", "CH6", "CH7", "CH8"),
-         current = 9999, alter = 9999, residuals = FALSE)
+         current = 999999, alter = 999999, residuals = FALSE)
 }
 \arguments{
 \item{slope.data}{a data frame obtained by using the function \code{\link{extract.slope}}}

@@ -4,7 +4,8 @@
 \name{SMR.clean}
 \alias{SMR.clean}
 \title{Standard Metabolic Rate: Corrected Raw Data}
-\format{A data frame with 76800 rows and 17 variables:
+\format{
+A data frame with 76800 rows and 17 variables:
 \describe{
   \item{Date.Time}{date and time (yyyy/mm/dd hh:mm:ss)}
   \item{Date}{date (yyyy/mm/dd)}
@@ -23,7 +24,8 @@
   \item{BR}{slope of background respiration (\eqn{mg O_{2}\;L^{-1} s^{-1}})}
   \item{O2.correct}{actual level of dissolved oxygen at each second corrected by slope of background respiration (mgO2/L)}
   \item{DO.unit}{the measure unit of DO concentration}
-}}
+}
+}
 \usage{
 SMR.clean
 }

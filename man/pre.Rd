@@ -4,7 +4,8 @@
 \name{pre}
 \alias{pre}
 \title{Pre Raw Data}
-\format{A data frame with 4800 rows and 7 variables:
+\format{
+A data frame with 4800 rows and 7 variables:
 \describe{
   \item{Chamber.No}{the number of a chamber}
   \item{Test}{a constant string "test"}
@@ -13,7 +14,8 @@
   \item{Temp}{temperature at each second (\eqn{C^{o}})}
   \item{O2}{actual level of dissolved oxygen at each second (mgO2/L)}
   \item{delta.O2}{the difference between actual and initial \eqn{O_{2}}}
-}}
+}
+}
 \usage{
 pre
 }

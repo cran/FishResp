@@ -6,7 +6,7 @@
 #' QC.slope(slope.data, clean.data,
 #'          chamber = c("CH1", "CH2", "CH3", "CH4",
 #'                      "CH5", "CH6", "CH7", "CH8"),
-#'          current = 9999, alter = 9999, residuals = FALSE)
+#'          current = 999999, alter = 999999, residuals = FALSE)
 #'
 #' @param slope.data  a data frame obtained by using the function \code{\link{extract.slope}}
 #' @param clean.data  a data frame obtained by using the function \code{\link{correct.meas}}
@@ -40,13 +40,13 @@
 QC.slope <- function(slope.data, clean.data,
                      chamber = c("CH1", "CH2", "CH3", "CH4",
                                  "CH5", "CH6", "CH7", "CH8"),
-                     current = 9999, alter = 9999, residuals = FALSE){
+                     current = 999999, alter = 999999, residuals = FALSE){
 
   #==================================================================================================================================================#
   ### Plotting Raw Data -- subsetting those values with the minimal oxygen consumption (i.e. lowest resting metabolic rate)
   #--------------------------------------------------------------------------------------------------------------------------------------------------#
   Chamber.No <- Phase <- m1.df <- m2.df <- Time <- NULL
-  clean.data[is.na(clean.data)] <- 0
+
   chlevels<-levels(slope.data$Chamber.No)
   extracted.data<-data.frame(Date.Time=chron(), Date=chron(), Real.Time=times(), Time=integer(), Phase=factor(), Start.Meas=times(), End.Meas=times(),
                              Chamber.No=factor(), Ind=factor(), Mass=numeric(), Volume=numeric(), Init.O2=numeric(), Temp=numeric(), O2=numeric(), BOD=numeric(), O2.correct=numeric())

@@ -34,6 +34,7 @@ If only one traits exists, the function exports a data frame with full or simpli
 The function is used to export final dataset with information about background respiration, absolute and mass-specific metabolic rates into a .txt or .csv file. If two traits (MR.data.1, MR.data.2) are used, the datasets might be merged. Additionally, absolute, mass-specific and factorial metabolic scope might be calculated, where MR.data.1 is standard or resting metabolic rate and MR.data.2 is active or maximum metabolic rate.
 }
 \examples{
+\dontrun{
 # if the data have been already loaded to R,
 # skip the first two lines of the code:
 data(SMR)
@@ -46,5 +47,6 @@ results <- export.MR(SMR, AMR,
                      plot.MS.abs = TRUE,
                      plot.MS.mass = TRUE,
                      plot.MS.fact = TRUE)
+}
 
 }

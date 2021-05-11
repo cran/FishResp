@@ -33,6 +33,7 @@ The function exports a data frame with converted DO units.
 This function is the modification of the function \code{\link[respirometry]{conv_o2}} from the R package \pkg{respirometry} allowing to convert raw respirometry data from one DO unit to another obtained in multichannel respirometry systems.
 }
 \examples{
+\dontrun{
 # Import raw data for standard metabolic rate
 SMR.path = system.file("extdata/stickleback/SMR_raw.txt.xz", package = "FishResp")
 
@@ -41,5 +42,5 @@ convert.respirometry(import.file = SMR.path,
                      n.chamber = 1, logger = "AutoResp",
                      from = "mg_per_l", to = "mmol_per_l",
                      sal = 0, atm_pres = 1013.25)
-
+}
 }

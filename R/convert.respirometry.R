@@ -23,6 +23,7 @@
 #' @importFrom utils write.table write.csv
 #'
 #' @examples
+#' \dontrun{
 #' # Import raw data for standard metabolic rate
 #' SMR.path = system.file("extdata/stickleback/SMR_raw.txt.xz", package = "FishResp")
 #'
@@ -31,7 +32,7 @@
 #'                      n.chamber = 1, logger = "AutoResp",
 #'                      from = "mg_per_l", to = "mmol_per_l",
 #'                      sal = 0, atm_pres = 1013.25)
-#'
+#' }
 #' @export
 
 convert.respirometry <- function(import.file, export.file,

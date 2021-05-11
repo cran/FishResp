@@ -27,7 +27,6 @@
 
 QC.activity <- function(clean.data, compare = TRUE, output = FALSE){
   Chamber.No<-NULL
-  clean.data[is.na(clean.data)] <- 0
   slope.data.all<-extract.slope(clean.data, r2=0, method = "all")
   MR.data.all<-calculate.MR(slope.data.all, density = 1000,
                             plot.BR = FALSE, plot.MR.abs = FALSE, plot.MR.mass = FALSE)

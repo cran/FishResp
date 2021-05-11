@@ -36,6 +36,7 @@ The function exports a data frame with converted DO units.
 This function is the modification of the function \code{\link[rMR]{DO.unit.convert}} from the R package \pkg{rMR} allowing to convert raw respirometry data from one DO unit to another obtained in multichannel respirometry systems.
 }
 \examples{
+\dontrun{
 # Import raw data for active metabolic rate
 AMR.path = system.file("extdata/stickleback/AMR_raw.txt.xz", package = "FishResp")
 
@@ -44,5 +45,5 @@ convert.rMR(import.file = AMR.path,
             n.chamber = 2, logger = "AutoResp", salinity = 0,
             DO.units.in = "mg/L", DO.units.out = "PP",
             bar.press = 101.325, bar.units.in = "kpa")
-
+}
 }

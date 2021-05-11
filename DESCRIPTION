@@ -1,43 +1,50 @@
 Package: FishResp
-Version: 1.0.3
+Version: 1.1.0
 Title: Analytical Tool for Aquatic Respirometry
 Description: Calculates metabolic rate of fish and other aquatic organisms measured using
              an intermittent-flow respirometry approach. The tool is used to run a set of graphical
              QC tests of raw respirometry data, correct it for background respiration and chamber
              effect, filter and extract target values of absolute and mass-specific metabolic rate.
              Experimental design should include background respiration tests and measuring of one
-             or more metabolic rate traits. The package allows a user to import raw respirometry
-             data obtained from 'AquaResp' (free software), 'AutoResp' ('LoligoSystems'), 'OxyView'
-             ('PreSens'), 'Pyro Oxygen Logger' ('PyroScience') and 'Q-box Aqua' ('QubitSystems').
+             or more metabolic rate traits. The R package is ideally integrated with the pump
+             controller 'PumpResp' and the DO meter 'SensResp' (open-source hardware by FishResp).
+             Raw respirometry data can be also imported from 'AquaResp' (free software), 'AutoResp'
+             ('LoligoSystems'), 'OxyView' ('PreSens'), 'Pyro Oxygen Logger' ('PyroScience') and
+             'Q-box Aqua' ('QubitSystems'). More information about the R package 'FishResp'is
+             available in the publication by Morozov et al. (2019) <doi:10.1093/conphys/coz003>.
 URL: https://fishresp.org
 Authors@R: c(
-    person("Sergey", "Morozov", role = c("aut", "cre"), email = "sergey.morozov@helsinki.fi") ,
-    person("R.J. Scott", "McCairns", role = c("aut", "ths"), email = "scott.mccairns@inra.fr"),
-	  person("Federico", "Calboli", role = "ctb"),
+    person("Sergey", "Morozov", role = c("aut", "cre"), email = "sergey.morozov@helsinki.fi"),
+    person("Scott", "McCairns", role = c("aut", "ths")),
     person("Juha", "Merila", role = "ths"),
+    person("Federico", "Calboli", role = "ctb"),
+    person("Jenni", "Prokkola", role = "dtc"),
     person("Stephen", "White", role = "dtc"),
     person("Daniel", "Montgomery", role = "dtc"),
     person("Laura", "Almodovar-Acevedo", role = "dtc"),
     person("Niclas", "Kolm", role = "dtc"),
-    person("Alexander", "Kotrschal", role = "dtc"))
+    person("Alexander", "Kotrschal", role = "dtc"),
+    person("Erik", "Gill", role = "dtc"))
 Maintainer: Sergey Morozov <sergey.morozov@helsinki.fi>
 License: GPL-3
 SystemRequirements: Display resolution >= 1280x800; RAM >= 4GB
 Depends: R (>= 3.0.0)
 Imports: chron, lattice, mclust, rMR, respirometry
-LazyData: FALSE
-RoxygenNote: 6.1.1
+LazyData: TRUE
+RoxygenNote: 7.1.1
 Encoding: UTF-8
 NeedsCompilation: no
-Packaged: 2019-03-06 15:46:50 UTC; samoedd
+Packaged: 2021-05-11 14:49:47 UTC; semorozo
 Author: Sergey Morozov [aut, cre],
-  R.J. Scott McCairns [aut, ths],
-  Federico Calboli [ctb],
+  Scott McCairns [aut, ths],
   Juha Merila [ths],
+  Federico Calboli [ctb],
+  Jenni Prokkola [dtc],
   Stephen White [dtc],
   Daniel Montgomery [dtc],
   Laura Almodovar-Acevedo [dtc],
   Niclas Kolm [dtc],
-  Alexander Kotrschal [dtc]
+  Alexander Kotrschal [dtc],
+  Erik Gill [dtc]
 Repository: CRAN
-Date/Publication: 2019-03-07 13:42:45 UTC
+Date/Publication: 2021-05-12 00:52:39 UTC

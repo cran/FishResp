@@ -24,6 +24,7 @@
 #' @importFrom utils write.table write.csv
 #'
 #' @examples
+#' \dontrun{
 #' # if the data have been already loaded to R,
 #' # skip the first two lines of the code:
 #' data(SMR)
@@ -36,6 +37,7 @@
 #'                      plot.MS.abs = TRUE,
 #'                      plot.MS.mass = TRUE,
 #'                      plot.MS.fact = TRUE)
+#' }
 #'
 #' @export
 

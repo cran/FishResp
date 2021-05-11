@@ -4,7 +4,8 @@
 \name{AMR}
 \alias{AMR}
 \title{Active Metabolic Rate: Final Data}
-\format{A data frame with 12 rows and 16 variables:
+\format{
+A data frame with 12 rows and 16 variables:
 \describe{
   \item{Chamber.No}{the number of a chamber}
   \item{Ind}{ID of an animal}
@@ -22,7 +23,8 @@
   \item{MR.abs}{absolute AMR (\eqn{mg O_{2}\;h^{-1}})}
   \item{MR.mass}{mass-specific AMR (\eqn{mg O_{2}\;kg^{-1} h^{-1}})}
   \item{DO.unit}{the measure unit of DO concentration}
-}}
+}
+}
 \usage{
 AMR
 }

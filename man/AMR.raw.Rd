@@ -4,7 +4,8 @@
 \name{AMR.raw}
 \alias{AMR.raw}
 \title{Active Metabolic Rate: Raw Data}
-\format{A data frame with 1800 rows and 16 variables:
+\format{
+A data frame with 1800 rows and 16 variables:
 \describe{
   \item{Date.Time}{date and time (yyyy/mm/dd hh:mm:ss)}
   \item{Phase}{the type of phase and an ordinal number of measurements (e.g. M1, F3)}
@@ -22,7 +23,8 @@
   \item{Temp.2}{see Temp.1}
   \item{Temp.3}{see Temp.1}
   \item{Temp.4}{see Temp.1}
-}}
+}
+}
 \usage{
 AMR.raw
 }

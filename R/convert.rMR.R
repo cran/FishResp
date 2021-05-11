@@ -25,6 +25,7 @@
 #' @importFrom utils write.table write.csv
 #'
 #' @examples
+#' \dontrun{
 #' # Import raw data for active metabolic rate
 #' AMR.path = system.file("extdata/stickleback/AMR_raw.txt.xz", package = "FishResp")
 #'
@@ -33,7 +34,7 @@
 #'             n.chamber = 2, logger = "AutoResp", salinity = 0,
 #'             DO.units.in = "mg/L", DO.units.out = "PP",
 #'             bar.press = 101.325, bar.units.in = "kpa")
-#'
+#' }
 #' @export
 
 convert.rMR <- function(import.file, export.file,
