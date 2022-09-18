@@ -10,8 +10,11 @@ import.meas(file, info.data,
             date.format = c("DMY", "MDY", "YMD"),
             start.measure = "00:00:00",
             stop.measure = "23:59:59",
+            start.measure.date = NA,
+            stop.measure.date = NA,
             set.date.time = NA,
             meas.to.wait = 0,
+            meas.to.flush = 0,
             plot.temperature = TRUE,
             plot.oxygen = TRUE)
 }
@@ -35,9 +38,15 @@ import.meas(file, info.data,
 
 \item{stop.measure}{chron: time when metabolic rate measurements are finished}
 
+\item{start.measure.date}{chron: date when metabolic rate measurements are started}
+
+\item{stop.measure.date}{chron: date when metabolic rate measurements are finished}
+
 \item{set.date.time}{chron: this parameter is turned off by default and needed to be specified only if raw data were recorded by 'Q-box Aqua' logger software. Specifically, input the date and time when .cmbl file was built in one of the following formats: "dd/mm/yyyy/hh:mm:ss", "mm/dd/yyyy/hh:mm:ss", or "yyyy/mm/dd/hh:mm:ss" (in accourdance to the chosen date.format parameter).}
 
 \item{meas.to.wait}{integer: the number of first rows for each measurement phase (M) which should be reassigned to the wait phase (W). The parameter should be used when the wait phase (W) is absent (e.g. in 'Q-box Aqua' logger software) or not long enough to eliminate non-linear change in DO concentration over time from the measurement phase (M) after shutting off water supply from the ambient water source.}
+
+\item{meas.to.flush}{integer: the number of last rows for each measurement phase (M) which should be reassigned to the flush phase (F). The parameter should be used to eliminate non-linear change in DO concentration over time from the measurement phase (M) after untimely shutting on water supply from the ambient water source.}
 
 \item{plot.temperature}{logical: if TRUE then the graph of raw temperature data is plotted}
 

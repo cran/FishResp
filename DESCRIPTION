@@ -1,5 +1,5 @@
 Package: FishResp
-Version: 1.1.0
+Version: 1.1.1
 Title: Analytical Tool for Aquatic Respirometry
 Description: Calculates metabolic rate of fish and other aquatic organisms measured using
              an intermittent-flow respirometry approach. The tool is used to run a set of graphical
@@ -31,10 +31,10 @@ SystemRequirements: Display resolution >= 1280x800; RAM >= 4GB
 Depends: R (>= 3.0.0)
 Imports: chron, lattice, mclust, rMR, respirometry
 LazyData: TRUE
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.1
 Encoding: UTF-8
 NeedsCompilation: no
-Packaged: 2021-05-11 14:49:47 UTC; semorozo
+Packaged: 2022-09-18 14:17:36 UTC; semorozo
 Author: Sergey Morozov [aut, cre],
   Scott McCairns [aut, ths],
   Juha Merila [ths],
@@ -47,4 +47,4 @@ Author: Sergey Morozov [aut, cre],
   Alexander Kotrschal [dtc],
   Erik Gill [dtc]
 Repository: CRAN
-Date/Publication: 2021-05-12 00:52:39 UTC
+Date/Publication: 2022-09-18 15:06:02 UTC

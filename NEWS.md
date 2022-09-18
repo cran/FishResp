@@ -1,3 +1,19 @@
+# FishResp v1.1.1
+Time-related issues have been fixed offering more flexibility for the 
+analysis of multinight measurements and M->F and M->W phase transitions.
+
+### Major changes:
+* add stop.meas.date and stop.meas.date arguments to import.meas()
+* add the meas.to.flush argument to the import.meas() function
+
+### Bug fixes:
+* fix the warning related to AM/PM after updating R core
+* time index is modified for each meas.phase in import.meas()
+* buffer is added to import.meas() to avoid tail error
+* fix code for appending time index to meas phases
+
+------------------------------------------------------------------
+
 # FishResp v1.1.0
 
 ### Major changes:
@@ -8,7 +24,7 @@
 * fill the 'README.md' file.
 * add the 'NEWS.md' file for tracking changes
 
-### Bug fixes
+### Bug fixes:
 * solve an issue with comma separator in raw data
 * fix a bug with NA and 9999 in slope extraction
 * fix a bug with empty lines in the end of a file with raw data

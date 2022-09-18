@@ -1,6 +1,6 @@
-631f5da25ed59535ecaf5f99592ef7c9 *DESCRIPTION
+867a0e58a597b8726028dd1bd2fa4179 *DESCRIPTION
 787433dedd13eb758a26edd5e52cc57a *NAMESPACE
-2e36e3544a93b78b572b3c7839c6e0f9 *NEWS.md
+c074a45857af49973cde00bfea847545 *NEWS.md
 9686769cd975f99243169f298671d574 *R/AMR.R
 5c86d2ebe3b51d2d8a9a274e7d82bfe7 *R/AMR.clean.R
 70da558967ef3e0949673b323d41c102 *R/AMR.raw.R
@@ -19,7 +19,7 @@ cd2ad128962ac95ceb5e79a95269ce99 *R/convert.respirometry.R
 aefc430d80ed442c2ba867843dfb888e *R/correct.meas.R
 5e0b4ec4b788843a5ca2d290ff550de7 *R/export.MR.R
 0bfed1ab5f55ada93a76ab613a37a256 *R/extract.slope.R
-ffdbb4a7679988f1a9a60caa58666442 *R/import.meas.R
+1e2d87d7511f62cfffbf8d7d700ee9c7 *R/import.meas.R
 e2ed23a3a6849816eb55d68edc12e575 *R/import.test.R
 d1a938dd1098bcef9e94f79a462c5947 *R/info.R
 93084be231dc7bbce49b748e63fd7643 *R/input.info.R
@@ -82,7 +82,7 @@ c8138a37d31545efd4ddb6203fc67cb5 *man/FishResp.Rd
 3f1b22197946a6bb51d6aa002e98bf97 *man/correct.meas.Rd
 e8a025a88627a0f9c1c71ed4dfc3d76f *man/export.MR.Rd
 d162c4d31333da50c33c53684d645c04 *man/extract.slope.Rd
-538a51ca7dc190c3a2b6f4a887cae70a *man/import.meas.Rd
+55062ab4e26c281cfb177f7edf2e17d3 *man/import.meas.Rd
 c0ef53cfa17a174e656938e97726483c *man/import.test.Rd
 c3ae4e81149b0464d08bacca83ffe58c *man/info.Rd
 682499dcc48513dbc9de3ee261b700b5 *man/input.info.Rd
