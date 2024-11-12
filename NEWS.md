@@ -1,3 +1,24 @@
+# FishResp v1.1.2
+Improving quality and performance of the import.meas function 
+
+### Bug fixes:
+* head & tail error fix: removing first or last phase(s) if its 
+  length was significantly reduced (i.e. <90% of expected length). 
+  This bug fix ensures that the dataset does not include shortened 
+  or incomplete measurement phases, which caused errors
+* delete time duplications and add empty lines for missing seconds.
+  This bug fix addresses the issue of duplicate timestamps and
+  missing seconds in the imported dataset
+* remove any measurement phase with only one value to avoid errors 
+  in the correct.meas function
+
+### Notes:
+* clarity and structure of the README section was improved
+* Contributors were moved from the author list to the contributor 
+  page of the FishResp website: https://fishresp.org/people/
+
+------------------------------------------------------------------
+
 # FishResp v1.1.1
 Time-related issues have been fixed offering more flexibility for the 
 analysis of multinight measurements and M->F and M->W phase transitions.

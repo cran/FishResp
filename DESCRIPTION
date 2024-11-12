@@ -1,5 +1,5 @@
 Package: FishResp
-Version: 1.1.1
+Version: 1.1.2
 Title: Analytical Tool for Aquatic Respirometry
 Description: Calculates metabolic rate of fish and other aquatic organisms measured using
              an intermittent-flow respirometry approach. The tool is used to run a set of graphical
@@ -14,37 +14,22 @@ Description: Calculates metabolic rate of fish and other aquatic organisms measu
              available in the publication by Morozov et al. (2019) <doi:10.1093/conphys/coz003>.
 URL: https://fishresp.org
 Authors@R: c(
-    person("Sergey", "Morozov", role = c("aut", "cre"), email = "sergey.morozov@helsinki.fi"),
-    person("Scott", "McCairns", role = c("aut", "ths")),
-    person("Juha", "Merila", role = "ths"),
-    person("Federico", "Calboli", role = "ctb"),
-    person("Jenni", "Prokkola", role = "dtc"),
-    person("Stephen", "White", role = "dtc"),
-    person("Daniel", "Montgomery", role = "dtc"),
-    person("Laura", "Almodovar-Acevedo", role = "dtc"),
-    person("Niclas", "Kolm", role = "dtc"),
-    person("Alexander", "Kotrschal", role = "dtc"),
-    person("Erik", "Gill", role = "dtc"))
+           person("Sergey", "Morozov", role = c("aut", "cre"), email = "sergey.morozov@helsinki.fi"), 
+           person("Scott", "McCairns", role = "aut"), 
+           person("Juha", "Merila", role = "ctb")
+           )
 Maintainer: Sergey Morozov <sergey.morozov@helsinki.fi>
 License: GPL-3
 SystemRequirements: Display resolution >= 1280x800; RAM >= 4GB
 Depends: R (>= 3.0.0)
 Imports: chron, lattice, mclust, rMR, respirometry
 LazyData: TRUE
-RoxygenNote: 7.2.1
+RoxygenNote: 7.3.2
 Encoding: UTF-8
 NeedsCompilation: no
-Packaged: 2022-09-18 14:17:36 UTC; semorozo
+Packaged: 2024-11-12 11:14:43 UTC; semorozo
 Author: Sergey Morozov [aut, cre],
-  Scott McCairns [aut, ths],
-  Juha Merila [ths],
-  Federico Calboli [ctb],
-  Jenni Prokkola [dtc],
-  Stephen White [dtc],
-  Daniel Montgomery [dtc],
-  Laura Almodovar-Acevedo [dtc],
-  Niclas Kolm [dtc],
-  Alexander Kotrschal [dtc],
-  Erik Gill [dtc]
+  Scott McCairns [aut],
+  Juha Merila [ctb]
 Repository: CRAN
-Date/Publication: 2022-09-18 15:06:02 UTC
+Date/Publication: 2024-11-12 11:30:02 UTC

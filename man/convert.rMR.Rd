@@ -19,15 +19,15 @@ convert.rMR(import.file, export.file,
 
 \item{logger}{string: the name of a logger software used for intermittent-flow respirometry. Note, that both 'OxyView' and 'Pyro Oxygen Logger' used in couple with the 'AquaResp' software should be converted to the 'FishResp' format before running this function (see the functions \code{\link{presens.aquaresp}} or \code{\link{pyroscience.aquaresp}}, respectively).}
 
-\item{DO.units.in}{string: dissolved oxygen unit in an imported file (more information can be found in the documentation of the function \code{\link{DO.unit.convert}}, R package \pkg{rMR})}
+\item{DO.units.in}{string: dissolved oxygen unit in an imported file (more information can be found in the documentation of the function \code{\link[rMR]{DO.unit.convert}}, R package \pkg{rMR})}
 
-\item{DO.units.out}{string: dissolved oxygen unit in an exported file (more information can be found in the documentation of the function \code{\link{DO.unit.convert}}, R package \pkg{rMR})}
+\item{DO.units.out}{string: dissolved oxygen unit in an exported file (more information can be found in the documentation of the function \code{\link[rMR]{DO.unit.convert}}, R package \pkg{rMR})}
 
-\item{salinity}{string: salinity is measured in ppm (more information can be found in the documentation of the function \code{\link{DO.unit.convert}}, R package \pkg{rMR})}
+\item{salinity}{string: salinity is measured in ppm (more information can be found in the documentation of the function \code{\link[rMR]{DO.unit.convert}}, R package \pkg{rMR})}
 
-\item{bar.press}{string: ambient barometric pressure value (more information can be found in the documentation of the function \code{\link{DO.unit.convert}}, R package \pkg{rMR})}
+\item{bar.press}{string: ambient barometric pressure value (more information can be found in the documentation of the function \code{\link[rMR]{DO.unit.convert}}, R package \pkg{rMR})}
 
-\item{bar.units.in}{string: barometric pressure unit (more information can be found in the documentation of the function \code{\link{DO.unit.convert}}, R package \pkg{rMR})}
+\item{bar.units.in}{string: barometric pressure unit (more information can be found in the documentation of the function \code{\link[rMR]{DO.unit.convert}}, R package \pkg{rMR})}
 }
 \value{
 The function exports a data frame with converted DO units.

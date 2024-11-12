@@ -58,9 +58,8 @@
 #' @importFrom chron chron
 #' @importFrom grDevices dev.new
 #' @importFrom graphics abline legend par plot
-#' @importFrom stats coef lm predict.lm
+#' @importFrom stats coef lm predict.lm ave
 #' @importFrom utils head read.table tail write.table
-#'
 #' @examples
 #' # Import raw data for standard and active metabolic
 #' # rate measurements (SMR and AMR, respectively)
@@ -120,10 +119,9 @@ import.meas <- function(file,
                         plot.temperature = TRUE,
                         plot.oxygen = TRUE){
 
-  V1 <- V2 <- V3 <- V4 <- V5 <- V6 <- V7 <- V8 <- V9 <- V10 <- NULL
-  V11 <- V12 <- V13 <- V14 <- V15 <- V16 <- V17 <- V18 <- V19 <- NULL
-  V20 <- V21 <- V22 <- V23 <- V24 <- V25 <- V26 <- V27 <- V28 <- NULL
-  Phase.Type <- Phase <- Start.Meas <- NULL
+  V1 <- V2 <- V3 <- V4 <- V5 <- V6 <- V7 <- V8 <- V9 <- V10 <- V11 <- V12 <- NULL
+  V13 <- V14 <- V15 <- V16 <- V17 <- V18 <- V19 <- V20 <- V21 <- V22 <- V23 <- NULL
+  V24 <- V25 <- V26 <- V27 <- V28 <- Phase <- Phase.Type <- NULL
 
   ### AutoResp format ###
   if (logger == "AutoResp"){
@@ -223,7 +221,6 @@ import.meas <- function(file,
   }
 
   ### FishResp format ###
-
   else if (logger == "FishResp"){
     MR.data.all<-read.table(file, sep = "\t", skip=1, header=F, strip.white=T)
     if (n.chamber == 1){
@@ -320,7 +317,6 @@ import.meas <- function(file,
   }
 
   ### QboxAqua format ###
-
   else if (logger == "QboxAqua"){
     MR.data.all<-read.table(file, sep = ",", skip=2, header=F, strip.white=T)
     if (n.chamber == 1){
@@ -349,13 +345,13 @@ import.meas <- function(file,
       print("If 'Qubit Systems' starts producing multi-chamber systems for aquatic respirometry, please contact us via email: fishresp@gmail.com")
     }
   }
-
   else{
     print("Please, choose the format of your data: AutoResp, FishResp or QboxAqua")
   }
-
-  rm(avoid.all.NA)
-
+  rm(avoid.all.NA, i)
+  rm(V1, V2, V3, V4, V5, V6, V7, V8, V9, V10, V11, V12, V13, V14, V15)
+  rm(V16, V17, V18, V19, V20, V21, V22, V23, V24, V25, V26, V27, V28)
+  
   #--------------------------------------------------------------------------------------------------------------------------------------------------#
   # Formatting Date & Time Entries
   #--------------------------------------------------------------------------------------------------------------------------------------------------#
@@ -384,7 +380,6 @@ import.meas <- function(file,
       else{
         MR.data.all$Date.Time<-strptime(as.character(MR.data.all$Date.Time), "%d/%m/%Y/ %I:%M:%S %p")
       }
-      dts<-dates(strftime(MR.data.all$Date.Time, "%d/%m/%y"), format="d/m/y")
     }
     else if(any(date.format == "MDY")){
       if(logger == "QboxAqua"){
@@ -402,7 +397,6 @@ import.meas <- function(file,
       else{
         MR.data.all$Date.Time<-strptime(as.character(MR.data.all$Date.Time), "%m/%d/%Y/ %I:%M:%S %p")
       }
-      dts<-dates(strftime(MR.data.all$Date.Time, "%m/%d/%y"), format="m/d/y")
     }
     else if(any(date.format == "YMD")){
       if(logger == "QboxAqua"){
@@ -420,7 +414,6 @@ import.meas <- function(file,
       else{
         MR.data.all$Date.Time<-strptime(as.character(MR.data.all$Date.Time), "%Y/%m/%d/ %I:%M:%S %p")
       }
-      dts<-dates(strftime(MR.data.all$Date.Time, "%y/%m/%d"), format="y/m/d")
     }
     else{
       print("Please, choose the date format: DMY, MDY or YMD, where D-day, M-month, Y-year")
@@ -443,7 +436,6 @@ import.meas <- function(file,
       else{
         MR.data.all$Date.Time<-strptime(as.character(MR.data.all$Date.Time), "%d/%m/%Y/%H:%M:%S")
       }
-      dts<-dates(strftime(MR.data.all$Date.Time, "%d/%m/%y"), format="d/m/y")
     }
     else if(any(date.format == "MDY")){
       if(logger == "QboxAqua"){
@@ -461,7 +453,6 @@ import.meas <- function(file,
       else{
         MR.data.all$Date.Time<-strptime(as.character(MR.data.all$Date.Time), "%m/%d/%Y/%H:%M:%S")
       }
-      dts<-dates(strftime(MR.data.all$Date.Time, "%m/%d/%y"), format="m/d/y")
     }
     else if(any(date.format == "YMD")){
       if(logger == "QboxAqua"){
@@ -479,19 +470,43 @@ import.meas <- function(file,
       else{
         MR.data.all$Date.Time<-strptime(as.character(MR.data.all$Date.Time), "%Y/%m/%d/%H:%M:%S")
       }
-      dts<-dates(strftime(MR.data.all$Date.Time, "%y/%m/%d"), format="y/m/d")
     }
     else{
       print("Please, choose the time format: DMY, MDY or YMD, where D-day, M-month, Y-year")
     }
   }
+  rm(PM.1, PM.2, PM.3, PM.4)
+
+  #------------------------------------------------------------------#
+  # Delete time duplications and add empty lines for missing seconds #
+  #------------------------------------------------------------------#
+  MR.data.all <- MR.data.all[!duplicated(MR.data.all$Date.Time),] #dup
+  time.log <- as.POSIXct(format(seq(MR.data.all$Date.Time[1],
+                         rev(MR.data.all$Date.Time)[1], by="sec")))
+  time.log <- as.data.frame(time.log)
+  MR.data.all <- merge(MR.data.all, time.log, by.x = "Date.Time", by.y = "time.log", all = TRUE)
+  MR.data.all <- MR.data.all[!duplicated(MR.data.all$Date.Time),]
+  MR.data.all$Phase <- ave(MR.data.all$Phase, cumsum(!is.na(MR.data.all$Phase)),
+                         FUN = function(x) x[1])
+  row.names(MR.data.all) <- 1:nrow(MR.data.all)
 
   x<-strftime(MR.data.all$Date.Time, "%H:%M:%S")
   MR.data.all$Real.Time<-chron::chron(times=x)
   rm(x)
   tms<-times(strftime(MR.data.all$Date.Time, "%H:%M:%S"))
-    x<-chron::chron(dates = dts, times = tms,  format = c(dates = "yy-m-d", times = "h:m:s"))
-    dts<-chron::chron(dates = dts,  format = "yy-m-d")
+
+  if(any(date.format == "DMY")){
+    dts<-dates(strftime(MR.data.all$Date.Time, "%d/%m/%y"), format="d/m/y")
+  }
+  if(any(date.format == "MDY")){
+    dts<-dates(strftime(MR.data.all$Date.Time, "%m/%d/%y"), format="m/d/y")
+  }
+  if(any(date.format == "YMD")){
+    dts<-dates(strftime(MR.data.all$Date.Time, "%y/%m/%d"), format="y/m/d")
+  }
+
+  x<-chron::chron(dates = dts, times = tms,  format = c(dates = "yy-m-d", times = "h:m:s"))
+  dts<-chron::chron(dates = dts,  format = "yy-m-d")
   MR.data.all$Date.Time<-x
   MR.data.all$Date<-dts
   MR.data.all$Real.Time<-tms
@@ -508,52 +523,36 @@ import.meas <- function(file,
   MR.data.all$Phase.Type<-NULL
   row.names(MR.data.all)<-NULL
   MR.data.all$Phase<-factor(MR.data.all$Phase)
-
-  # here is a quick lesson in how to create an ordered factor
-  # note the ordering of levels for the factor 'Phase' in the current dataframe
-  # RUN: levels(MR.data.all$Phase)
-
   # now creating the re-ordered factor
   z <- MR.data.all$Phase
   z <- gsub("[M]","",z)
   z <- as.numeric(z)
   x <- ordered(MR.data.all$Phase, levels=paste(rep("M",length(levels(MR.data.all$Phase))), head(z, n=1):tail(z, n=1), sep=""))
   MR.data.all$Phase<-x
-  rm(x)
-  # note the new class of 'Phase' and the new ordering
-  # RUN: levels(MR.data.all$Phase)
-
-  #--------------------------------------------------------------------------------------------------------------------------------------------------#
-  # Removing the final measurement Phase (tail error)
-  #--------------------------------------------------------------------------------------------------------------------------------------------------#
-  y <- length(which(MR.data.all$Phase==head(levels(MR.data.all$Phase),1), T))
-  y <- y - 10 #some buffer in case of unexpected lags
-  z <- length(which(MR.data.all$Phase==tail(levels(MR.data.all$Phase),1), T))
-  if (z < y){
-    MR.data.all<-subset(MR.data.all, Phase!=tail(levels(MR.data.all$Phase),1))
-  }
   MR.data.all$Phase<-factor(MR.data.all$Phase)
   row.names(MR.data.all) <- 1:nrow(MR.data.all)
+  rm(x, z, Phase.Type)
 
-  # Measurement phase seconds (M) converted to waiting (W) or flushing (F)
+  #------------------------------------------------------------------------#
+  # Measurement phase seconds (M) converted to waiting (W) or flushing (F) #
+  #------------------------------------------------------------------------#
   if(meas.to.wait != 0){
     idx <- unlist(tapply(1:nrow(MR.data.all), MR.data.all$Phase, tail, -(meas.to.wait)), use.names=FALSE)
     MR.data.all <- MR.data.all[idx, ]
-  }else{
-    }
+    rm(idx)
+  }
 
   if(meas.to.flush != 0){
     idx <- unlist(tapply(1:nrow(MR.data.all), MR.data.all$Phase, head, -(meas.to.flush)), use.names=FALSE)
     MR.data.all <- MR.data.all[idx, ]
-  }else{
-    }
-    
+    rm(idx)
+  }
+
   row.names(MR.data.all) <- 1:nrow(MR.data.all)
   
   #----------------------------------------------#
   # Append time index for each measurement phase #
   #----------------------------------------------#
-  i = 1
   time.vector = NULL
 
   for(i in as.numeric(gsub("[M]","",levels(MR.data.all$Phase)))){
@@ -563,8 +562,7 @@ import.meas <- function(file,
   }
 
   MR.data.all$Time<-time.vector
-  rm(i)
-  rm(time.vector)
+  rm(i, a, time.vector)
 
   #--------------------------------------------------------------------------------------------------------------------------------------------------#
   # Restricting Dataset to Mearusements Taken in the Dark
@@ -572,54 +570,54 @@ import.meas <- function(file,
   x<-levels(MR.data.all$Phase)
 
   if (n.chamber == 1){
-    temp.df<-data.frame(Date.Time=chron(), Phase=factor(), Temp.1=numeric(), Ox.1=numeric(), Real.Time=chron(), Date=chron(), Time=integer(),
+    meas.data<-data.frame(Date.Time=chron(), Phase=factor(), Temp.1=numeric(), Ox.1=numeric(), Real.Time=chron(), Date=chron(), Time=integer(),
                         Start.Meas=character(), End.Meas=character())
   }
 
   else if (n.chamber == 2){
-    temp.df<-data.frame(Date.Time=chron(), Phase=factor(), Temp.1=numeric(), Ox.1=numeric(), Temp.2=numeric(), Ox.2=numeric(),
+    meas.data<-data.frame(Date.Time=chron(), Phase=factor(), Temp.1=numeric(), Ox.1=numeric(), Temp.2=numeric(), Ox.2=numeric(),
                         Real.Time=chron(), Date=chron(), Time=integer(), Start.Meas=character(), End.Meas=character())
   }
 
   else if (n.chamber == 3){
-    temp.df<-data.frame(Date.Time=chron(), Phase=factor(), Temp.1=numeric(), Ox.1=numeric(), Temp.2=numeric(), Ox.2=numeric(),
+    meas.data<-data.frame(Date.Time=chron(), Phase=factor(), Temp.1=numeric(), Ox.1=numeric(), Temp.2=numeric(), Ox.2=numeric(),
                         Temp.3=numeric(), Ox.3=numeric(), Real.Time=chron(), Date=chron(), Time=integer(),
                         Start.Meas=character(), End.Meas=character())
   }
 
   else if (n.chamber == 4){
-    temp.df<-data.frame(Date.Time=chron(), Phase=factor(), Temp.1=numeric(), Ox.1=numeric(), Temp.2=numeric(), Ox.2=numeric(),
+    meas.data<-data.frame(Date.Time=chron(), Phase=factor(), Temp.1=numeric(), Ox.1=numeric(), Temp.2=numeric(), Ox.2=numeric(),
                         Temp.3=numeric(), Ox.3=numeric(), Temp.4=numeric(), Ox.4=numeric(), Real.Time=chron(), Date=chron(), Time=integer(),
                         Start.Meas=character(), End.Meas=character())
   }
 
   else if (n.chamber == 5){
-    temp.df<-data.frame(Date.Time=chron(), Phase=factor(), Temp.1=numeric(), Ox.1=numeric(), Temp.2=numeric(), Ox.2=numeric(),
+    meas.data<-data.frame(Date.Time=chron(), Phase=factor(), Temp.1=numeric(), Ox.1=numeric(), Temp.2=numeric(), Ox.2=numeric(),
                         Temp.3=numeric(), Ox.3=numeric(), Temp.4=numeric(), Ox.4=numeric(), Temp.5=numeric(), Ox.5=numeric(),
                         Real.Time=chron(), Date=chron(), Time=integer(), Start.Meas=character(), End.Meas=character())
   }
 
   else if (n.chamber == 6){
-    temp.df<-data.frame(Date.Time=chron(), Phase=factor(), Temp.1=numeric(), Ox.1=numeric(), Temp.2=numeric(), Ox.2=numeric(),
+    meas.data<-data.frame(Date.Time=chron(), Phase=factor(), Temp.1=numeric(), Ox.1=numeric(), Temp.2=numeric(), Ox.2=numeric(),
                         Temp.3=numeric(), Ox.3=numeric(), Temp.4=numeric(), Ox.4=numeric(), Temp.5=numeric(), Ox.5=numeric(),
                         Temp.6=numeric(), Ox.6=numeric(),
                         Real.Time=chron(), Date=chron(), Time=integer(), Start.Meas=character(), End.Meas=character())
   }
 
   else if (n.chamber == 7){
-    temp.df<-data.frame(Date.Time=chron(), Phase=factor(), Temp.1=numeric(), Ox.1=numeric(), Temp.2=numeric(), Ox.2=numeric(),
+    meas.data<-data.frame(Date.Time=chron(), Phase=factor(), Temp.1=numeric(), Ox.1=numeric(), Temp.2=numeric(), Ox.2=numeric(),
                         Temp.3=numeric(), Ox.3=numeric(), Temp.4=numeric(), Ox.4=numeric(), Temp.5=numeric(), Ox.5=numeric(),
                         Temp.6=numeric(), Ox.6=numeric(), Temp.7=numeric(), Ox.7=numeric(),
                         Real.Time=chron(), Date=chron(), Time=integer(), Start.Meas=character(), End.Meas=character())
   }
   else if (n.chamber == 8){
-    temp.df<-data.frame(Date.Time=chron(), Phase=factor(), Temp.1=numeric(), Ox.1=numeric(), Temp.2=numeric(), Ox.2=numeric(),
+    meas.data<-data.frame(Date.Time=chron(), Phase=factor(), Temp.1=numeric(), Ox.1=numeric(), Temp.2=numeric(), Ox.2=numeric(),
                         Temp.3=numeric(), Ox.3=numeric(), Temp.4=numeric(), Ox.4=numeric(), Temp.5=numeric(), Ox.5=numeric(),
                         Temp.6=numeric(), Ox.6=numeric(), Temp.7=numeric(), Ox.7=numeric(), Temp.8=numeric(), Ox.8=numeric(),
                         Real.Time=chron(), Date=chron(), Time=integer(), Start.Meas=character(), End.Meas=character())
   }
   else{
-
+    print("The number of chambers must be between 1 and 8")
   }
 
   for(i in 1:length(x)){	
@@ -628,27 +626,20 @@ import.meas <- function(file,
     x.end<-rep(as.character(tail(x.df$Real.Time, 1)), dim(x.df)[1])
     x.df$Start.Meas<-x.start
     x.df$End.Meas<-x.end
-    temp.df<-rbind(temp.df, x.df)
+    meas.data<-rbind(meas.data, x.df)
     }
 
-  rm(x)
-  rm(i)
-  rm(x.df)
-  rm(x.start)
-  rm(x.end)
+  rm(x, i, x.df, x.start, x.end, Phase)
 
-  temp.df$Start.Meas<-times(temp.df$Start.Meas)
-  temp.df$End.Meas<-times(temp.df$End.Meas)
-  temp.df$Total.Phases<-nlevels(temp.df$Phase) ### Why?! CHECK!!!
-  
   #-------------------------------------------------------------------#
   # Filtering data based on start.measure and stop.measure thresholds #
   #-------------------------------------------------------------------#
-  
+  meas.data$Start.Meas<-times(meas.data$Start.Meas)
+  meas.data$End.Meas<-times(meas.data$End.Meas)
 
-  ### START ###
+  # Start point #
   if (is.na(start.measure.date) == TRUE){
-    start.date.time <- temp.df$Date.Time[na.omit(which(temp.df$Real.Time >= times(start.measure)))][1]
+    start.date.time <- meas.data$Date.Time[na.omit(which(meas.data$Real.Time >= times(start.measure)))][1]
   }
   else{
     if(date.format == "DMY"){
@@ -665,11 +656,12 @@ import.meas <- function(file,
     }
     start.date.v.2 <- chron(dates. = start.date.v.1,  format = "yy-m-d")
     start.date.time <- chron(start.date.v.2, times(start.measure), format = c(dates = "yy-m-d ", times = "h:m:s"))
+    rm(start.date.v.0, start.date.v.1, start.date.v.2)
   }
 
-  ### STOP ###
+  # Stop point #
   if (is.na(stop.measure.date) == TRUE){
-    stop.date.time <- rev(temp.df$Date.Time[na.omit(which(temp.df$Real.Time <= times(stop.measure)))])[1]
+    stop.date.time <- rev(meas.data$Date.Time[na.omit(which(meas.data$Real.Time <= times(stop.measure)))])[1]
   }
   else{
     if(date.format == "DMY"){
@@ -686,141 +678,84 @@ import.meas <- function(file,
     }
     stop.date.v.2 <- chron(dates. = stop.date.v.1,  format = "yy-m-d")
     stop.date.time <- chron(stop.date.v.2, times(stop.measure), format = c(dates = "yy-m-d ", times = "h:m:s"))
+    rm(stop.date.v.0, stop.date.v.1, stop.date.v.2)
   }
 
-  temp.df <- subset(temp.df, (temp.df$Date.Time>start.date.time & temp.df$Date.Time<stop.date.time))
-  temp.df$Phase<-factor(temp.df$Phase)
+  meas.data <- subset(meas.data, (meas.data$Date.Time>=start.date.time & meas.data$Date.Time<=stop.date.time))
+  meas.data$Phase<-factor(meas.data$Phase)
+  rm(start.date.time, stop.date.time)
+  
+  #-----------------------------------------#
+  # First and last measurement phase errors #
+  #-----------------------------------------#
+  # At first we calculate the mode out of all measurement phase lengths.
+  # If the length of the first or the last measurement phase is less than
+  # than 90% of the mode value, those measurement phases will be removed.
+  phase.length = NULL
+  for (i in levels(as.factor(meas.data$Phase))){
+    phase.length <- append(phase.length, length(which(meas.data$Phase == i)))
+  }
 
-  if (plot.temperature == T){
-    if(n.chamber == 1){
-      par(mfrow=c(1,1), ask = T)
-      plot(temp.df$Temp.1~temp.df$Date.Time, main="Chamber 1", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
-    }
-    else if(n.chamber == 2){
-      par(mfrow=c(2,1), ask = T)
-      plot(temp.df$Temp.1~temp.df$Date.Time, main="Chamber 1", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.2~temp.df$Date.Time, main="Chamber 2", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
-    }
-    else if(n.chamber == 3){
-      par(mfrow=c(3,1), ask = T)
-      plot(temp.df$Temp.1~temp.df$Date.Time, main="Chamber 1", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.2~temp.df$Date.Time, main="Chamber 2", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.3~temp.df$Date.Time, main="Chamber 3", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
-    }
-    else if(n.chamber == 4){
-      par(mfrow=c(4,1), ask = T)
-      plot(temp.df$Temp.1~temp.df$Date.Time, main="Chamber 1", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.2~temp.df$Date.Time, main="Chamber 2", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.3~temp.df$Date.Time, main="Chamber 3", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.4~temp.df$Date.Time, main="Chamber 4", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
-    }
-    else if(n.chamber == 5){
-      par(mfrow=c(4,1), ask = T)
-      plot(temp.df$Temp.1~temp.df$Date.Time, main="Chamber 1", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.2~temp.df$Date.Time, main="Chamber 2", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.3~temp.df$Date.Time, main="Chamber 3", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.4~temp.df$Date.Time, main="Chamber 4", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.5~temp.df$Date.Time, main="Chamber 5", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
-    }
-    else if(n.chamber == 6){
-      par(mfrow=c(4,1), ask = T)
-      plot(temp.df$Temp.1~temp.df$Date.Time, main="Chamber 1", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.2~temp.df$Date.Time, main="Chamber 2", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.3~temp.df$Date.Time, main="Chamber 3", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.4~temp.df$Date.Time, main="Chamber 4", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.5~temp.df$Date.Time, main="Chamber 5", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.6~temp.df$Date.Time, main="Chamber 6", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
-    }
-    else if(n.chamber == 7){
-      par(mfrow=c(4,1), ask = T)
-      plot(temp.df$Temp.1~temp.df$Date.Time, main="Chamber 1", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.2~temp.df$Date.Time, main="Chamber 2", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.3~temp.df$Date.Time, main="Chamber 3", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.4~temp.df$Date.Time, main="Chamber 4", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.5~temp.df$Date.Time, main="Chamber 5", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.6~temp.df$Date.Time, main="Chamber 6", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.7~temp.df$Date.Time, main="Chamber 7", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
-    }
-    else if(n.chamber == 8){
-      par(mfrow=c(4,1), ask = T)
-      plot(temp.df$Temp.1~temp.df$Date.Time, main="Chamber 1", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.2~temp.df$Date.Time, main="Chamber 2", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.3~temp.df$Date.Time, main="Chamber 3", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.4~temp.df$Date.Time, main="Chamber 4", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.5~temp.df$Date.Time, main="Chamber 5", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.6~temp.df$Date.Time, main="Chamber 6", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.7~temp.df$Date.Time, main="Chamber 7", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
-      plot(temp.df$Temp.8~temp.df$Date.Time, main="Chamber 8", xlab = "Date and Time", ylab = bquote("Temperature (" ~ C^o ~ ")"), col = "#0082FF", cex=0.8)
-    }
-    else{
+  mode.phase.length <- as.numeric(names(sort(-table(phase.length)))[1])
+  first.phase.length <- length(which(meas.data$Phase==head(levels(meas.data$Phase),1), T))
+  last.phase.length <- length(which(meas.data$Phase==tail(levels(meas.data$Phase),1), T))
+
+  # check the first M
+  if (first.phase.length < mode.phase.length * 0.9){
+    meas.data<-subset(meas.data, Phase!=head(levels(meas.data$Phase),1))
+  }
+  # check the last M
+  if (last.phase.length < mode.phase.length * 0.9){
+    meas.data<-subset(meas.data, Phase!=tail(levels(meas.data$Phase),1))
+  }
+  rm(mode.phase.length, first.phase.length, last.phase.length)
+
+  meas.data$Phase<-factor(meas.data$Phase)
+  row.names(meas.data) <- 1:nrow(meas.data)
+
+  #-----------------------------------------------#
+  # Remove measurement phases with only one value #
+  #-----------------------------------------------#
+  for(i in levels(as.factor(meas.data$Phase))){
+    meas.data <- subset(meas.data, length(which(meas.data$Phase == i)) > 1)
+  }
+  meas.data$Phase<-factor(meas.data$Phase)
+  row.names(meas.data) <- 1:nrow(meas.data)
+  meas.data$Total.Phases<-nlevels(meas.data$Phase) ### Why?! CHECK!!!
+
+
+  #-------------------#
+  # Plotting raw data #
+  #-------------------#
+  if (plot.temperature == TRUE) {
+    if (n.chamber >= 1 & n.chamber <= 8) {
+      par(mfrow=c(min(n.chamber, 4), 1), ask = TRUE)
+      
+      for (i in 1:n.chamber) {
+        plot(meas.data[[paste0("Temp.", i)]] ~ meas.data$Date.Time, 
+            main = paste("Chamber", i), 
+            xlab = "Date and Time", 
+            ylab = bquote("Temperature (" ~ C^o ~ ")"), 
+            col = "#0082FF", 
+            cex = 0.8)
+      }
     }
   }
 
-  if (plot.oxygen == T){
-    if(n.chamber == 1){
-      par(mfrow=c(1,1), ask = T)
-      plot(temp.df$Ox.1~temp.df$Date.Time, main="Chamber 1", xlab = "Date and Time", ylab = paste("DO (", info.data$DO.unit[1], "/L)", sep = ""), col = "#0082FF", cex=0.8)
-    }
-    else if(n.chamber == 2){
-      par(mfrow=c(2,1), ask = T)
-      plot(temp.df$Ox.1~temp.df$Date.Time, main="Chamber 1", xlab = "Date and Time", ylab = paste("DO (", info.data$DO.unit[1], "/L)", sep = ""), col = "#0082FF", cex=0.8)
-      plot(temp.df$Ox.2~temp.df$Date.Time, main="Chamber 2", xlab = "Date and Time", ylab = paste("DO (", info.data$DO.unit[1], "/L)", sep = ""), col = "#0082FF", cex=0.8)
-    }
-    else if(n.chamber == 3){
-      par(mfrow=c(3,1), ask = T)
-      plot(temp.df$Ox.1~temp.df$Date.Time, main="Chamber 1", xlab = "Date and Time", ylab = paste("DO (", info.data$DO.unit[1], "/L)", sep = ""), col = "#0082FF", cex=0.8)
-      plot(temp.df$Ox.2~temp.df$Date.Time, main="Chamber 2", xlab = "Date and Time", ylab = paste("DO (", info.data$DO.unit[1], "/L)", sep = ""), col = "#0082FF", cex=0.8)
-      plot(temp.df$Ox.3~temp.df$Date.Time, main="Chamber 3", xlab = "Date and Time", ylab = paste("DO (", info.data$DO.unit[1], "/L)", sep = ""), col = "#0082FF", cex=0.8)
-    }
-    else if(n.chamber == 4){
-      par(mfrow=c(4,1), ask = T)
-      plot(temp.df$Ox.1~temp.df$Date.Time, main="Chamber 1", xlab = "Date and Time", ylab = paste("DO (", info.data$DO.unit[1], "/L)", sep = ""), col = "#0082FF", cex=0.8)
-      plot(temp.df$Ox.2~temp.df$Date.Time, main="Chamber 2", xlab = "Date and Time", ylab = paste("DO (", info.data$DO.unit[1], "/L)", sep = ""), col = "#0082FF", cex=0.8)
-      plot(temp.df$Ox.3~temp.df$Date.Time, main="Chamber 3", xlab = "Date and Time", ylab = paste("DO (", info.data$DO.unit[1], "/L)", sep = ""), col = "#0082FF", cex=0.8)
-      plot(temp.df$Ox.4~temp.df$Date.Time, main="Chamber 4", xlab = "Date and Time", ylab = paste("DO (", info.data$DO.unit[1], "/L)", sep = ""), col = "#0082FF", cex=0.8)
-    }
-    else if(n.chamber == 5){
-      par(mfrow=c(4,1), ask = T)
-      plot(temp.df$Ox.1~temp.df$Date.Time, main="Chamber 1", xlab = "Date and Time", ylab = paste("DO (", info.data$DO.unit[1], "/L)", sep = ""), col = "#0082FF", cex=0.8)
-      plot(temp.df$Ox.2~temp.df$Date.Time, main="Chamber 2", xlab = "Date and Time", ylab = paste("DO (", info.data$DO.unit[1], "/L)", sep = ""), col = "#0082FF", cex=0.8)
-      plot(temp.df$Ox.3~temp.df$Date.Time, main="Chamber 3", xlab = "Date and Time", ylab = paste("DO (", info.data$DO.unit[1], "/L)", sep = ""), col = "#0082FF", cex=0.8)
-      plot(temp.df$Ox.4~temp.df$Date.Time, main="Chamber 4", xlab = "Date and Time", ylab = paste("DO (", info.data$DO.unit[1], "/L)", sep = ""), col = "#0082FF", cex=0.8)
-      plot(temp.df$Ox.5~temp.df$Date.Time, main="Chamber 5", xlab = "Date and Time", ylab = paste("DO (", info.data$DO.unit[1], "/L)", sep = ""), col = "#0082FF", cex=0.8)
-    }
-    else if(n.chamber == 6){
-      par(mfrow=c(4,1), ask = T)
-      plot(temp.df$Ox.1~temp.df$Date.Time, main="Chamber 1", xlab = "Date and Time", ylab = paste("DO (", info.data$DO.unit[1], "/L)", sep = ""), col = "#0082FF", cex=0.8)
-      plot(temp.df$Ox.2~temp.df$Date.Time, main="Chamber 2", xlab = "Date and Time", ylab = paste("DO (", info.data$DO.unit[1], "/L)", sep = ""), col = "#0082FF", cex=0.8)
-      plot(temp.df$Ox.3~temp.df$Date.Time, main="Chamber 3", xlab = "Date and Time", ylab = paste("DO (", info.data$DO.unit[1], "/L)", sep = ""), col = "#0082FF", cex=0.8)
-      plot(temp.df$Ox.4~temp.df$Date.Time, main="Chamber 4", xlab = "Date and Time", ylab = paste("DO (", info.data$DO.unit[1], "/L)", sep = ""), col = "#0082FF", cex=0.8)
-      plot(temp.df$Ox.5~temp.df$Date.Time, main="Chamber 5", xlab = "Date and Time", ylab = paste("DO (", info.data$DO.unit[1], "/L)", sep = ""), col = "#0082FF", cex=0.8)
-      plot(temp.df$Ox.6~temp.df$Date.Time, main="Chamber 6", xlab = "Date and Time", ylab = paste("DO (", info.data$DO.unit[1], "/L)", sep = ""), col = "#0082FF", cex=0.8)
-    }
-    else if(n.chamber == 7){
-      par(mfrow=c(4,1), ask = T)
-      plot(temp.df$Ox.1~temp.df$Date.Time, main="Chamber 1", xlab = "Date and Time", ylab = paste("DO (", info.data$DO.unit[1], "/L)", sep = ""), col = "#0082FF", cex=0.8)
-      plot(temp.df$Ox.2~temp.df$Date.Time, main="Chamber 2", xlab = "Date and Time", ylab = paste("DO (", info.data$DO.unit[1], "/L)", sep = ""), col = "#0082FF", cex=0.8)
-      plot(temp.df$Ox.3~temp.df$Date.Time, main="Chamber 3", xlab = "Date and Time", ylab = paste("DO (", info.data$DO.unit[1], "/L)", sep = ""), col = "#0082FF", cex=0.8)
-      plot(temp.df$Ox.4~temp.df$Date.Time, main="Chamber 4", xlab = "Date and Time", ylab = paste("DO (", info.data$DO.unit[1], "/L)", sep = ""), col = "#0082FF", cex=0.8)
-      plot(temp.df$Ox.5~temp.df$Date.Time, main="Chamber 5", xlab = "Date and Time", ylab = paste("DO (", info.data$DO.unit[1], "/L)", sep = ""), col = "#0082FF", cex=0.8)
-      plot(temp.df$Ox.6~temp.df$Date.Time, main="Chamber 6", xlab = "Date and Time", ylab = paste("DO (", info.data$DO.unit[1], "/L)", sep = ""), col = "#0082FF", cex=0.8)
-      plot(temp.df$Ox.7~temp.df$Date.Time, main="Chamber 7", xlab = "Date and Time", ylab = paste("DO (", info.data$DO.unit[1], "/L)", sep = ""), col = "#0082FF", cex=0.8)
-    }
-    else if(n.chamber == 8){
-      par(mfrow=c(4,1), ask = T)
-      plot(temp.df$Ox.1~temp.df$Date.Time, main="Chamber 1", xlab = "Date and Time", ylab = paste("DO (", info.data$DO.unit[1], "/L)", sep = ""), col = "#0082FF", cex=0.8)
-      plot(temp.df$Ox.2~temp.df$Date.Time, main="Chamber 2", xlab = "Date and Time", ylab = paste("DO (", info.data$DO.unit[1], "/L)", sep = ""), col = "#0082FF", cex=0.8)
-      plot(temp.df$Ox.3~temp.df$Date.Time, main="Chamber 3", xlab = "Date and Time", ylab = paste("DO (", info.data$DO.unit[1], "/L)", sep = ""), col = "#0082FF", cex=0.8)
-      plot(temp.df$Ox.4~temp.df$Date.Time, main="Chamber 4", xlab = "Date and Time", ylab = paste("DO (", info.data$DO.unit[1], "/L)", sep = ""), col = "#0082FF", cex=0.8)
-      plot(temp.df$Ox.5~temp.df$Date.Time, main="Chamber 5", xlab = "Date and Time", ylab = paste("DO (", info.data$DO.unit[1], "/L)", sep = ""), col = "#0082FF", cex=0.8)
-      plot(temp.df$Ox.6~temp.df$Date.Time, main="Chamber 6", xlab = "Date and Time", ylab = paste("DO (", info.data$DO.unit[1], "/L)", sep = ""), col = "#0082FF", cex=0.8)
-      plot(temp.df$Ox.7~temp.df$Date.Time, main="Chamber 7", xlab = "Date and Time", ylab = paste("DO (", info.data$DO.unit[1], "/L)", sep = ""), col = "#0082FF", cex=0.8)
-      plot(temp.df$Ox.8~temp.df$Date.Time, main="Chamber 8", xlab = "Date and Time", ylab = paste("DO (", info.data$DO.unit[1], "/L)", sep = ""), col = "#0082FF", cex=0.8)
-    }
-    else{
+  if (plot.oxygen == TRUE) {
+    if (n.chamber >= 1 & n.chamber <= 8) {
+      par(mfrow=c(min(n.chamber, 4), 1), ask = TRUE)
+      
+      for (i in 1:n.chamber) {
+        plot(meas.data[[paste0("Ox.", i)]] ~ meas.data$Date.Time, 
+            main = paste("Chamber", i), 
+            xlab = "Date and Time", 
+            ylab = paste("DO (", info.data$DO.unit[1], "/L)", sep = ""), 
+            col = "#0082FF", 
+            cex = 0.8)
+      }
     }
   }
 
-  meas.data <- temp.df
   return(meas.data)
 }

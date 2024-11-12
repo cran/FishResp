@@ -18,13 +18,13 @@ convert.respirometry(import.file, export.file,
 
 \item{logger}{string: the name of a logger software used for intermittent-flow respirometry. Note, that both 'OxyView' and 'Pyro Oxygen Logger' used in couple with the 'AquaResp' software should be converted to the 'FishResp' format before running this function (see the functions \code{\link{presens.aquaresp}} or \code{\link{pyroscience.aquaresp}}, respectively).}
 
-\item{from}{string: dissolved oxygen unit in an imported file (more information can be found in the documentation of the function \code{\link{conv_o2}}, R package \pkg{respirometry})}
+\item{from}{string: dissolved oxygen unit in an imported file (more information can be found in the documentation of the function \code{\link[respirometry]{conv_o2}}, R package \pkg{respirometry})}
 
-\item{to}{string: dissolved oxygen unit in an exported file (more information can be found in the documentation of the function \code{\link{conv_o2}}, R package \pkg{respirometry})}
+\item{to}{string: dissolved oxygen unit in an exported file (more information can be found in the documentation of the function \code{\link[respirometry]{conv_o2}}, R package \pkg{respirometry})}
 
-\item{sal}{string: salinity is measured in ppm (more information can be found in the documentation of the function \code{\link{conv_o2}}, R package \pkg{respirometry})}
+\item{sal}{string: salinity is measured in ppm (more information can be found in the documentation of the function \code{\link[respirometry]{conv_o2}}, R package \pkg{respirometry})}
 
-\item{atm_pres}{string: ambient atmospheric pressure value (more information can be found in the documentation of the function \code{\link{conv_o2}}, R package \pkg{respirometry})}
+\item{atm_pres}{string: ambient atmospheric pressure value (more information can be found in the documentation of the function \code{\link[respirometry]{conv_o2}}, R package \pkg{respirometry})}
 }
 \value{
 The function exports a data frame with converted DO units.
